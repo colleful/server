@@ -48,4 +48,13 @@ public class TeamService {
             return false;
         }
     }
+
+    public Boolean deleteTeam(Long id) {
+        try {
+            teamRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

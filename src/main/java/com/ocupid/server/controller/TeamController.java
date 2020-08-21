@@ -8,7 +8,10 @@ import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -90,5 +93,14 @@ public class TeamController {
         }
 
         return new Response(team);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTeam(@PathVariable Long id) {
+        if (!teamService.deleteTeam(id)) {
+            throw new RuntimeException();
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
