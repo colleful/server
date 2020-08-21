@@ -70,4 +70,9 @@ public class TeamController {
         }
         return results;
     }
+
+    @GetMapping("/{id}")
+    public Response getTeamInfo(@PathVariable Long id) {
+        return new Response(teamService.getTeamInfo(id).orElseThrow(RuntimeException::new));
+    }
 }
