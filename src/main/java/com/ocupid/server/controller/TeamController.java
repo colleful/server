@@ -85,7 +85,10 @@ public class TeamController {
             throw new RuntimeException();
         }
 
-        teamService.updateTeamStatus(team, status);
+        if (!teamService.updateTeamStatus(team, status)) {
+            throw new RuntimeException();
+        }
+
         return new Response(team);
     }
 }
