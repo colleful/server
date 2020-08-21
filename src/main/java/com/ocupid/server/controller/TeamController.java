@@ -6,7 +6,10 @@ import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,5 +59,15 @@ public class TeamController {
         }
 
         return new Response(teamService.getTeamInfo(teamId).orElseThrow(RuntimeException::new));
+    }
+
+    @GetMapping
+    public List<Response> getAllReadyTeams() {
+        List<Response> results = new ArrayList<>();
+        List<Team> teams = teamService.getAllReadyTeams();
+        for (Team team : teams) {
+            results.add(new Response(team));
+        }
+        return results;
     }
 }

@@ -3,6 +3,7 @@ package com.ocupid.server.service;
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.repository.TeamRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,9 @@ public class TeamService {
 
     public Optional<Team> getTeamInfo(Long id) {
         return teamRepository.findById(id);
+    }
+
+    public List<Team> getAllReadyTeams() {
+        return teamRepository.getAllByStatus("ready");
     }
 }
