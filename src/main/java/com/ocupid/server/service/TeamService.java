@@ -38,4 +38,14 @@ public class TeamService {
     public List<Team> getAllReadyTeams() {
         return teamRepository.getAllByStatus("ready");
     }
+
+    public Boolean updateTeamStatus(Team team, String status) {
+        try {
+            team.setStatus(status);
+            teamRepository.save(team);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

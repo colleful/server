@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,5 +75,17 @@ public class TeamController {
     @GetMapping("/{id}")
     public Response getTeamInfo(@PathVariable Long id) {
         return new Response(teamService.getTeamInfo(id).orElseThrow(RuntimeException::new));
+    }
+
+    @PatchMapping("/{id}/{status}")
+    public Response updateTeamStatus(@PathVariable Long id, @PathVariable String status) {
+        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+
+        if (status.equals("ready") && team.getHeadcount() > team.getMembers().size()) {
+            throw new RuntimeException();
+        }
+
+        teamService.updateTeamStatus(team, status);
+        return new Response(team);
     }
 }
