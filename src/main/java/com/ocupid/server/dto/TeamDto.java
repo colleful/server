@@ -41,11 +41,7 @@ public class TeamDto {
             team.setHeadcount(headcount);
             team.setGender(gender == null ? leader.getGender() : gender);
             team.setCollage(collage == null ? leader.getCollage() : collage);
-            team.setStatus(
-                status == null ?
-                    headcount == 1 ? "ready" : "pending" :
-                    status
-            );
+            team.setStatus(status == null ? "pending" : status);
             team.setLeader(leader);
             return team;
         }
