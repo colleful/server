@@ -1,6 +1,8 @@
 package com.ocupid.server.service;
 
+import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
+import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.TeamMemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,14 @@ public class TeamMemberService {
 
     public Boolean addMember(TeamMember teamMember) {
         try {
+            Team team = teamMember.getTeam();
+            User member = teamMember.getMember();
+
+            if (team.getMembers().size() == team.getHeadcount() ||
+                member.getGender().equals(team.getGender())) {
+                return false;
+            }
+
             teamMemberRepository.save(teamMember);
             return true;
         } catch (Exception e) {

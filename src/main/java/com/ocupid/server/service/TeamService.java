@@ -3,6 +3,7 @@ package com.ocupid.server.service;
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.repository.TeamRepository;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,5 +28,9 @@ public class TeamService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Optional<Team> getTeamInfo(Long id) {
+        return teamRepository.findById(id);
     }
 }
