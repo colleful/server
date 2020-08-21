@@ -2,6 +2,7 @@ package com.ocupid.server.service;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.UserRepository;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,5 +21,9 @@ public class UserService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Optional<User> getUserInfo(Long id) {
+        return userRepository.findById(id);
     }
 }
