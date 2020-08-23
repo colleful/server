@@ -21,7 +21,7 @@ public class TeamMemberService {
             User member = teamMember.getMember();
 
             if (team.getMembers().size() == team.getHeadcount() ||
-                member.getGender().equals(team.getGender())) {
+                !member.getGender().equals(team.getGender())) {
                 return false;
             }
 
