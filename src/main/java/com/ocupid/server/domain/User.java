@@ -27,8 +27,8 @@ public class User {
     @Column(name = "gender", nullable = false)
     private String gender;
 
-    @Column(name = "collage", nullable = false)
-    private String collage;
+    @Column(name = "college", nullable = false)
+    private String college;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teams = new ArrayList<>();

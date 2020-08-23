@@ -15,12 +15,12 @@ public class TeamDto {
 
         private final Long id;
         private final String gender;
-        private final String collage;
+        private final String college;
 
         public SimplifiedUser(User user) {
             this.id = user.getId();
             this.gender = user.getGender();
-            this.collage = user.getCollage();
+            this.college = user.getCollege();
         }
     }
 
@@ -30,7 +30,7 @@ public class TeamDto {
         private String teamName;
         private Integer headcount;
         private String gender;
-        private String collage;
+        private String college;
         private String status;
         private Long leaderId;
 
@@ -40,7 +40,7 @@ public class TeamDto {
             team.setTeamName(teamName);
             team.setHeadcount(headcount);
             team.setGender(gender == null ? leader.getGender() : gender);
-            team.setCollage(collage == null ? leader.getCollage() : collage);
+            team.setCollege(college == null ? leader.getCollege() : college);
             team.setStatus(status == null ? "pending" : status);
             team.setLeader(leader);
             return team;
@@ -54,7 +54,7 @@ public class TeamDto {
         private final String teamName;
         private final Integer headcount;
         private final String gender;
-        private final String collage;
+        private final String college;
         private final String status;
         private final SimplifiedUser leader;
         private final List<SimplifiedUser> members;
@@ -64,7 +64,7 @@ public class TeamDto {
             this.teamName = team.getTeamName();
             this.headcount = team.getHeadcount();
             this.gender = team.getGender();
-            this.collage = team.getCollage();
+            this.college = team.getCollege();
             this.status = team.getStatus();
             this.leader = new SimplifiedUser(team.getLeader());
             this.members = new ArrayList<>();

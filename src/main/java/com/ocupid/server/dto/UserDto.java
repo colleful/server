@@ -9,12 +9,12 @@ public class UserDto {
     public static class Request {
 
         private String gender;
-        private String collage;
+        private String college;
 
         public User toEntity() {
             User user = new User();
             user.setGender(gender);
-            user.setCollage(collage);
+            user.setCollege(college);
             return user;
         }
     }
@@ -24,12 +24,12 @@ public class UserDto {
 
         private final Long id;
         private final String gender;
-        private final String collage;
+        private final String college;
 
         public Response(User user) {
             this.id = user.getId();
             this.gender = user.getGender();
-            this.collage = user.getCollage();
+            this.college = user.getCollege();
         }
     }
 }

@@ -35,8 +35,8 @@ public class Team {
     @Column(name = "gender", nullable = false)
     private String gender;
 
-    @Column(name = "collage", nullable = false)
-    private String collage;
+    @Column(name = "college", nullable = false)
+    private String college;
 
     @Column(name = "status", nullable = false)
     private String status;
