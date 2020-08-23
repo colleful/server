@@ -2,6 +2,7 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
+import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
@@ -55,14 +56,17 @@ public class TeamController {
     public Response createMember(@PathVariable("team-id") Long teamId,
         @PathVariable("member-id") Long memberId) {
         TeamMember member = new TeamMember();
-        member.setTeam(teamService.getTeamInfo(teamId).orElseThrow(RuntimeException::new));
-        member.setMember(userService.getUserInfo(memberId).orElseThrow(RuntimeException::new));
+        Team team = teamService.getTeamInfo(teamId).orElseThrow(RuntimeException::new);
+        User user = userService.getUserInfo(memberId).orElseThrow(RuntimeException::new);
+        member.setTeam(team);
+        member.setMember(user);
 
         if (!teamMemberService.addMember(member)) {
             throw new RuntimeException();
         }
 
-        return new Response(teamService.getTeamInfo(teamId).orElseThrow(RuntimeException::new));
+        team.getMembers().add(member);
+        return new Response(team);
     }
 
     @GetMapping
