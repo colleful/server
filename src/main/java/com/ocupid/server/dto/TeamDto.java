@@ -50,6 +50,7 @@ public class TeamDto {
     @Getter
     public static class Response {
 
+        private final Long id;
         private final String teamName;
         private final Integer headcount;
         private final String gender;
@@ -59,6 +60,7 @@ public class TeamDto {
         private final List<SimplifiedUser> members;
 
         public Response(Team team) {
+            this.id = team.getId();
             this.teamName = team.getTeamName();
             this.headcount = team.getHeadcount();
             this.gender = team.getGender();
