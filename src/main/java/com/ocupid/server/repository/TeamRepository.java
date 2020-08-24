@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    List<Team> getAllByStatus(String status);
+    List<Team> getAllByStatusOrderByUpdatedAtDesc(String status);
 }

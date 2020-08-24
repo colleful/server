@@ -4,6 +4,7 @@ import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.service.UserService;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -51,6 +52,7 @@ public class TeamDto {
     public static class Response {
 
         private final Long id;
+        private final LocalDateTime updatedAt;
         private final String teamName;
         private final Integer headcount;
         private final String gender;
@@ -61,6 +63,7 @@ public class TeamDto {
 
         public Response(Team team) {
             this.id = team.getId();
+            this.updatedAt = team.getUpdatedAt();
             this.teamName = team.getTeamName();
             this.headcount = team.getHeadcount();
             this.gender = team.getGender();

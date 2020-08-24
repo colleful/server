@@ -36,7 +36,7 @@ public class TeamService {
     }
 
     public List<Team> getAllReadyTeams() {
-        return teamRepository.getAllByStatus("ready");
+        return teamRepository.getAllByStatusOrderByUpdatedAtDesc("ready");
     }
 
     public Boolean updateTeamStatus(Team team, String status) {
