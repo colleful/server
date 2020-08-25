@@ -30,19 +30,14 @@ public class TeamDto {
 
         private String teamName;
         private Integer headcount;
-        private String gender;
-        private String college;
-        private String status;
-        private Long leaderId;
 
-        public Team toEntity(UserService userService) {
-            User leader = userService.getUserInfo(leaderId).orElseThrow(RuntimeException::new);
+        public Team toEntity(User leader) {
             Team team = new Team();
             team.setTeamName(teamName);
             team.setHeadcount(headcount);
-            team.setGender(gender == null ? leader.getGender() : gender);
-            team.setCollege(college == null ? leader.getCollege() : college);
-            team.setStatus(status == null ? "pending" : status);
+            team.setGender(leader.getGender());
+            team.setCollege(leader.getCollege());
+            team.setStatus("pending");
             team.setLeader(leader);
             return team;
         }

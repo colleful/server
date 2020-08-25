@@ -4,6 +4,7 @@ import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.*;
+import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,17 +31,23 @@ public class TeamController {
     private final TeamService teamService;
     private final TeamMemberService teamMemberService;
     private final UserService userService;
+    private final JwtProvider provider;
 
     public TeamController(TeamService teamService,
-        TeamMemberService teamMemberService, UserService userService) {
+        TeamMemberService teamMemberService, UserService userService,
+        JwtProvider provider) {
         this.teamService = teamService;
         this.teamMemberService = teamMemberService;
         this.userService = userService;
+        this.provider = provider;
     }
 
     @PostMapping
-    public Response createTeam(@RequestBody Request request) {
-        Team team = request.toEntity(userService);
+    public Response createTeam(@RequestHeader(value = "Access-Token") String token,
+        @RequestBody Request request) {
+        User leader = userService.getUserInfo((Long) provider.get(token, "id"))
+            .orElseThrow(RuntimeException::new);
+        Team team = request.toEntity(leader);
 
         if (!teamService.createTeam(team)) {
             throw new RuntimeException();
@@ -81,12 +89,23 @@ public class TeamController {
 
     @GetMapping("/{id}")
     public Response getTeamInfo(@PathVariable Long id) {
-        return new Response(teamService.getTeamInfo(id).orElseThrow(RuntimeException::new));
+        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+
+        if (!team.getStatus().equals("ready")) {
+            throw new RuntimeException();
+        }
+
+        return new Response(team);
     }
 
     @PatchMapping("/{id}/{status}")
-    public Response updateTeamStatus(@PathVariable Long id, @PathVariable String status) {
+    public Response updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
+        @PathVariable Long id, @PathVariable String status) {
         Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+
+        if (team.getLeader().getId() != provider.get(token, "id")) {
+            throw new RuntimeException();
+        }
 
         if (status.equals("ready") && team.getHeadcount() > team.getMembers().size()) {
             throw new RuntimeException();
@@ -100,7 +119,14 @@ public class TeamController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTeam(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTeam(@RequestHeader("Access-Token") String token,
+        @PathVariable Long id) {
+        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+
+        if (team.getLeader().getId() != provider.get(token, "id")) {
+            throw new RuntimeException();
+        }
+
         if (!teamService.deleteTeam(id)) {
             throw new RuntimeException();
         }
