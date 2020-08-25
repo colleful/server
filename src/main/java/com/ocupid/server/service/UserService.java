@@ -26,4 +26,8 @@ public class UserService {
     public Optional<User> getUserInfo(Long id) {
         return userRepository.findById(id);
     }
+
+    public Optional<User> getUserInfo(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
