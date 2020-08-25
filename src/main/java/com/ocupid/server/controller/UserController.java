@@ -20,14 +20,4 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public Response create(@RequestBody Request request) {
-        User user = request.toEntity();
-
-        if (!userService.join(user)) {
-            throw new RuntimeException();
-        }
-
-        return new Response(user);
-    }
 }
