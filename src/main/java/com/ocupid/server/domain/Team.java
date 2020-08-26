@@ -31,23 +31,23 @@ public class Team {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @Column(name = "teamName", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String teamName;
 
-    @Column(name = "headcount", nullable = false)
+    @Column(nullable = false)
     private Integer headcount;
 
-    @Column(name = "gender", nullable = false)
+    @Column(nullable = false)
     private String gender;
 
-    @Column(name = "college", nullable = false)
+    @Column(nullable = false)
     private String college;
 
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "leader_id", nullable = false)
+    @JoinColumn(nullable = false)
     private User leader;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)

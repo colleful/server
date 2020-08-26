@@ -19,10 +19,10 @@ public class TeamMember {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "team_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(nullable = false)
     private User member;
 }
