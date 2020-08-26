@@ -30,4 +30,14 @@ public class UserService {
     public Optional<User> getUserInfo(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public Boolean changeNickname(User user, String nickname) {
+        try {
+            user.setNickname(nickname);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
