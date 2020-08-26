@@ -54,8 +54,8 @@ public class JwtProvider {
             .getBody();
     }
 
-    public Object get(String token, String key) {
-        return getBody(token).get(key);
+    public Long getId(String token) {
+        return Long.valueOf((Integer) getBody(token).get("id"));
     }
 
     public String getEmail(String token) {

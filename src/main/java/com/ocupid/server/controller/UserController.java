@@ -38,7 +38,7 @@ public class UserController {
     @PatchMapping("/nickname")
     public Response changeNickname(@RequestHeader("Access-Token") String token,
         @RequestBody Request request) {
-        User user = userService.getUserInfo(Long.valueOf((Integer) provider.get(token, "id")))
+        User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(RuntimeException::new);
 
         if (!userService.changeNickname(user, request.getNickname())) {
@@ -50,7 +50,7 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@RequestHeader("Access-Token") String token) {
-        if (!userService.withdrawal(Long.valueOf((Integer) provider.get(token, "id")))) {
+        if (!userService.withdrawal(provider.getId(token))) {
             throw new RuntimeException();
         }
 
