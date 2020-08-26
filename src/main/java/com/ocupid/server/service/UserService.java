@@ -40,4 +40,13 @@ public class UserService {
             return false;
         }
     }
+
+    public Boolean withdrawal(Long id) {
+        try {
+            userRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
