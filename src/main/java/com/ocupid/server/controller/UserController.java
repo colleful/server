@@ -4,6 +4,8 @@ import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.service.UserService;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,4 +22,9 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/{id}")
+    public Response getUserInfo(@PathVariable Long id) {
+        User user = userService.getUserInfo(id).orElseThrow(RuntimeException::new);
+        return new Response(user);
+    }
 }

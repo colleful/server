@@ -1,7 +1,12 @@
 package com.ocupid.server.dto;
 
+import com.ocupid.server.domain.Team;
+import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
+import com.ocupid.server.dto.TeamDto.Response;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -12,6 +17,8 @@ public class UserDto {
 
         private String email;
         private String password;
+        private String nickname;
+        private Integer age;
         private String gender;
         private String college;
 
@@ -19,6 +26,8 @@ public class UserDto {
             User user = new User();
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode(password));
+            user.setNickname(nickname);
+            user.setAge(age);
             user.setGender(gender);
             user.setCollege(college);
             user.setRoles(Collections.singletonList("ROLE_USER"));
@@ -31,14 +40,23 @@ public class UserDto {
 
         private final Long id;
         private final String email;
+        private final String nickname;
+        private final Integer age;
         private final String gender;
         private final String college;
+        private final List<TeamDto.Response> teams;
 
         public Response(User user) {
             this.id = user.getId();
             this.email = user.getEmail();
+            this.nickname = user.getNickname();
+            this.age = user.getAge();
             this.gender = user.getGender();
             this.college = user.getCollege();
+            this.teams = new ArrayList<>();
+            for (TeamMember team : user.getTeams()) {
+                this.teams.add(new TeamDto.Response(team.getTeam()));
+            }
         }
     }
 
