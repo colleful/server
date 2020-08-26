@@ -41,7 +41,7 @@ public class User implements UserDetails {
     private String nickname;
 
     @Column(nullable = false)
-    private Integer age;
+    private Integer birthYear;
 
     @Column(nullable = false)
     private String gender;

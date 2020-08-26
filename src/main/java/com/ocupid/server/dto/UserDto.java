@@ -5,7 +5,9 @@ import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.Response;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +29,7 @@ public class UserDto {
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode(password));
             user.setNickname(nickname);
-            user.setAge(age);
+            user.setBirthYear(Calendar.getInstance().get(Calendar.YEAR) - age + 1);
             user.setGender(gender);
             user.setCollege(college);
             user.setRoles(Collections.singletonList("ROLE_USER"));
@@ -50,7 +52,7 @@ public class UserDto {
             this.id = user.getId();
             this.email = user.getEmail();
             this.nickname = user.getNickname();
-            this.age = user.getAge();
+            this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
             this.gender = user.getGender();
             this.college = user.getCollege();
             this.teams = new ArrayList<>();
