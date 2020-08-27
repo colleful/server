@@ -31,10 +31,11 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public Boolean changeNickname(User user, String nickname) {
+    public Boolean changeUserInfo(User from, User to) {
         try {
-            user.setNickname(nickname);
-            userRepository.save(user);
+            from.setNickname(to.getNickname());
+            from.setCollege(to.getCollege());
+            userRepository.save(from);
             return true;
         } catch (Exception e) {
             return false;

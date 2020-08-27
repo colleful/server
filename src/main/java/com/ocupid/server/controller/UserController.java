@@ -6,11 +6,12 @@ import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,13 +36,13 @@ public class UserController {
         return new Response(user);
     }
 
-    @PatchMapping("/nickname")
-    public Response changeNickname(@RequestHeader("Access-Token") String token,
+    @PutMapping
+    public Response changeUserInfo(@RequestHeader("Access-Token") String token,
         @RequestBody Request request) {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(RuntimeException::new);
 
-        if (!userService.changeNickname(user, request.getNickname())) {
+        if (!userService.changeUserInfo(user, request.toEntity(null))) {
             throw new RuntimeException();
         }
 
