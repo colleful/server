@@ -45,7 +45,7 @@ public class TeamController {
     @PostMapping
     public Response createTeam(@RequestHeader(value = "Access-Token") String token,
         @RequestBody Request request) {
-        User leader = userService.getUserInfo(Long.valueOf((Integer)provider.get(token, "id")))
+        User leader = userService.getUserInfo(provider.getId(token))
             .orElseThrow(RuntimeException::new);
         Team team = request.toEntity(leader);
 
@@ -103,7 +103,7 @@ public class TeamController {
         @PathVariable Long id, @PathVariable String status) {
         Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
 
-        if (!team.getLeader().getId().equals(Long.valueOf((Integer) provider.get(token, "id")))) {
+        if (!team.getLeader().getId().equals(provider.getId(token))) {
             throw new RuntimeException();
         }
 
@@ -123,7 +123,7 @@ public class TeamController {
         @PathVariable Long id) {
         Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
 
-        if (!team.getLeader().getId().equals(Long.valueOf((Integer) provider.get(token, "id")))) {
+        if (!team.getLeader().getId().equals(provider.getId(token))) {
             throw new RuntimeException();
         }
 

@@ -37,6 +37,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
+    @Column(nullable = false)
+    private Integer birthYear;
+
     @Column(nullable = false)
     private String gender;
 
