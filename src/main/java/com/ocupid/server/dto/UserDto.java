@@ -24,10 +24,10 @@ public class UserDto {
         private String gender;
         private String college;
 
-        public User toEntity(PasswordEncoder passwordEncoder) {
+        public User toEntity(String encodedPassword) {
             User user = new User();
             user.setEmail(email);
-            user.setPassword(passwordEncoder.encode(password));
+            user.setPassword(encodedPassword);
             user.setNickname(nickname);
             user.setBirthYear(Calendar.getInstance().get(Calendar.YEAR) - age + 1);
             user.setGender(gender);

@@ -27,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/join")
     public Response join(@RequestBody Request request) {
-        User user = request.toEntity(passwordEncoder);
+        User user = request.toEntity(passwordEncoder.encode(request.getPassword()));
 
         if (!userService.join(user)) {
             throw new RuntimeException();
