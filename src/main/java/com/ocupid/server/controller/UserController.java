@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,10 +25,13 @@ public class UserController {
 
     private final UserService userService;
     private final JwtProvider provider;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, JwtProvider provider) {
+    public UserController(UserService userService, JwtProvider provider,
+        PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.provider = provider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/{id}")
@@ -43,6 +47,19 @@ public class UserController {
             .orElseThrow(RuntimeException::new);
 
         if (!userService.changeUserInfo(user, request.toEntity(null))) {
+            throw new RuntimeException();
+        }
+
+        return new Response(user);
+    }
+
+    @PatchMapping("/password")
+    public Response changePassword(@RequestHeader("Access-Token") String token,
+        @RequestBody Request request) {
+        User user = userService.getUserInfo(provider.getId(token))
+            .orElseThrow(RuntimeException::new);
+
+        if (!userService.changePassword(user, passwordEncoder.encode(request.getPassword()))) {
             throw new RuntimeException();
         }
 

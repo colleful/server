@@ -42,6 +42,16 @@ public class UserService {
         }
     }
 
+    public Boolean changePassword(User user, String password) {
+        try {
+            user.setPassword(password);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public Boolean withdrawal(Long id) {
         try {
             userRepository.deleteById(id);
