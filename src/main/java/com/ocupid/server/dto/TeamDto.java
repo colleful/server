@@ -3,7 +3,6 @@ package com.ocupid.server.dto;
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
-import com.ocupid.server.service.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;

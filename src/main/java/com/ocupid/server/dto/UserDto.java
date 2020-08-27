@@ -1,16 +1,12 @@
 package com.ocupid.server.dto;
 
-import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
-import com.ocupid.server.dto.TeamDto.Response;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import lombok.Getter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserDto {
 
