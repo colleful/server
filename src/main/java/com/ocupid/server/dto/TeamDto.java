@@ -6,6 +6,7 @@ import com.ocupid.server.domain.User;
 import com.ocupid.server.service.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import lombok.Getter;
 
@@ -15,11 +16,15 @@ public class TeamDto {
     private static class SimplifiedUser {
 
         private final Long id;
+        private final String nickname;
+        private final Integer age;
         private final String gender;
         private final String college;
 
         public SimplifiedUser(User user) {
             this.id = user.getId();
+            this.nickname = user.getNickname();
+            this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
             this.gender = user.getGender();
             this.college = user.getCollege();
         }
@@ -53,7 +58,7 @@ public class TeamDto {
         private final String gender;
         private final String college;
         private final String status;
-        private final SimplifiedUser leader;
+        private final Long leaderId;
         private final List<SimplifiedUser> members;
 
         public Response(Team team) {
@@ -64,7 +69,7 @@ public class TeamDto {
             this.gender = team.getGender();
             this.college = team.getCollege();
             this.status = team.getStatus();
-            this.leader = new SimplifiedUser(team.getLeader());
+            this.leaderId = team.getLeader().getId();
             this.members = new ArrayList<>();
             for (TeamMember member : team.getMembers()) {
                 members.add(new SimplifiedUser(member.getMember()));

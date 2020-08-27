@@ -20,7 +20,7 @@ public class UserDto {
         private String email;
         private String password;
         private String nickname;
-        private Integer age;
+        private Integer birthYear;
         private String gender;
         private String college;
 
@@ -29,7 +29,7 @@ public class UserDto {
             user.setEmail(email);
             user.setPassword(encodedPassword);
             user.setNickname(nickname);
-            user.setBirthYear(Calendar.getInstance().get(Calendar.YEAR) - age + 1);
+            user.setBirthYear(birthYear);
             user.setGender(gender);
             user.setCollege(college);
             user.setRoles(Collections.singletonList("ROLE_USER"));
