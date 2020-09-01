@@ -58,9 +58,11 @@ public class TeamDto {
         private final String college;
         private final String status;
         private final Long leaderId;
+        private final Double averageAge;
         private final List<SimplifiedUser> members;
 
         public Response(Team team) {
+            Integer sumOfAge = 0;
             this.id = team.getId();
             this.updatedAt = team.getUpdatedAt();
             this.teamName = team.getTeamName();
@@ -71,8 +73,11 @@ public class TeamDto {
             this.leaderId = team.getLeader().getId();
             this.members = new ArrayList<>();
             for (TeamMember member : team.getMembers()) {
-                members.add(new SimplifiedUser(member.getMember()));
+                SimplifiedUser simplifiedUser = new SimplifiedUser(member.getMember());
+                sumOfAge += simplifiedUser.getAge();
+                members.add(simplifiedUser);
             }
+            this.averageAge = sumOfAge.doubleValue() / team.getMembers().size();
         }
     }
 }
