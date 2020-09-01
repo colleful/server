@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/team")
+@RequestMapping("/api/teams")
 @CrossOrigin(origins = "*")
 public class TeamController {
 
@@ -60,7 +60,7 @@ public class TeamController {
         return new Response(team);
     }
 
-    @PostMapping("/{team-id}/member/{member-id}")
+    @PostMapping("/{team-id}/members/{member-id}")
     public Response createMember(@PathVariable("team-id") Long teamId,
         @PathVariable("member-id") Long memberId) {
         TeamMember member = new TeamMember();
