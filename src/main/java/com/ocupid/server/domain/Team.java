@@ -35,9 +35,6 @@ public class Team {
     private String teamName;
 
     @Column(nullable = false)
-    private Integer headcount;
-
-    @Column(nullable = false)
     private String gender;
 
     @Column(nullable = false)

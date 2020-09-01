@@ -33,12 +33,10 @@ public class TeamDto {
     public static class Request {
 
         private String teamName;
-        private Integer headcount;
 
         public Team toEntity(User leader) {
             Team team = new Team();
             team.setTeamName(teamName);
-            team.setHeadcount(headcount);
             team.setGender(leader.getGender());
             team.setCollege(leader.getCollege());
             team.setStatus("pending");
@@ -66,7 +64,7 @@ public class TeamDto {
             this.id = team.getId();
             this.updatedAt = team.getUpdatedAt();
             this.teamName = team.getTeamName();
-            this.headcount = team.getHeadcount();
+            this.headcount = team.getMembers().size();
             this.gender = team.getGender();
             this.college = team.getCollege();
             this.status = team.getStatus();

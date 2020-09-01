@@ -107,10 +107,6 @@ public class TeamController {
             throw new RuntimeException();
         }
 
-        if (status.equals("ready") && team.getHeadcount() > team.getMembers().size()) {
-            throw new RuntimeException();
-        }
-
         if (!teamService.updateTeamStatus(team, status)) {
             throw new RuntimeException();
         }
