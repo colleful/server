@@ -24,6 +24,11 @@ public class TeamMemberService {
                 return false;
             }
 
+            if (!member.getDepartment().getCollege()
+                .equals(team.getLeader().getDepartment().getCollege())) {
+                return false;
+            }
+
             teamMemberRepository.save(teamMember);
             return true;
         } catch (Exception e) {

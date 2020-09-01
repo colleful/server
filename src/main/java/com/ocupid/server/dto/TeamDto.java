@@ -3,6 +3,7 @@ package com.ocupid.server.dto;
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
+import com.ocupid.server.service.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,13 +20,15 @@ public class TeamDto {
         private final Integer age;
         private final String gender;
         private final String college;
+        private final String department;
 
         public SimplifiedUser(User user) {
             this.id = user.getId();
             this.nickname = user.getNickname();
             this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
             this.gender = user.getGender();
-            this.college = user.getCollege();
+            this.college = user.getDepartment().getCollege();
+            this.department = user.getDepartment().getDepartment();
         }
     }
 
@@ -34,11 +37,11 @@ public class TeamDto {
 
         private String teamName;
 
-        public Team toEntity(User leader) {
+        public Team toEntity(UserService userService, Long leaderId) {
+            User leader = userService.getUserInfo(leaderId).orElseThrow(RuntimeException::new);
             Team team = new Team();
             team.setTeamName(teamName);
             team.setGender(leader.getGender());
-            team.setCollege(leader.getCollege());
             team.setStatus("pending");
             team.setLeader(leader);
             return team;
@@ -54,6 +57,7 @@ public class TeamDto {
         private final Integer headcount;
         private final String gender;
         private final String college;
+        private final String department;
         private final String status;
         private final Long leaderId;
         private final Double averageAge;
@@ -61,20 +65,27 @@ public class TeamDto {
 
         public Response(Team team) {
             Integer sumOfAge = 0;
+            boolean isDepartmentSame = true;
+
             this.id = team.getId();
             this.updatedAt = team.getUpdatedAt();
             this.teamName = team.getTeamName();
             this.headcount = team.getMembers().size();
             this.gender = team.getGender();
-            this.college = team.getCollege();
+            this.college = team.getLeader().getDepartment().getCollege();
             this.status = team.getStatus();
             this.leaderId = team.getLeader().getId();
             this.members = new ArrayList<>();
             for (TeamMember member : team.getMembers()) {
                 SimplifiedUser simplifiedUser = new SimplifiedUser(member.getMember());
                 sumOfAge += simplifiedUser.getAge();
+                isDepartmentSame = isDepartmentSame && team.getLeader().getDepartment().getId()
+                    .equals(member.getMember().getDepartment().getId());
                 members.add(simplifiedUser);
             }
+            this.department = isDepartmentSame
+                ? team.getLeader().getDepartment().getDepartment()
+                : null;
             this.averageAge = sumOfAge.doubleValue() / team.getMembers().size();
         }
     }

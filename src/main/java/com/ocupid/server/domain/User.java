@@ -14,7 +14,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,8 +48,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String gender;
 
-    @Column(nullable = false)
-    private String college;
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private Department department;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teams = new ArrayList<>();

@@ -45,9 +45,7 @@ public class TeamController {
     @PostMapping
     public Response createTeam(@RequestHeader(value = "Access-Token") String token,
         @RequestBody Request request) {
-        User leader = userService.getUserInfo(provider.getId(token))
-            .orElseThrow(RuntimeException::new);
-        Team team = request.toEntity(leader);
+        Team team = request.toEntity(userService, provider.getId(token));
 
         if (!teamService.createTeam(team)) {
             throw new RuntimeException();
