@@ -49,7 +49,7 @@
 
 ## 2. User 관련 (사용자용)
 
-### GET /api/user/{id}
+### GET /api/users/{id}
 > id에 해당하는 user의 정보를 응답
 
 **Response**
@@ -63,7 +63,7 @@
 |college|String|단과대학|
 |teams|List|소속한 팀들의 정보|
 
-### PUT /api/user
+### PUT /api/users
 > 자신의 회원 정보 수정
 
 **Request**
@@ -84,7 +84,7 @@
 |college|String|단과대학|
 |teams|List|소속한 팀들의 정보|
 
-### PATCH /api/user/password
+### PATCH /api/users/password
 > 비밀번호 변경
 
 **Request**
@@ -104,5 +104,5 @@
 |college|String|단과대학|
 |teams|List|소속한 팀들의 정보|
 
-### DELETE /api/user
+### DELETE /api/users
 > 회원 탈퇴
