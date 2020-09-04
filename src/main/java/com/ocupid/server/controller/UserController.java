@@ -38,6 +38,13 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @GetMapping
+    public Response getMyInfo(@RequestHeader("Access-Token") String token) {
+        User user = userService.getUserInfo(provider.getId(token))
+            .orElseThrow(RuntimeException::new);
+        return new Response(user);
+    }
+
     @GetMapping("/{id}")
     public Response getUserInfo(@PathVariable Long id) {
         User user = userService.getUserInfo(id).orElseThrow(RuntimeException::new);
