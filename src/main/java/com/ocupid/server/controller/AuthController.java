@@ -3,6 +3,7 @@ package com.ocupid.server.controller;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.security.JwtProvider;
+import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,19 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final DepartmentService departmentService;
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService, JwtProvider provider,
+    public AuthController(UserService userService,
+        DepartmentService departmentService, JwtProvider provider,
         PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.departmentService = departmentService;
         this.provider = provider;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/join")
     public Response join(@RequestBody Request request) {
-        User user = request.toEntity(passwordEncoder.encode(request.getPassword()));
+        User user = request.toEntity(passwordEncoder, departmentService);
 
         if (!userService.join(user)) {
             throw new RuntimeException();

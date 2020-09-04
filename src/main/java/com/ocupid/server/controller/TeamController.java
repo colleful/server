@@ -73,7 +73,6 @@ public class TeamController {
             throw new RuntimeException();
         }
 
-        team.getMembers().add(member);
         return new Response(team);
     }
 

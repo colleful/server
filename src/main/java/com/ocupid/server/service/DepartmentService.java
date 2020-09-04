@@ -22,4 +22,8 @@ public class DepartmentService {
     public Optional<Department> getDepartment(Long id) {
         return departmentRepository.findById(id);
     }
+
+    public Optional<Department> getDepartment(String departmentName) {
+        return departmentRepository.findByDepartmentName(departmentName);
+    }
 }

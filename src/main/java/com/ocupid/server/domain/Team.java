@@ -38,9 +38,6 @@ public class Team {
     private String gender;
 
     @Column(nullable = false)
-    private String college;
-
-    @Column(nullable = false)
     private String status;
 
     @ManyToOne

@@ -18,14 +18,14 @@ public class TeamDto {
         private final String nickname;
         private final Integer age;
         private final String gender;
-        private final String college;
+        private final String department;
 
         public SimplifiedUser(User user) {
             this.id = user.getId();
             this.nickname = user.getNickname();
             this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
             this.gender = user.getGender();
-            this.college = user.getCollege();
+            this.department = user.getDepartment().getDepartmentName();
         }
     }
 
@@ -38,7 +38,6 @@ public class TeamDto {
             Team team = new Team();
             team.setTeamName(teamName);
             team.setGender(leader.getGender());
-            team.setCollege(leader.getCollege());
             team.setStatus("pending");
             team.setLeader(leader);
             return team;
@@ -53,7 +52,6 @@ public class TeamDto {
         private final String teamName;
         private final Integer headcount;
         private final String gender;
-        private final String college;
         private final String status;
         private final Long leaderId;
         private final Double averageAge;
@@ -66,7 +64,6 @@ public class TeamDto {
             this.teamName = team.getTeamName();
             this.headcount = team.getMembers().size();
             this.gender = team.getGender();
-            this.college = team.getCollege();
             this.status = team.getStatus();
             this.leaderId = team.getLeader().getId();
             this.members = new ArrayList<>();

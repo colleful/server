@@ -3,6 +3,7 @@ package com.ocupid.server.controller;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.security.JwtProvider;
+import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final DepartmentService departmentService;
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, JwtProvider provider,
+    public UserController(UserService userService,
+        DepartmentService departmentService, JwtProvider provider,
         PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.departmentService = departmentService;
         this.provider = provider;
         this.passwordEncoder = passwordEncoder;
     }
@@ -46,7 +50,8 @@ public class UserController {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(RuntimeException::new);
 
-        if (!userService.changeUserInfo(user, request.toEntity(null))) {
+        if (!userService.changeUserInfo(user,
+            request.toEntity(passwordEncoder, departmentService))) {
             throw new RuntimeException();
         }
 
