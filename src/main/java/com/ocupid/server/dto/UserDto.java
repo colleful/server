@@ -2,11 +2,13 @@ package com.ocupid.server.dto;
 
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
+import com.ocupid.server.service.DepartmentService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserDto {
 
@@ -18,16 +20,17 @@ public class UserDto {
         private String nickname;
         private Integer birthYear;
         private String gender;
-        private String college;
+        private Long departmentId;
 
-        public User toEntity(String encodedPassword) {
+        public User toEntity(PasswordEncoder passwordEncoder, DepartmentService departmentService) {
             User user = new User();
             user.setEmail(email);
-            user.setPassword(encodedPassword);
+            user.setPassword(password == null ? null : passwordEncoder.encode(password));
             user.setNickname(nickname);
             user.setBirthYear(birthYear);
             user.setGender(gender);
-            user.setCollege(college);
+            user.setDepartment(departmentService.getDepartment(departmentId)
+                .orElseThrow(RuntimeException::new));
             user.setRoles(Collections.singletonList("ROLE_USER"));
             return user;
         }
@@ -41,7 +44,7 @@ public class UserDto {
         private final String nickname;
         private final Integer age;
         private final String gender;
-        private final String college;
+        private final String department;
         private final List<TeamDto.Response> teams;
 
         public Response(User user) {
@@ -50,7 +53,7 @@ public class UserDto {
             this.nickname = user.getNickname();
             this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
             this.gender = user.getGender();
-            this.college = user.getCollege();
+            this.department = user.getDepartment().getDepartmentName();
             this.teams = new ArrayList<>();
             for (TeamMember team : user.getTeams()) {
                 this.teams.add(new TeamDto.Response(team.getTeam()));

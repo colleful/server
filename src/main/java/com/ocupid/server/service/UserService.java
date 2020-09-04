@@ -34,7 +34,7 @@ public class UserService {
     public Boolean changeUserInfo(User from, User to) {
         try {
             from.setNickname(to.getNickname());
-            from.setCollege(to.getCollege());
+            from.setDepartment(to.getDepartment());
             userRepository.save(from);
             return true;
         } catch (Exception e) {
