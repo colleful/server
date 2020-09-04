@@ -35,6 +35,7 @@ public class UserService {
         try {
             from.setNickname(to.getNickname());
             from.setDepartment(to.getDepartment());
+            from.setSelfIntroduction(to.getSelfIntroduction());
             userRepository.save(from);
             return true;
         } catch (Exception e) {
