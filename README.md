@@ -49,6 +49,20 @@
 
 ## 2. User 관련 (사용자용)
 
+### GET /api/users
+> 자신의 정보를 응답
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|email|String|이메일|
+|nickname|String|닉네임|
+|age|Integer|나이|
+|college|String|단과대학|
+|teams|List|소속한 팀들의 정보|
+
 ### GET /api/users/{id}
 > id에 해당하는 user의 정보를 응답
 
