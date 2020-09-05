@@ -52,6 +52,9 @@ public class User implements UserDetails {
     @JoinColumn(nullable = false)
     private Department department;
 
+    @Column(nullable = false)
+    private String selfIntroduction;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teams = new ArrayList<>();
 

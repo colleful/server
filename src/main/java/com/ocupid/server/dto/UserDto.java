@@ -21,6 +21,7 @@ public class UserDto {
         private Integer birthYear;
         private String gender;
         private Long departmentId;
+        private String selfIntroduction;
 
         public User toEntity(PasswordEncoder passwordEncoder, DepartmentService departmentService) {
             User user = new User();
@@ -31,6 +32,7 @@ public class UserDto {
             user.setGender(gender);
             user.setDepartment(departmentService.getDepartment(departmentId)
                 .orElseThrow(RuntimeException::new));
+            user.setSelfIntroduction(selfIntroduction);
             user.setRoles(Collections.singletonList("ROLE_USER"));
             return user;
         }
@@ -45,6 +47,7 @@ public class UserDto {
         private final Integer age;
         private final String gender;
         private final String department;
+        private final String selfIntroduction;
         private final List<TeamDto.Response> teams;
 
         public Response(User user) {
@@ -54,6 +57,7 @@ public class UserDto {
             this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
             this.gender = user.getGender();
             this.department = user.getDepartment().getDepartmentName();
+            this.selfIntroduction = user.getSelfIntroduction();
             this.teams = new ArrayList<>();
             for (TeamMember team : user.getTeams()) {
                 this.teams.add(new TeamDto.Response(team.getTeam()));
