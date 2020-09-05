@@ -17,8 +17,9 @@
 |password|String|Yes|비밀번호|
 |nickname|String|Yes|닉네임|
 |birthYear|Integer|Yes|태어난 해|
-|gender|String|Yes|"male", "female"|
-|college|String|Yes|단과대학|
+|gender|String|Yes|성별("남자", "여자")|
+|departmentId|Long|Yes|학과 아이디|
+|selfIntroduction|String|Yes|자기소개|
 
 **Response**
 
@@ -28,7 +29,9 @@
 |email|String|이메일|
 |nickname|String|닉네임|
 |age|Integer|나이|
-|college|String|단과대학|
+|gender|String|성별("남자", "여자")|
+|department|String|학과|
+|selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
 ### POST /auth/login
@@ -60,7 +63,9 @@
 |email|String|이메일|
 |nickname|String|닉네임|
 |age|Integer|나이|
-|college|String|단과대학|
+|gender|String|성별("남자", "여자")|
+|department|String|학과|
+|selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
 ### GET /api/users/{id}
@@ -74,7 +79,9 @@
 |email|String|이메일|
 |nickname|String|닉네임|
 |age|Integer|나이|
-|college|String|단과대학|
+|gender|String|성별("남자", "여자")|
+|department|String|학과|
+|selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
 ### PUT /api/users
@@ -95,7 +102,9 @@
 |email|String|이메일|
 |nickname|String|닉네임|
 |age|Integer|나이|
-|college|String|단과대학|
+|gender|String|성별("남자", "여자")|
+|department|String|학과|
+|selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
 ### PATCH /api/users/password
@@ -115,7 +124,9 @@
 |email|String|이메일|
 |nickname|String|닉네임|
 |age|Integer|나이|
-|college|String|단과대학|
+|gender|String|성별("남자", "여자")|
+|department|String|학과|
+|selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
 ### DELETE /api/users
