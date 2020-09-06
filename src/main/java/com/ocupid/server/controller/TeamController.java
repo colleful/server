@@ -6,7 +6,6 @@ import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.TeamMemberService;
-import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
