@@ -2,6 +2,7 @@ package com.ocupid.server.service;
 
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
+import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.TeamRepository;
 import java.util.List;
 import java.util.Optional;
@@ -31,12 +32,24 @@ public class TeamService {
         }
     }
 
+    public List<Team> getAllTeams() { return teamRepository.findAll(); }
+
     public Optional<Team> getTeamInfo(Long id) {
         return teamRepository.findById(id);
     }
 
     public List<Team> getAllReadyTeams() {
         return teamRepository.getAllByStatusOrderByUpdatedAtDesc("ready");
+    }
+
+    public Boolean ChangeTeamInfo(Team team,String teamName){
+        try {
+            team.setTeamName(teamName);
+            teamRepository.save(team);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
     }
 
     public Boolean updateTeamStatus(Team team, String status) {
