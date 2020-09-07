@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmailVerificationRepository extends JpaRepository<EmailVerification, Long> {
     Optional<EmailVerification> findByEmail(String email);
-    void deleteByEmail(String email);
+    Optional<EmailVerification> findByEmailAndCode(String email, Integer code);
 }

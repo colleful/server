@@ -1,5 +1,6 @@
 package com.ocupid.server.controller;
 
+import com.ocupid.server.domain.EmailVerification;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.security.JwtProvider;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,17 @@ public class AuthController {
     @PostMapping("/join")
     public Response join(@RequestBody Request request) {
         User user = request.toEntity(passwordEncoder, departmentService);
+        EmailVerification emailVerification =
+            emailVerificationService.getEmailVerificationInfo(request.getEmail())
+                .orElseThrow(RuntimeException::new);
+
+        if (!emailVerification.getIsChecked()) {
+            throw new RuntimeException();
+        }
+
+        if (!emailVerificationService.deleteVerificationInfo(emailVerification.getId())) {
+            throw new RuntimeException();
+        }
 
         if (!userService.join(user)) {
             throw new RuntimeException();
@@ -62,8 +75,17 @@ public class AuthController {
     }
 
     @PostMapping("/email")
-    public ResponseEntity<?> sendEmail(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> sendEmail(@RequestBody EmailRequest request) {
         if (!emailVerificationService.sendEmail(request.getEmail())) {
+            throw new RuntimeException();
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/check")
+    public ResponseEntity<?> check(@RequestBody EmailRequest request) {
+        if (!emailVerificationService.check(request.getEmail(), request.getCode())) {
             throw new RuntimeException();
         }
 

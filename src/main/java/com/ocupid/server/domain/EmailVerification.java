@@ -25,6 +25,9 @@ public class EmailVerification {
     @Column(nullable = false)
     private Integer code;
 
+    @Column(nullable = false)
+    private Boolean isChecked;
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
