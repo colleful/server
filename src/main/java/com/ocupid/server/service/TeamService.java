@@ -31,12 +31,26 @@ public class TeamService {
         }
     }
 
+    public List<Team> getAllTeams() {
+        return teamRepository.findAll();
+    }
+
     public Optional<Team> getTeamInfo(Long id) {
         return teamRepository.findById(id);
     }
 
     public List<Team> getAllReadyTeams() {
         return teamRepository.getAllByStatusOrderByUpdatedAtDesc("ready");
+    }
+
+    public Boolean ChangeTeamInfo(Team team, String teamName) {
+        try {
+            team.setTeamName(teamName);
+            teamRepository.save(team);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public Boolean updateTeamStatus(Team team, String status) {
