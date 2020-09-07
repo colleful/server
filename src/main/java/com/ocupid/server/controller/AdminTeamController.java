@@ -2,16 +2,13 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.dto.TeamDto.*;
-import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.TeamService;
-import com.ocupid.server.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/admin/team")
@@ -20,7 +17,7 @@ public class AdminTeamController {
 
     private final TeamService teamService;
 
-    public AdminTeamController(TeamService teamService, UserService userService, JwtProvider provider) {
+    public AdminTeamController(TeamService teamService) {
         this.teamService = teamService;
     }
 
@@ -31,16 +28,18 @@ public class AdminTeamController {
         for (Team team : teams) {
             responses.add(new Response(team));
         }
+
         return responses;
     }
 
     @PatchMapping("/{id}")
-    public Response updateTeamInfo(@PathVariable Long id, @RequestBody Request request){
-    Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+    public Response updateTeamInfo(@PathVariable Long id, @RequestBody Request request) {
+        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
 
-    if(!teamService.ChangeTeamInfo(team,request.getTeamName())){
-        throw  new RuntimeException(request.getTeamName());
-    }
+        if(!teamService.ChangeTeamInfo(team,request.getTeamName())) {
+            throw new RuntimeException(request.getTeamName());
+        }
+
         return new Response(team);
     }
 
@@ -54,6 +53,4 @@ public class AdminTeamController {
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
-
-
 }
