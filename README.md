@@ -50,6 +50,25 @@
 |--|--|--|
 |token|String|jwt|
 
+### POST /auth/email
+> 인증번호 이메일 전송
+
+**Request**
+
+|name|type|requires|description|
+|--|--|--|--|
+|email|String|Yes|이메일|
+
+### PATCH /auth/check
+> 인증번호 확인
+
+**Request**
+
+|name|type|requires|description|
+|--|--|--|--|
+|email|String|Yes|이메일|
+|code|Integer|Yes|인증번호|
+
 ## 2. User 관련 (사용자용)
 
 ### GET /api/users
