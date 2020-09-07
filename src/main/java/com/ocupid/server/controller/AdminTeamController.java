@@ -36,8 +36,8 @@ public class AdminTeamController {
     public Response updateTeamInfo(@PathVariable Long id, @RequestBody Request request) {
         Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
 
-        if(!teamService.ChangeTeamInfo(team,request.getTeamName())) {
-            throw new RuntimeException(request.getTeamName());
+        if (!teamService.ChangeTeamInfo(team, request.getTeamName())) {
+            throw new RuntimeException();
         }
 
         return new Response(team);

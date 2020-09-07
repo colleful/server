@@ -43,12 +43,12 @@ public class TeamService {
         return teamRepository.getAllByStatusOrderByUpdatedAtDesc("ready");
     }
 
-    public Boolean ChangeTeamInfo(Team team, String teamName){
+    public Boolean ChangeTeamInfo(Team team, String teamName) {
         try {
             team.setTeamName(teamName);
             teamRepository.save(team);
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
