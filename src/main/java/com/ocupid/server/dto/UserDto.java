@@ -81,4 +81,11 @@ public class UserDto {
             this.token = token;
         }
     }
+
+    @Getter
+    public static class EmailRequest {
+
+        private String email;
+        private Integer code;
+    }
 }
