@@ -45,8 +45,6 @@ public class AdminTeamController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTeam(@PathVariable Long id) {
-        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
-
         if (!teamService.deleteTeam(id)) {
             throw new RuntimeException();
         }
