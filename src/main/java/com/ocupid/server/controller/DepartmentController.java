@@ -1,6 +1,7 @@
 package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Department;
+import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.service.DepartmentService;
 import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +28,7 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     public Department getDepartment(@PathVariable Long id) {
-        return departmentService.getDepartment(id).orElseThrow(RuntimeException::new);
+        return departmentService.getDepartment(id)
+            .orElseThrow(() -> new NotFoundResourceException("학과 정보가 없습니다."));
     }
 }

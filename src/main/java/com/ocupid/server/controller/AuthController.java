@@ -3,6 +3,11 @@ package com.ocupid.server.controller;
 import com.ocupid.server.domain.EmailVerification;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
+import com.ocupid.server.exception.InvalidCodeException;
+import com.ocupid.server.exception.NotFoundResourceException;
+import com.ocupid.server.exception.NotMatchedPasswordException;
+import com.ocupid.server.exception.NotSentEmailException;
+import com.ocupid.server.exception.NotVerifiedEmailException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.EmailVerificationService;
@@ -45,18 +50,20 @@ public class AuthController {
         User user = request.toEntity(passwordEncoder, departmentService);
         EmailVerification emailVerification =
             emailVerificationService.getEmailVerificationInfo(request.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NotVerifiedEmailException("인증되지 않은 이메일입니다."));
+
+        // TODO: 이메일, 닉네임 중복 체크
 
         if (!emailVerification.getIsChecked()) {
-            throw new RuntimeException();
+            throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
         }
 
         if (!emailVerificationService.deleteVerificationInfo(emailVerification.getId())) {
-            throw new RuntimeException();
+            throw new RuntimeException("다시 시도해 주세요.");
         }
 
         if (!userService.join(user)) {
-            throw new RuntimeException();
+            throw new RuntimeException("회원가입에 실패했습니다.");
         }
 
         return new Response(user);
@@ -64,10 +71,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
-        User user = userService.getUserInfo(request.getEmail()).orElseThrow(RuntimeException::new);
+        User user = userService.getUserInfo(request.getEmail())
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException();
+            throw new NotMatchedPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
         String token = provider.createToken(user.getEmail(), user.getId(), user.getRoles());
@@ -77,7 +85,7 @@ public class AuthController {
     @PostMapping("/email")
     public ResponseEntity<?> sendEmail(@RequestBody EmailRequest request) {
         if (!emailVerificationService.sendEmail(request.getEmail())) {
-            throw new RuntimeException();
+            throw new NotSentEmailException("이메일이 발송되지 않았습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);
@@ -86,7 +94,7 @@ public class AuthController {
     @PatchMapping("/check")
     public ResponseEntity<?> check(@RequestBody EmailRequest request) {
         if (!emailVerificationService.check(request.getEmail(), request.getCode())) {
-            throw new RuntimeException();
+            throw new InvalidCodeException("인증번호가 다릅니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);

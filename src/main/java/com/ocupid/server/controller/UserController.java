@@ -2,6 +2,8 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
+import com.ocupid.server.exception.AlreadyExistResourceException;
+import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.UserService;
@@ -41,13 +43,14 @@ public class UserController {
     @GetMapping
     public Response getMyInfo(@RequestHeader("Access-Token") String token) {
         User user = userService.getUserInfo(provider.getId(token))
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         return new Response(user);
     }
 
     @GetMapping("/{id}")
     public Response getUserInfo(@PathVariable Long id) {
-        User user = userService.getUserInfo(id).orElseThrow(RuntimeException::new);
+        User user = userService.getUserInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
         return new Response(user);
     }
 
@@ -55,11 +58,13 @@ public class UserController {
     public Response changeUserInfo(@RequestHeader("Access-Token") String token,
         @RequestBody Request request) {
         User user = userService.getUserInfo(provider.getId(token))
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        // TODO: 닉네임 중복 체크
 
         if (!userService.changeUserInfo(user,
             request.toEntity(passwordEncoder, departmentService))) {
-            throw new RuntimeException();
+            throw new RuntimeException("회원 정보 수정에 실패했습니다.");
         }
 
         return new Response(user);
@@ -69,10 +74,10 @@ public class UserController {
     public Response changePassword(@RequestHeader("Access-Token") String token,
         @RequestBody Request request) {
         User user = userService.getUserInfo(provider.getId(token))
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         if (!userService.changePassword(user, passwordEncoder.encode(request.getPassword()))) {
-            throw new RuntimeException();
+            throw new RuntimeException("비밀번호 변경에 실패했습니다.");
         }
 
         return new Response(user);
@@ -81,7 +86,7 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@RequestHeader("Access-Token") String token) {
         if (!userService.withdrawal(provider.getId(token))) {
-            throw new RuntimeException();
+            throw new RuntimeException("회원 탈퇴에 실패했습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);
