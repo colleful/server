@@ -4,6 +4,8 @@ import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.*;
+import com.ocupid.server.exception.ForbiddenBehaviorException;
+import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
@@ -46,7 +48,7 @@ public class TeamController {
     public Response createTeam(@RequestHeader(value = "Access-Token") String token,
         @RequestBody Request request) {
         User leader = userService.getUserInfo(provider.getId(token))
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(() -> new NotFoundResourceException("리더 정보를 찾을 수 없습니다."));
         Team team = request.toEntity(leader);
 
         if (!teamService.createTeam(team)) {
@@ -88,26 +90,29 @@ public class TeamController {
 
     @GetMapping("/{id}")
     public Response getTeamInfo(@PathVariable Long id) {
-        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+        Team team = teamService.getTeamInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
         if (!team.getStatus().equals("ready")) {
-            throw new RuntimeException();
+            throw new ForbiddenBehaviorException("준비 상태에 있는 팀만 정보를 볼 수 있습니다.");
         }
 
         return new Response(team);
     }
 
+    // TODO: status를 body로
     @PatchMapping("/{id}/{status}")
     public Response updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
         @PathVariable Long id, @PathVariable String status) {
-        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+        Team team = teamService.getTeamInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
         if (!team.getLeader().getId().equals(provider.getId(token))) {
-            throw new RuntimeException();
+            throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
         if (!teamService.updateTeamStatus(team, status)) {
-            throw new RuntimeException();
+            throw new RuntimeException("상태 변경에 실패했습니다.");
         }
 
         return new Response(team);
@@ -116,14 +121,15 @@ public class TeamController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTeam(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
-        Team team = teamService.getTeamInfo(id).orElseThrow(RuntimeException::new);
+        Team team = teamService.getTeamInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
         if (!team.getLeader().getId().equals(provider.getId(token))) {
-            throw new RuntimeException();
+            throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 
         if (!teamService.deleteTeam(id)) {
-            throw new RuntimeException();
+            throw new RuntimeException("팀 삭제에 실패했습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);
