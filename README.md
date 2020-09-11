@@ -50,14 +50,33 @@
 |--|--|--|
 |token|String|jwt|
 
-### POST /auth/email
-> 인증번호 이메일 전송
+### POST /auth/join/email
+> 회원가입용 인증번호 이메일 전송
 
 **Request**
 
 |name|type|requires|description|
 |--|--|--|--|
 |email|String|Yes|이메일|
+
+### POST /auth/password/email
+> 비밀번호 변경용 인증번호 이메일 전송
+
+**Request**
+
+|name|type|requires|description|
+|--|--|--|--|
+|email|String|Yes|이메일|
+
+### PATCH /auth/password
+> 비밀번호 변경
+
+**Request**
+
+|name|type|requires|description|
+|--|--|--|--|
+|email|String|Yes|이메일|
+|password|String|Yes|비밀번호|
 
 ### PATCH /auth/check
 > 인증번호 확인
