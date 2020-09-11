@@ -3,6 +3,7 @@ package com.ocupid.server.controller;
 import com.ocupid.server.domain.EmailVerification;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
+import com.ocupid.server.exception.AlreadyExistResourceException;
 import com.ocupid.server.exception.InvalidCodeException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.exception.NotMatchedPasswordException;
@@ -82,10 +83,50 @@ public class AuthController {
         return new LoginResponse(token);
     }
 
-    @PostMapping("/email")
-    public ResponseEntity<?> sendEmail(@RequestBody EmailRequest request) {
+    @PostMapping("/join/email")
+    public ResponseEntity<?> sendEmailForRegister(@RequestBody EmailRequest request) {
+        if (userService.isExist(request.getEmail())) {
+            throw new AlreadyExistResourceException("이미 가입된 유저입니다.");
+        }
+
         if (!emailVerificationService.sendEmail(request.getEmail())) {
             throw new NotSentEmailException("이메일이 발송되지 않았습니다.");
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @PostMapping("/password/email")
+    public ResponseEntity<?> sendEmailForPassword(@RequestBody EmailRequest request) {
+        if (!userService.isExist(request.getEmail())) {
+            throw new NotFoundResourceException("가입되지 않은 유저입니다.");
+        }
+
+        if (!emailVerificationService.sendEmail(request.getEmail())) {
+            throw new NotSentEmailException("이메일이 발송되지 않았습니다.");
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<?> changePassword(@RequestBody LoginRequest request) {
+        User user = userService.getUserInfo(request.getEmail())
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        EmailVerification emailVerification =
+            emailVerificationService.getEmailVerificationInfo(request.getEmail())
+                .orElseThrow(() -> new NotVerifiedEmailException("인증되지 않은 이메일입니다."));
+
+        if (!emailVerification.getIsChecked()) {
+            throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
+        }
+
+        if (!emailVerificationService.deleteVerificationInfo(emailVerification.getId())) {
+            throw new RuntimeException("다시 시도해 주세요.");
+        }
+
+        if (!userService.changePassword(user, passwordEncoder.encode(request.getPassword()))) {
+            throw new RuntimeException("비밀번호 변경에 실패했습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);

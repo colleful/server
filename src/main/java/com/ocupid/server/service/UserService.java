@@ -31,6 +31,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public Boolean isExist(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     public Boolean changeUserInfo(User from, User to) {
         try {
             from.setNickname(to.getNickname());
