@@ -39,14 +39,14 @@ public class AdminUserController {
     @GetMapping("/{id}")
     public Response getUserInfoById(@PathVariable Long id) {
         User user = userService.getUserInfo(id)
-                .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         return new Response(user);
     }
 
     @PatchMapping("/{id}")
     public Response changeUserInfo(@PathVariable Long id, @RequestBody Request request) {
         User user = userService.getUserInfo(id)
-                .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         if (!userService.changeUserInfo(user,
             request.toEntity(null, departmentService))) {
