@@ -2,6 +2,7 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
+import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -37,17 +38,19 @@ public class AdminUserController {
 
     @GetMapping("/{id}")
     public Response getUserInfoById(@PathVariable Long id) {
-        User user = userService.getUserInfo(id).orElseThrow(RuntimeException::new);
+        User user = userService.getUserInfo(id)
+                .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         return new Response(user);
     }
 
     @PatchMapping("/{id}")
     public Response changeUserInfo(@PathVariable Long id, @RequestBody Request request) {
-        User user = userService.getUserInfo(id).orElseThrow(RuntimeException::new);
+        User user = userService.getUserInfo(id)
+                .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         if (!userService.changeUserInfo(user,
             request.toEntity(null, departmentService))) {
-            throw new RuntimeException();
+            throw new RuntimeException("회원 정보 수정에 실패했습니다.");
         }
 
         return new Response(user);
@@ -56,7 +59,7 @@ public class AdminUserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         if (!userService.withdrawal(id)) {
-            throw new RuntimeException();
+            throw new RuntimeException("회원 탈퇴에 실패했습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);
