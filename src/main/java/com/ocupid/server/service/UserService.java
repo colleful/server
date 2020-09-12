@@ -42,9 +42,9 @@ public class UserService {
 
     public Boolean changeUserInfo(User from, User to) {
         try {
-            from.setNickname(to.getNickname());
-            from.setDepartment(to.getDepartment());
-            from.setSelfIntroduction(to.getSelfIntroduction());
+            Optional.of(to).map(User::getNickname).ifPresent(from::setNickname);
+            Optional.of(to).map(User::getDepartment).ifPresent(from::setDepartment);
+            Optional.of(to).map(User::getSelfIntroduction).ifPresent(from::setSelfIntroduction);
             userRepository.save(from);
             return true;
         } catch (Exception e) {

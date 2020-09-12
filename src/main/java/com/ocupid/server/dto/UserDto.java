@@ -1,12 +1,15 @@
 package com.ocupid.server.dto;
 
+import com.ocupid.server.domain.Department;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
+import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.service.DepartmentService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -30,8 +33,10 @@ public class UserDto {
             user.setNickname(nickname);
             user.setBirthYear(birthYear);
             user.setGender(gender);
-            user.setDepartment(departmentService.getDepartment(departmentId)
-                .orElseThrow(RuntimeException::new));
+            user.setDepartment(departmentId == null ? null
+                : departmentService
+                    .getDepartment(departmentId)
+                    .orElseThrow(() -> new NotFoundResourceException("학과 정보가 없습니다.")));
             user.setSelfIntroduction(selfIntroduction);
             user.setRoles(Collections.singletonList("ROLE_USER"));
             return user;

@@ -53,7 +53,7 @@ public class UserController {
         return new Response(user);
     }
 
-    @PutMapping
+    @PatchMapping
     public Response changeUserInfo(@RequestHeader("Access-Token") String token,
         @RequestBody Request request) {
         User user = userService.getUserInfo(provider.getId(token))
