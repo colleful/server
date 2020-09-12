@@ -2,8 +2,6 @@ package com.ocupid.server.service;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.UserRepository;
-
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;

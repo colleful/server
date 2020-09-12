@@ -2,7 +2,6 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
-import com.ocupid.server.exception.AlreadyExistResourceException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.DepartmentService;
