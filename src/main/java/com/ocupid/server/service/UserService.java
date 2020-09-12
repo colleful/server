@@ -2,6 +2,7 @@ package com.ocupid.server.service;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.UserRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,10 @@ public class UserService {
 
     public Optional<User> getUserInfo(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public List<User> getAllUserInfo(){
+        return userRepository.findAll();
     }
 
     public Boolean isExist(String email) {
