@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private Integer birthYear;
 
     @Column(nullable = false)
-    private String gender;
+    private Gender gender;
 
     @OneToOne
     @JoinColumn(nullable = false)

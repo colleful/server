@@ -2,6 +2,7 @@ package com.ocupid.server.dto;
 
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
+import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class TeamDto {
             this.id = user.getId();
             this.nickname = user.getNickname();
             this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
-            this.gender = user.getGender();
+            this.gender = user.getGender().name();
             this.department = user.getDepartment().getDepartmentName();
         }
     }
@@ -38,7 +39,7 @@ public class TeamDto {
             Team team = new Team();
             team.setTeamName(teamName);
             team.setGender(leader.getGender());
-            team.setStatus("pending");
+            team.setStatus(TeamStatus.PENDING);
             team.setLeader(leader);
             return team;
         }
@@ -63,8 +64,8 @@ public class TeamDto {
             this.updatedAt = team.getUpdatedAt();
             this.teamName = team.getTeamName();
             this.headcount = team.getMembers().size();
-            this.gender = team.getGender();
-            this.status = team.getStatus();
+            this.gender = team.getGender().name();
+            this.status = team.getStatus().name();
             this.leaderId = team.getLeader().getId();
             this.members = new ArrayList<>();
             for (TeamMember member : team.getMembers()) {

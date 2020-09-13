@@ -35,10 +35,10 @@ public class Team {
     private String teamName;
 
     @Column(nullable = false)
-    private String gender;
+    private Gender gender;
 
     @Column(nullable = false)
-    private String status;
+    private TeamStatus status;
 
     @ManyToOne
     @JoinColumn(nullable = false)

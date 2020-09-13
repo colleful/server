@@ -1,6 +1,7 @@
 package com.ocupid.server.dto;
 
 import com.ocupid.server.domain.Department;
+import com.ocupid.server.domain.Gender;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.exception.NotFoundResourceException;
@@ -32,7 +33,7 @@ public class UserDto {
             user.setPassword(password == null ? null : passwordEncoder.encode(password));
             user.setNickname(nickname);
             user.setBirthYear(birthYear);
-            user.setGender(gender);
+            user.setGender(Gender.valueOf(gender));
             user.setDepartment(departmentId == null ? null
                 : departmentService
                     .getDepartment(departmentId)
@@ -60,7 +61,7 @@ public class UserDto {
             this.email = user.getEmail();
             this.nickname = user.getNickname();
             this.age = Calendar.getInstance().get(Calendar.YEAR) - user.getBirthYear() + 1;
-            this.gender = user.getGender();
+            this.gender = user.getGender().name();
             this.department = user.getDepartment().getDepartmentName();
             this.selfIntroduction = user.getSelfIntroduction();
             this.teams = new ArrayList<>();

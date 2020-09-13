@@ -2,6 +2,7 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
+import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
@@ -93,7 +94,7 @@ public class TeamController {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
-        if (!team.getStatus().equals("ready")) {
+        if (team.getStatus().compareTo(TeamStatus.READY) != 0) {
             throw new ForbiddenBehaviorException("준비 상태에 있는 팀만 정보를 볼 수 있습니다.");
         }
 
@@ -111,7 +112,7 @@ public class TeamController {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
-        if (!teamService.updateTeamStatus(team, status)) {
+        if (!teamService.updateTeamStatus(team, TeamStatus.valueOf(status))) {
             throw new RuntimeException("상태 변경에 실패했습니다.");
         }
 
