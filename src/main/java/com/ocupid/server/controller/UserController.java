@@ -2,6 +2,7 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
+import com.ocupid.server.exception.AlreadyExistResourceException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.DepartmentService;
@@ -59,7 +60,9 @@ public class UserController {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        // TODO: 닉네임 중복 체크
+        if (!userService.isExist(request.getEmail())) {
+            throw new AlreadyExistResourceException("중복된 닉네임입니다.");
+        }
 
         if (!userService.changeUserInfo(user,
             request.toEntity(passwordEncoder, departmentService))) {
