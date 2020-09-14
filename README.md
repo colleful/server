@@ -4,6 +4,7 @@
 1. [로그인 관련](#1-로그인-관련)
 2. [User 관련 (사용자용)](#2-user-관련-사용자용)
 3. [User 관련 (관리자용)](#3-user-관련-관리자용)
+4. [Team 관련 (사용자용)](#4-team-관련-사용자용)
 
 ## 1. 로그인 관련
 
@@ -232,3 +233,104 @@
 
 ### DELETE /admin/users/{id}
 > 회원 탈퇴
+
+## 4. Team 관련 (사용자용)
+
+### GET /admin/teams
+> 준비된 팀 전체 보기
+
+**Response(List)**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|updatedAt|String|마지막 업데이트 시간|
+|teamName|String|닉네임|
+|headcound|Integer|인원 수|
+|gender|String|성별("MALE", "FEMALE")|
+|status|String|상태|
+|leaderId|Long|리더 id|
+|members|List|소속한 멤버들의 정보|
+
+### GET /admin/teams
+> 준비된 팀 전체 보기
+
+**Response(List)**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|updatedAt|String|마지막 업데이트 시간|
+|teamName|String|닉네임|
+|headcound|Integer|인원 수|
+|gender|String|성별("MALE", "FEMALE")|
+|status|String|상태|
+|leaderId|Long|리더 id|
+|averageAge|Double|평균 나이|
+|members|List|소속한 멤버들의 정보|
+
+### GET /admin/teams/{id}
+> 특정 준비된 팀만 보기
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|updatedAt|String|마지막 업데이트 시간|
+|teamName|String|닉네임|
+|headcound|Integer|인원 수|
+|gender|String|성별("MALE", "FEMALE")|
+|status|String|상태|
+|leaderId|Long|리더 id|
+|averageAge|Double|평균 나이|
+|members|List|소속한 멤버들의 정보|
+
+### POST /api/teams
+> 팀 생성
+
+**Request**
+
+|name|type|required|description|
+|--|--|--|--|
+|teamName|String|Yes|팀 이름|
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|updatedAt|String|마지막 업데이트 시간|
+|teamName|String|닉네임|
+|headcound|Integer|인원 수|
+|gender|String|성별("MALE", "FEMALE")|
+|status|String|상태|
+|leaderId|Long|리더 id|
+|averageAge|Double|평균 나이|
+|members|List|소속한 멤버들의 정보|
+
+### PATCH /api/teams/{id}
+> id에 해당하는 팀 상태 변경 (리더만 변경 가능)
+
+**Request**
+
+|name|type|required|description|
+|--|--|--|--|
+|status|String|Yes|팀 상태|
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|updatedAt|String|마지막 업데이트 시간|
+|teamName|String|닉네임|
+|headcound|Integer|인원 수|
+|gender|String|성별("MALE", "FEMALE")|
+|status|String|상태|
+|leaderId|Long|리더 id|
+|averageAge|Double|평균 나이|
+|members|List|소속한 멤버들의 정보|
+
+### DELETE /api/teams/{id}
+> id에 해당하는 팀 상태 삭제
