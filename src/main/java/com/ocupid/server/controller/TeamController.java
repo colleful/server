@@ -101,10 +101,9 @@ public class TeamController {
         return new Response(team);
     }
 
-    // TODO: status를 body로
-    @PatchMapping("/{id}/{status}")
+    @PatchMapping("/{id}")
     public Response updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
-        @PathVariable Long id, @PathVariable String status) {
+        @PathVariable Long id, @RequestBody Request request) {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
@@ -112,7 +111,7 @@ public class TeamController {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
-        if (!teamService.updateTeamStatus(team, TeamStatus.valueOf(status))) {
+        if (!teamService.updateTeamStatus(team, TeamStatus.valueOf(request.getStatus()))) {
             throw new RuntimeException("상태 변경에 실패했습니다.");
         }
 

@@ -34,12 +34,13 @@ public class TeamDto {
     public static class Request {
 
         private String teamName;
+        private String status;
 
         public Team toEntity(User leader) {
             Team team = new Team();
             team.setTeamName(teamName);
             team.setGender(leader.getGender());
-            team.setStatus(TeamStatus.PENDING);
+            team.setStatus(status == null ? TeamStatus.PENDING : TeamStatus.valueOf(status));
             team.setLeader(leader);
             return team;
         }
