@@ -1,6 +1,7 @@
 package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Team;
+import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
@@ -8,6 +9,7 @@ import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
+import com.ocupid.server.service.TeamInvitationService;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
@@ -33,14 +35,18 @@ public class TeamController {
 
     private final TeamService teamService;
     private final TeamMemberService teamMemberService;
+    private final TeamInvitationService teamInvitationService;
     private final UserService userService;
     private final JwtProvider provider;
 
     public TeamController(TeamService teamService,
-        TeamMemberService teamMemberService, UserService userService,
+        TeamMemberService teamMemberService,
+        TeamInvitationService teamInvitationService,
+        UserService userService,
         JwtProvider provider) {
         this.teamService = teamService;
         this.teamMemberService = teamMemberService;
+        this.teamInvitationService = teamInvitationService;
         this.userService = userService;
         this.provider = provider;
     }
@@ -64,16 +70,23 @@ public class TeamController {
     }
 
     @PostMapping("/{team-id}/members/{member-id}")
-    public Response createMember(@PathVariable("team-id") Long teamId,
-        @PathVariable("member-id") Long memberId) {
-        TeamMember member = new TeamMember();
-        Team team = teamService.getTeamInfo(teamId).orElseThrow(RuntimeException::new);
-        User user = userService.getUserInfo(memberId).orElseThrow(RuntimeException::new);
-        member.setTeam(team);
-        member.setMember(user);
+    public Response createMember(@RequestHeader(value = "Access-Token") String token,
+        @PathVariable("team-id") Long teamId, @PathVariable("member-id") Long memberId) {
+        TeamInvitation invitation = new TeamInvitation();
+        Team team = teamService.getTeamInfo(teamId)
+            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
+        User user = userService.getUserInfo(memberId)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (!teamMemberService.addMember(member)) {
-            throw new RuntimeException();
+        invitation.setTeam(team);
+        invitation.setUser(user);
+
+        if (!team.getLeader().getId().equals(provider.getId(token))) {
+            throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
+        }
+
+        if (!teamInvitationService.invite(invitation)) {
+            throw new RuntimeException("초대에 실패했습니다.");
         }
 
         return new Response(team);
