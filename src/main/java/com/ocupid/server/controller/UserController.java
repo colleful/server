@@ -1,12 +1,17 @@
 package com.ocupid.server.controller;
 
+import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.User;
+import com.ocupid.server.dto.TeamDto;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.exception.AlreadyExistResourceException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.DepartmentService;
+import com.ocupid.server.service.TeamInvitationService;
 import com.ocupid.server.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +20,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +32,17 @@ public class UserController {
 
     private final UserService userService;
     private final DepartmentService departmentService;
+    private final TeamInvitationService teamInvitationService;
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService,
-        DepartmentService departmentService, JwtProvider provider,
+        DepartmentService departmentService,
+        TeamInvitationService teamInvitationService, JwtProvider provider,
         PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.departmentService = departmentService;
+        this.teamInvitationService = teamInvitationService;
         this.provider = provider;
         this.passwordEncoder = passwordEncoder;
     }
@@ -52,6 +59,20 @@ public class UserController {
         User user = userService.getUserInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
         return new Response(user);
+    }
+
+    @GetMapping("/invitations")
+    public List<TeamDto.Response> getAllInvitations(@RequestHeader("Access-Token") String token) {
+        User user = userService.getUserInfo(provider.getId(token))
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        List<TeamInvitation> invitations = teamInvitationService.getAllInvitations(user);
+        List<TeamDto.Response> responses = new ArrayList<>();
+        for (TeamInvitation invitation : invitations) {
+            responses.add(new TeamDto.Response(invitation.getTeam()));
+        }
+
+        return responses;
     }
 
     @PatchMapping

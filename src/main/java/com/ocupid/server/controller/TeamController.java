@@ -72,12 +72,17 @@ public class TeamController {
     @PostMapping("/{team-id}/members/{member-id}")
     public Response createMember(@RequestHeader(value = "Access-Token") String token,
         @PathVariable("team-id") Long teamId, @PathVariable("member-id") Long memberId) {
-        TeamInvitation invitation = new TeamInvitation();
         Team team = teamService.getTeamInfo(teamId)
             .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
         User user = userService.getUserInfo(memberId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
+
+        if (team.getLeader().getGender().compareTo(user.getGender()) != 0) {
+            throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
+        }
+
+        TeamInvitation invitation = new TeamInvitation();
         invitation.setTeam(team);
         invitation.setUser(user);
 
