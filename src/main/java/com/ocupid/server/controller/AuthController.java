@@ -57,8 +57,8 @@ public class AuthController {
             throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
         }
 
-        if (!userService.isExist(request.getEmail())) {
-            throw new AlreadyExistResourceException("중복된 닉네임입니다.");
+        if (userService.isExist(request.getEmail())) {
+            throw new AlreadyExistResourceException("중복된 이메일입니다.");
         }
 
         if (!emailVerificationService.deleteVerificationInfo(emailVerification.getId())) {
