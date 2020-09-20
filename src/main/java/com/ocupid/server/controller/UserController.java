@@ -1,14 +1,18 @@
 package com.ocupid.server.controller;
 
+import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamInvitation;
+import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.exception.AlreadyExistResourceException;
+import com.ocupid.server.exception.ForbiddenBehaviorException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.TeamInvitationService;
+import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +37,19 @@ public class UserController {
     private final UserService userService;
     private final DepartmentService departmentService;
     private final TeamInvitationService teamInvitationService;
+    private final TeamMemberService teamMemberService;
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService,
         DepartmentService departmentService,
-        TeamInvitationService teamInvitationService, JwtProvider provider,
+        TeamInvitationService teamInvitationService,
+        TeamMemberService teamMemberService, JwtProvider provider,
         PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.departmentService = departmentService;
         this.teamInvitationService = teamInvitationService;
+        this.teamMemberService = teamMemberService;
         this.provider = provider;
         this.passwordEncoder = passwordEncoder;
     }
@@ -62,17 +69,59 @@ public class UserController {
     }
 
     @GetMapping("/invitations")
-    public List<TeamDto.Response> getAllInvitations(@RequestHeader("Access-Token") String token) {
+    public List<InvitationResponse> getAllInvitations(@RequestHeader("Access-Token") String token) {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         List<TeamInvitation> invitations = teamInvitationService.getAllInvitations(user);
-        List<TeamDto.Response> responses = new ArrayList<>();
+        List<InvitationResponse> responses = new ArrayList<>();
         for (TeamInvitation invitation : invitations) {
-            responses.add(new TeamDto.Response(invitation.getTeam()));
+            responses.add(new InvitationResponse(invitation));
         }
 
         return responses;
+    }
+
+    @DeleteMapping("/invitations/{id}/acceptance")
+    public ResponseEntity<?> acceptInvitation(@RequestHeader("Access-Token") String token,
+        @PathVariable Long id) {
+        TeamInvitation invitation = teamInvitationService.getInvitation(id)
+            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
+
+        if (!invitation.getUser().getId().equals(provider.getId(token))) {
+            throw new ForbiddenBehaviorException("잘못된 유저입니다.");
+        }
+
+        if (!teamInvitationService.endInvitation(id)) {
+            throw new RuntimeException("수락에 실패했습니다.");
+        }
+
+        TeamMember member = new TeamMember();
+        member.setMember(invitation.getUser());
+        member.setTeam(invitation.getTeam());
+
+        if (!teamMemberService.addMember(member)) {
+            throw new RuntimeException("초대 수락에 실패했습니다.");
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/invitations/{id}/refusal")
+    public ResponseEntity<?> declineInvitation(@RequestHeader("Access-Token") String token,
+        @PathVariable Long id) {
+        TeamInvitation invitation = teamInvitationService.getInvitation(id)
+            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
+
+        if (!invitation.getUser().getId().equals(provider.getId(token))) {
+            throw new ForbiddenBehaviorException("잘못된 유저입니다.");
+        }
+
+        if (!teamInvitationService.endInvitation(id)) {
+            throw new RuntimeException("초대 거절에 실패했습니다.");
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PatchMapping
