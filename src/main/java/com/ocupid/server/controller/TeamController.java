@@ -69,8 +69,8 @@ public class TeamController {
         return new Response(team);
     }
 
-    @PostMapping("/{team-id}/members/{member-id}")
-    public Response createMember(@RequestHeader(value = "Access-Token") String token,
+    @PostMapping("/invitations/{team-id}/{member-id}")
+    public ResponseEntity<?> createMember(@RequestHeader(value = "Access-Token") String token,
         @PathVariable("team-id") Long teamId, @PathVariable("member-id") Long memberId) {
         Team team = teamService.getTeamInfo(teamId)
             .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
@@ -94,7 +94,7 @@ public class TeamController {
             throw new RuntimeException("초대에 실패했습니다.");
         }
 
-        return new Response(team);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @GetMapping
