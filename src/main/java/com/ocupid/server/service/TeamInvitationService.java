@@ -1,5 +1,6 @@
 package com.ocupid.server.service;
 
+import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.TeamInvitationRepository;
@@ -41,5 +42,9 @@ public class TeamInvitationService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public boolean alreadyInvited(Team team, User user) {
+        return teamInvitationRepository.existsByTeamAndUser(team, user);
     }
 }
