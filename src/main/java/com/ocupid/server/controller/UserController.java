@@ -93,7 +93,7 @@ public class UserController {
         }
 
         if (!teamInvitationService.endInvitation(id)) {
-            throw new RuntimeException("수락에 실패했습니다.");
+            throw new RuntimeException("초대 수락에 실패했습니다.");
         }
 
         TeamMember member = new TeamMember();
