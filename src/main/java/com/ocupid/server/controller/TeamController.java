@@ -171,7 +171,7 @@ public class TeamController {
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         if (!teamMemberService.leaveTeam(team, user)) {
-            throw new RuntimeException("삭제에 실패했습니다.");
+            throw new RuntimeException("팀 탈퇴에 실패했습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);
