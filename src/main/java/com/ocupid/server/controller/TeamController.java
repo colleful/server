@@ -34,15 +34,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
 
     private final TeamService teamService;
+    private final TeamMemberService teamMemberService;
     private final TeamInvitationService teamInvitationService;
     private final UserService userService;
     private final JwtProvider provider;
 
     public TeamController(TeamService teamService,
+        TeamMemberService teamMemberService,
         TeamInvitationService teamInvitationService,
         UserService userService,
         JwtProvider provider) {
         this.teamService = teamService;
+        this.teamMemberService = teamMemberService;
         this.teamInvitationService = teamInvitationService;
         this.userService = userService;
         this.provider = provider;
@@ -154,6 +157,21 @@ public class TeamController {
 
         if (!teamService.deleteTeam(id)) {
             throw new RuntimeException("팀 삭제에 실패했습니다.");
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/members")
+    public ResponseEntity<?> leaveTeam(@RequestHeader("Access-Token") String token,
+        @PathVariable Long id) {
+        Team team = teamService.getTeamInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("팀 정보가 없습니다."));
+        User user = userService.getUserInfo(provider.getId(token))
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        if (!teamMemberService.leaveTeam(team, user)) {
+            throw new RuntimeException("팀 탈퇴에 실패했습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);

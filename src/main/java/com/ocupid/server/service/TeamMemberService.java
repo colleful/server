@@ -30,4 +30,15 @@ public class TeamMemberService {
             return false;
         }
     }
+
+    public Boolean leaveTeam(Team team, User member) {
+        try {
+            TeamMember result = teamMemberRepository
+                .findByTeamAndMember(team, member).orElseThrow();
+            teamMemberRepository.deleteById(result.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
