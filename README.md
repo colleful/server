@@ -5,6 +5,8 @@
 2. [User 관련 (사용자용)](#2-user-관련-사용자용)
 3. [User 관련 (관리자용)](#3-user-관련-관리자용)
 4. [Team 관련 (사용자용)](#4-team-관련-사용자용)
+5. [Team 관련 (관리자용)](#5-team-관련-관리자용)
+6. [학과 정보](#6-학과-정보)
 
 ## 1. 로그인 관련
 
@@ -124,6 +126,16 @@
 |selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
+### GET /api/users/invitations
+> 자신에게 온 팀 초대 정보 모두 보기
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|team|Object|초대받은 팀 정보|
+
 ### PATCH /api/users
 > 자신의 회원 정보 수정
 
@@ -172,6 +184,12 @@
 
 ### DELETE /api/users
 > 회원 탈퇴
+
+### DELETE /api/users/invitations/{id}/accept
+> 초대 수락
+
+### DELETE /api/users/invitations/{id}/refuse
+> 초대 거절
 
 ## 3. User 관련 (관리자용)
 
@@ -236,7 +254,7 @@
 
 ## 4. Team 관련 (사용자용)
 
-### GET /admin/teams
+### GET /api/teams
 > 준비된 팀 전체 보기
 
 **Response(List)**
@@ -252,7 +270,7 @@
 |leaderId|Long|리더 id|
 |members|List|소속한 멤버들의 정보|
 
-### GET /admin/teams/{id}
+### GET /api/teams/{id}
 > 특정 준비된 팀만 보기
 
 **Response**
@@ -292,6 +310,9 @@
 |averageAge|Double|평균 나이|
 |members|List|소속한 멤버들의 정보|
 
+### POST /api/teams/invitations/{team-id}/{user-id}
+> user-id에 해당하는 유저를 team-id에 해당하는 팀에 초대
+
 ### PATCH /api/teams/{id}
 > id에 해당하는 팀 상태 변경 (리더만 변경 가능)
 
@@ -317,3 +338,74 @@
 
 ### DELETE /api/teams/{id}
 > id에 해당하는 팀 상태 삭제
+
+### DELETE /api/teams/{id}/members
+> id에 해당하는 팀에서 나가기
+
+## 5. Team 관련 (관리자용)
+
+### GET /admin/teams
+> 모든 팀 전체 보기
+
+**Response(List)**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|updatedAt|String|마지막 업데이트 시간|
+|teamName|String|닉네임|
+|headcound|Integer|인원 수|
+|gender|String|성별("MALE", "FEMALE")|
+|status|String|상태|
+|leaderId|Long|리더 id|
+|members|List|소속한 멤버들의 정보|
+
+### PATCH /admin/teams/{id}
+> id에 해당하는 팀 이름 변경
+
+**Request**
+
+|name|type|required|description|
+|--|--|--|--|
+|teamName|String|Yes|팀 이름|
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|updatedAt|String|마지막 업데이트 시간|
+|teamName|String|닉네임|
+|headcound|Integer|인원 수|
+|gender|String|성별("MALE", "FEMALE")|
+|status|String|상태|
+|leaderId|Long|리더 id|
+|averageAge|Double|평균 나이|
+|members|List|소속한 멤버들의 정보|
+
+### DELETE /admin/teams/{id}
+> id에 해당하는 팀 상태 삭제
+
+## 6. 학과 정보
+
+### GET /api/departments
+> 전체 학과 정보 보기
+
+**Response(List)**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|collegeName|String|단과대학 이름|
+|departmentName|String|학과 이름|
+
+### GET /api/departments/{id}
+> id에 해당하는 학과 정보 보기
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|collegeName|String|단과대학 이름|
+|departmentName|String|학과 이름|
