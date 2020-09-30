@@ -39,8 +39,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public Boolean isExist(String email) {
-        return userRepository.existsByEmail(email);
+    public Boolean isExist(String nickname) {
+        return userRepository.existsByNickname(nickname);
     }
 
     public Boolean changeUserInfo(User from, User to) {
