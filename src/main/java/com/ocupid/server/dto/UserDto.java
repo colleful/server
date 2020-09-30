@@ -1,18 +1,15 @@
 package com.ocupid.server.dto;
 
-import com.ocupid.server.domain.Department;
 import com.ocupid.server.domain.Gender;
 import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
-import com.ocupid.server.dto.TeamDto.Response;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.service.DepartmentService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

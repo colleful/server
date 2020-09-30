@@ -1,10 +1,8 @@
 package com.ocupid.server.controller;
 
-import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
-import com.ocupid.server.dto.TeamDto;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.exception.AlreadyExistResourceException;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
