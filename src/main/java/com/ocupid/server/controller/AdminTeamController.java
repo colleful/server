@@ -37,7 +37,7 @@ public class AdminTeamController {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
-        if (!teamService.ChangeTeamInfo(team, request.getTeamName())) {
+        if (!teamService.changeTeamInfo(team, request.getTeamName())) {
             throw new RuntimeException("팀 정보 변경에 실패했습니다.");
         }
 

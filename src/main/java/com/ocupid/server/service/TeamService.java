@@ -44,7 +44,7 @@ public class TeamService {
         return teamRepository.getAllByStatusOrderByUpdatedAtDesc(TeamStatus.READY);
     }
 
-    public Boolean ChangeTeamInfo(Team team, String teamName) {
+    public Boolean changeTeamInfo(Team team, String teamName) {
         try {
             team.setTeamName(teamName);
             teamRepository.save(team);
