@@ -35,7 +35,7 @@ public class UserDto {
             user.setPassword(password == null ? null : passwordEncoder.encode(password));
             user.setNickname(nickname);
             user.setBirthYear(birthYear);
-            user.setGender(Gender.valueOf(gender));
+            user.setGender(gender == null ? null : Gender.valueOf(gender));
             user.setDepartment(departmentId == null ? null
                 : departmentService
                     .getDepartment(departmentId)
