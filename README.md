@@ -144,7 +144,7 @@
 |name|type|required|description|
 |--|--|--|--|
 |nickname|String|No|닉네임|
-|college|String|No|단과대학|
+|departmentId|Long|No|학과 id|
 |selfIntroduction|String|No|자기소개|
 
 **Response**
