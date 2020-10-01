@@ -34,8 +34,8 @@ public class TeamService {
         }
     }
 
-    public List<Team> getAllTeams() {
-        return teamRepository.findAll();
+    public Page<Team> getAllTeams(Pageable pageable) {
+        return teamRepository.findAll(pageable);
     }
 
     public Optional<Team> getTeamInfo(Long id) {

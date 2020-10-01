@@ -1,6 +1,5 @@
 package com.ocupid.server.dto;
 
-import com.ocupid.server.domain.Team;
 import java.util.List;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
