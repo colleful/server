@@ -1,10 +1,14 @@
 package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.User;
+import com.ocupid.server.dto.PageDto;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,14 +30,9 @@ public class AdminUserController {
     }
 
     @GetMapping
-    public List<Response> getAllUserInfo() {
-        List<Response> results = new ArrayList<>();
-        List<User> users = userService.getAllUserInfo();
-        for (User user : users) {
-            results.add(new Response(user));
-        }
-
-        return results;
+    public PageDto.Response<Response> getAllUserInfo(@PageableDefault Pageable pageable) {
+        Page<User> users = userService.getAllUserInfo(pageable);
+        return new PageDto.Response<>(users.map(Response::new));
     }
 
     @GetMapping("/{id}")

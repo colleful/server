@@ -5,6 +5,7 @@ import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
+import com.ocupid.server.dto.PageDto;
 import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
 import com.ocupid.server.exception.NotFoundResourceException;
@@ -13,8 +14,9 @@ import com.ocupid.server.service.TeamInvitationService;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -107,13 +109,9 @@ public class TeamController {
     }
 
     @GetMapping
-    public List<Response> getAllReadyTeams() {
-        List<Response> results = new ArrayList<>();
-        List<Team> teams = teamService.getAllReadyTeams();
-        for (Team team : teams) {
-            results.add(new Response(team));
-        }
-        return results;
+    public PageDto.Response<Response> getAllReadyTeams(@PageableDefault Pageable request) {
+        Page<Team> teams = teamService.getAllReadyTeams(request);
+        return new PageDto.Response<>(teams.map(Response::new));
     }
 
     @GetMapping("/{id}")

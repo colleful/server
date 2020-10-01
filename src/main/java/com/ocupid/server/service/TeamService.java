@@ -6,6 +6,8 @@ import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.repository.TeamRepository;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,16 +34,16 @@ public class TeamService {
         }
     }
 
-    public List<Team> getAllTeams() {
-        return teamRepository.findAll();
+    public Page<Team> getAllTeams(Pageable pageable) {
+        return teamRepository.findAll(pageable);
     }
 
     public Optional<Team> getTeamInfo(Long id) {
         return teamRepository.findById(id);
     }
 
-    public List<Team> getAllReadyTeams() {
-        return teamRepository.getAllByStatusOrderByUpdatedAtDesc(TeamStatus.READY);
+    public Page<Team> getAllReadyTeams(Pageable pageable) {
+        return teamRepository.findAllByStatusOrderByUpdatedAtDesc(pageable, TeamStatus.READY);
     }
 
     public Boolean changeTeamInfo(Team team, String teamName) {

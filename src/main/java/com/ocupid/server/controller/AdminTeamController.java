@@ -1,14 +1,16 @@
 package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Team;
+import com.ocupid.server.dto.PageDto;
 import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.service.TeamService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/team")
@@ -22,14 +24,9 @@ public class AdminTeamController {
     }
 
     @GetMapping
-    public List<Response> getAllTeams() {
-        List<Response> responses = new ArrayList<>();
-        List<Team> teams = teamService.getAllTeams();
-        for (Team team : teams) {
-            responses.add(new Response(team));
-        }
-
-        return responses;
+    public PageDto.Response<Response> getAllTeams(@PageableDefault Pageable request) {
+        Page<Team> teams = teamService.getAllTeams(request);
+        return new PageDto.Response<>(teams.map(Response::new));
     }
 
     @PatchMapping("/{id}")
