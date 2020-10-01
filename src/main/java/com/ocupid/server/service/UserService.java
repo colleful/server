@@ -2,8 +2,9 @@ package com.ocupid.server.service;
 
 import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.UserRepository;
-import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,8 +36,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public List<User> getAllUserInfo(){
-        return userRepository.findAll();
+    public Page<User> getAllUserInfo(Pageable pageable){
+        return userRepository.findAll(pageable);
     }
 
     public Boolean isExist(String nickname) {

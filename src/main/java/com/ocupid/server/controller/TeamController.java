@@ -5,7 +5,7 @@ import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
-import com.ocupid.server.dto.PagingDto;
+import com.ocupid.server.dto.PageDto;
 import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
 import com.ocupid.server.exception.NotFoundResourceException;
@@ -109,9 +109,9 @@ public class TeamController {
     }
 
     @GetMapping
-    public PagingDto.Response<Response> getAllReadyTeams(@PageableDefault Pageable request) {
+    public PageDto.Response<Response> getAllReadyTeams(@PageableDefault Pageable request) {
         Page<Team> teams = teamService.getAllReadyTeams(request);
-        return new PagingDto.Response<>(teams.map(Response::new));
+        return new PageDto.Response<>(teams.map(Response::new));
     }
 
     @GetMapping("/{id}")

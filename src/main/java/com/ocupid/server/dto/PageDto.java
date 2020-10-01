@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
-public class PagingDto {
+public class PageDto {
 
     @Getter
     public static class Response<T> {
