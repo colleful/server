@@ -32,8 +32,12 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> getUserInfo(String email) {
+    public Optional<User> getUserInfoByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public Optional<User> getUserInfoByNickname(String nickname) {
+        return userRepository.findByNickname(nickname);
     }
 
     public Page<User> getAllUserInfo(Pageable pageable){
