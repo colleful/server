@@ -74,7 +74,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
-        User user = userService.getUserInfo(request.getEmail())
+        User user = userService.getUserInfoByEmail(request.getEmail())
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -113,7 +113,7 @@ public class AuthController {
 
     @PatchMapping("/password")
     public ResponseEntity<?> changePassword(@RequestBody LoginRequest request) {
-        User user = userService.getUserInfo(request.getEmail())
+        User user = userService.getUserInfoByEmail(request.getEmail())
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         EmailVerification emailVerification =
             emailVerificationService.getEmailVerificationInfo(request.getEmail())

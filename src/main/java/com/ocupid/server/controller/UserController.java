@@ -12,6 +12,8 @@ import com.ocupid.server.service.DepartmentService;
 import com.ocupid.server.service.TeamInvitationService;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.UserService;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -62,6 +64,14 @@ public class UserController {
     @GetMapping("/{id}")
     public Response getUserInfo(@PathVariable Long id) {
         User user = userService.getUserInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
+        return new Response(user);
+    }
+
+    @GetMapping("/nickname/{nickname}")
+    public Response getUserInfo(@PathVariable String nickname) {
+        User user = userService
+            .getUserInfoByNickname(URLDecoder.decode(nickname, StandardCharsets.UTF_8))
             .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
         return new Response(user);
     }
