@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +26,12 @@ public class TeamMember {
     @ManyToOne
     @JoinColumn(nullable = false)
     private User member;
+
+    public TeamMember() {
+    }
+
+    public TeamMember(Team team, User member) {
+        this.team = team;
+        this.member = member;
+    }
 }

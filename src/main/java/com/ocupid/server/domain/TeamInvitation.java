@@ -30,4 +30,12 @@ public class TeamInvitation {
     @ManyToOne
     @JoinColumn(nullable = false)
     private User user;
+
+//    public TeamInvitation() {
+//    }
+
+    public TeamInvitation(Team team, User user) {
+        this.team = team;
+        this.user = user;
+    }
 }

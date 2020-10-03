@@ -64,9 +64,7 @@ public class TeamController {
             throw new RuntimeException();
         }
 
-        TeamMember member = new TeamMember();
-        member.setTeam(team);
-        member.setMember(team.getLeader());
+        TeamMember member = new TeamMember(team, team.getLeader());
         team.getMembers().add(member);
         return new Response(team);
     }
@@ -93,14 +91,11 @@ public class TeamController {
             throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 
-        TeamInvitation invitation = new TeamInvitation();
-        invitation.setTeam(team);
-        invitation.setUser(user);
-
         if (!team.getLeader().getId().equals(provider.getId(token))) {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
 
+        TeamInvitation invitation = new TeamInvitation(team, user);
         if (!teamInvitationService.invite(invitation)) {
             throw new RuntimeException("초대에 실패했습니다.");
         }

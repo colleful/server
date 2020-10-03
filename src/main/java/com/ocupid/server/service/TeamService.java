@@ -25,9 +25,7 @@ public class TeamService {
     public Boolean createTeam(Team team) {
         try {
             teamRepository.save(team);
-            TeamMember member = new TeamMember();
-            member.setTeam(team);
-            member.setMember(team.getLeader());
+            TeamMember member = new TeamMember(team, team.getLeader());
             return teamMemberService.addMember(member);
         } catch (Exception e) {
             return false;

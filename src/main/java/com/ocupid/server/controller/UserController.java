@@ -144,10 +144,7 @@ public class UserController {
             throw new RuntimeException("초대 수락에 실패했습니다.");
         }
 
-        TeamMember member = new TeamMember();
-        member.setMember(invitation.getUser());
-        member.setTeam(invitation.getTeam());
-
+        TeamMember member = new TeamMember(invitation.getTeam(), invitation.getUser());
         if (!teamMemberService.addMember(member)) {
             throw new RuntimeException("초대 수락에 실패했습니다.");
         }
