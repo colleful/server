@@ -126,6 +126,22 @@
 |selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
+### GET /api/users/nickname/{nickname}
+> 닉네임에 해당하는 user 정보 보기
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|email|String|이메일|
+|nickname|String|닉네임|
+|age|Integer|나이|
+|gender|String|성별("MALE", "FEMALE")|
+|department|String|학과|
+|selfIntroduction|String|자기소개|
+|teams|List|소속한 팀들의 정보|
+
 ### GET /api/users/invitations
 > 자신에게 온 팀 초대 정보 모두 보기
 
