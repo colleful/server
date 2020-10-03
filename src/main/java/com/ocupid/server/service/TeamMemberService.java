@@ -41,4 +41,8 @@ public class TeamMemberService {
             return false;
         }
     }
+
+    public Boolean alreadyJoined(Team team, User member) {
+        return teamMemberRepository.existsByTeamAndMember(team, member);
+    }
 }

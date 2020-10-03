@@ -77,11 +77,9 @@ public class TeamController {
         User user = userService.getUserInfo(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        team.getMembers().forEach(member -> {
-            if (member.getMember().getId().equals(userId)) {
-                throw new ForbiddenBehaviorException("이미 팀에 속해있는 유저입니다.");
-            }
-        });
+        if (teamMemberService.alreadyJoined(team, user)) {
+            throw new ForbiddenBehaviorException("이미 가입된 유저입니다.");
+        }
 
         if (teamInvitationService.alreadyInvited(team, user)) {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
