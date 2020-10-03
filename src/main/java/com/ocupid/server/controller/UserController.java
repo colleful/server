@@ -96,7 +96,7 @@ public class UserController {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (request.getNickname() != null && userService.isExist(request.getNickname())) {
+        if (userService.isExist(request.getNickname())) {
             throw new AlreadyExistResourceException("중복된 닉네임입니다.");
         }
 
