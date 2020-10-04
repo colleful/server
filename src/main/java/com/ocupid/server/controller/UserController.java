@@ -76,20 +76,6 @@ public class UserController {
         return new Response(user);
     }
 
-    @GetMapping("/invitations")
-    public List<InvitationResponse> getAllInvitations(@RequestHeader("Access-Token") String token) {
-        User user = userService.getUserInfo(provider.getId(token))
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-
-        List<TeamInvitation> invitations = teamInvitationService.getAllInvitations(user);
-        List<InvitationResponse> responses = new ArrayList<>();
-        for (TeamInvitation invitation : invitations) {
-            responses.add(new InvitationResponse(invitation));
-        }
-
-        return responses;
-    }
-
     @PatchMapping
     public Response changeUserInfo(@RequestHeader("Access-Token") String token,
         @RequestBody Request request) {
@@ -125,45 +111,6 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@RequestHeader("Access-Token") String token) {
         if (!userService.withdrawal(provider.getId(token))) {
             throw new RuntimeException("회원 탈퇴에 실패했습니다.");
-        }
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/invitations/{id}/accept")
-    public ResponseEntity<?> acceptInvitation(@RequestHeader("Access-Token") String token,
-        @PathVariable Long id) {
-        TeamInvitation invitation = teamInvitationService.getInvitation(id)
-            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
-
-        if (!invitation.getUser().getId().equals(provider.getId(token))) {
-            throw new ForbiddenBehaviorException("잘못된 유저입니다.");
-        }
-
-        if (!teamInvitationService.endInvitation(id)) {
-            throw new RuntimeException("초대 수락에 실패했습니다.");
-        }
-
-        TeamMember member = new TeamMember(invitation.getTeam(), invitation.getUser());
-        if (!teamMemberService.addMember(member)) {
-            throw new RuntimeException("초대 수락에 실패했습니다.");
-        }
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/invitations/{id}/refuse")
-    public ResponseEntity<?> declineInvitation(@RequestHeader("Access-Token") String token,
-        @PathVariable Long id) {
-        TeamInvitation invitation = teamInvitationService.getInvitation(id)
-            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
-
-        if (!invitation.getUser().getId().equals(provider.getId(token))) {
-            throw new ForbiddenBehaviorException("잘못된 유저입니다.");
-        }
-
-        if (!teamInvitationService.endInvitation(id)) {
-            throw new RuntimeException("초대 거절에 실패했습니다.");
         }
 
         return new ResponseEntity<Void>(HttpStatus.OK);

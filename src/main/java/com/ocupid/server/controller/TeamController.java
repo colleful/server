@@ -37,18 +37,15 @@ public class TeamController {
 
     private final TeamService teamService;
     private final TeamMemberService teamMemberService;
-    private final TeamInvitationService teamInvitationService;
     private final UserService userService;
     private final JwtProvider provider;
 
     public TeamController(TeamService teamService,
         TeamMemberService teamMemberService,
-        TeamInvitationService teamInvitationService,
         UserService userService,
         JwtProvider provider) {
         this.teamService = teamService;
         this.teamMemberService = teamMemberService;
-        this.teamInvitationService = teamInvitationService;
         this.userService = userService;
         this.provider = provider;
     }
@@ -67,38 +64,6 @@ public class TeamController {
         TeamMember member = new TeamMember(team, team.getLeader());
         team.getMembers().add(member);
         return new Response(team);
-    }
-
-    @PostMapping("/invitations/{team-id}/{user-id}")
-    public ResponseEntity<?> createMember(@RequestHeader(value = "Access-Token") String token,
-        @PathVariable("team-id") Long teamId, @PathVariable("user-id") Long userId) {
-        Team team = teamService.getTeamInfo(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
-        User user = userService.getUserInfo(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-
-        if (teamMemberService.alreadyJoined(team, user)) {
-            throw new ForbiddenBehaviorException("이미 가입된 유저입니다.");
-        }
-
-        if (teamInvitationService.alreadyInvited(team, user)) {
-            throw new ForbiddenBehaviorException("이미 초대했습니다.");
-        }
-
-        if (team.getLeader().getGender().compareTo(user.getGender()) != 0) {
-            throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
-        }
-
-        if (!team.getLeader().getId().equals(provider.getId(token))) {
-            throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
-        }
-
-        TeamInvitation invitation = new TeamInvitation(team, user);
-        if (!teamInvitationService.invite(invitation)) {
-            throw new RuntimeException("초대에 실패했습니다.");
-        }
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @GetMapping
