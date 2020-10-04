@@ -6,7 +6,8 @@
 3. [User 관련 (관리자용)](#3-user-관련-관리자용)
 4. [Team 관련 (사용자용)](#4-team-관련-사용자용)
 5. [Team 관련 (관리자용)](#5-team-관련-관리자용)
-6. [학과 정보](#6-학과-정보)
+6. [초대 관련 (사용자용)](#6-초대-관련-사용자용)
+7. [학과 정보](#7-학과-정보)
 
 ## 1. 로그인 관련
 
@@ -142,16 +143,6 @@
 |selfIntroduction|String|자기소개|
 |teams|List|소속한 팀들의 정보|
 
-### GET /api/users/invitations
-> 자신에게 온 팀 초대 정보 모두 보기
-
-**Response**
-
-|name|type|description|
-|--|--|--|
-|id|Long|id|
-|team|Object|초대받은 팀 정보|
-
 ### PATCH /api/users
 > 자신의 회원 정보 수정
 
@@ -201,18 +192,28 @@
 ### DELETE /api/users
 > 회원 탈퇴
 
-### DELETE /api/users/invitations/{id}/accept
-> 초대 수락
-
-### DELETE /api/users/invitations/{id}/refuse
-> 초대 거절
-
 ## 3. User 관련 (관리자용)
 
 ### GET /admin/users
 > 전체 유저 정보 보기
 
-**Response(List)**
+**Query Parameter**
+
+|name|default|description|
+|--|--|--|
+|page|0|페이지 번호 (0부터 시작)|
+|size|10|데이터 개수|
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|content|List|유저 정보 리스트|
+|pageNumber|Integer|이메일|
+|pageSize|Integer|닉네임|
+|totalPages|Integer|나이|
+
+**Response.content(List)**
 
 |name|type|description|
 |--|--|--|
@@ -273,7 +274,23 @@
 ### GET /api/teams
 > 준비된 팀 전체 보기
 
-**Response(List)**
+**Query Parameter**
+
+|name|default|description|
+|--|--|--|
+|page|0|페이지 번호 (0부터 시작)|
+|size|10|데이터 개수|
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|content|List|팀 정보 리스트|
+|pageNumber|Integer|이메일|
+|pageSize|Integer|닉네임|
+|totalPages|Integer|나이|
+
+**Response.content(List)**
 
 |name|type|description|
 |--|--|--|
@@ -326,9 +343,6 @@
 |averageAge|Double|평균 나이|
 |members|List|소속한 멤버들의 정보|
 
-### POST /api/teams/invitations/{team-id}/{user-id}
-> user-id에 해당하는 유저를 team-id에 해당하는 팀에 초대
-
 ### PATCH /api/teams/{id}
 > id에 해당하는 팀 상태 변경 (리더만 변경 가능)
 
@@ -362,6 +376,22 @@
 
 ### GET /admin/teams
 > 모든 팀 전체 보기
+
+**Query Parameter**
+
+|name|default|description|
+|--|--|--|
+|page|0|페이지 번호 (0부터 시작)|
+|size|10|데이터 개수|
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|content|List|팀 정보 리스트|
+|pageNumber|Integer|이메일|
+|pageSize|Integer|닉네임|
+|totalPages|Integer|나이|
 
 **Response(List)**
 
@@ -402,7 +432,28 @@
 ### DELETE /admin/teams/{id}
 > id에 해당하는 팀 상태 삭제
 
-## 6. 학과 정보
+## 6. 초대 관련 (사용자용)
+
+### GET /api/invitations
+> 자신에게 온 팀 초대 정보 모두 보기
+
+**Response**
+
+|name|type|description|
+|--|--|--|
+|id|Long|id|
+|team|Object|초대받은 팀 정보|
+
+### POST /api/invitations/{team-id}/{user-id}
+> user-id에 해당하는 유저를 team-id에 해당하는 팀에 초대
+
+### DELETE /api/invitations/{id}/accept
+> 초대 수락
+
+### DELETE /api/invitations/{id}/refuse
+> 초대 거절
+
+## 7. 학과 정보
 
 ### GET /api/departments
 > 전체 학과 정보 보기
