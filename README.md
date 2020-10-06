@@ -209,9 +209,9 @@
 |name|type|description|
 |--|--|--|
 |content|List|유저 정보 리스트|
-|pageNumber|Integer|이메일|
-|pageSize|Integer|닉네임|
-|totalPages|Integer|나이|
+|pageNumber|Integer|현재 응답의 페이지 번호|
+|pageSize|Integer|현재 응답의 데이터 개수|
+|totalPages|Integer|총 페이지 개수|
 
 **Response.content(List)**
 
@@ -285,10 +285,10 @@
 
 |name|type|description|
 |--|--|--|
-|content|List|팀 정보 리스트|
-|pageNumber|Integer|이메일|
-|pageSize|Integer|닉네임|
-|totalPages|Integer|나이|
+|content|List|유저 정보 리스트|
+|pageNumber|Integer|현재 응답의 페이지 번호|
+|pageSize|Integer|현재 응답의 데이터 개수|
+|totalPages|Integer|총 페이지 개수|
 
 **Response.content(List)**
 
@@ -388,10 +388,10 @@
 
 |name|type|description|
 |--|--|--|
-|content|List|팀 정보 리스트|
-|pageNumber|Integer|이메일|
-|pageSize|Integer|닉네임|
-|totalPages|Integer|나이|
+|content|List|유저 정보 리스트|
+|pageNumber|Integer|현재 응답의 페이지 번호|
+|pageSize|Integer|현재 응답의 데이터 개수|
+|totalPages|Integer|총 페이지 개수|
 
 **Response(List)**
 
