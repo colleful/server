@@ -13,12 +13,14 @@ public class PageDto {
         private final Integer pageNumber;
         private final Integer pageSize;
         private final Integer totalPages;
+        private final Long totalElements;
 
         public Response(Page<T> page) {
             this.content = page.getContent();
             this.pageNumber = page.getPageable().getPageNumber();
             this.pageSize = page.getPageable().getPageSize();
             this.totalPages = page.getTotalPages();
+            this.totalElements = page.getTotalElements();
         }
     }
 }
