@@ -14,6 +14,7 @@ import com.ocupid.server.service.TeamInvitationService;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -82,6 +83,13 @@ public class TeamController {
         }
 
         return new Response(team);
+    }
+
+    @GetMapping("/team-name/{team-name}")
+    public PageDto.Response<Response> searchTeams(@PageableDefault Pageable request,
+        @PathVariable("team-name") String teamName) {
+        Page<Team> teams = teamService.searchTeams(request, teamName);
+        return new PageDto.Response<>(teams.map(Response::new));
     }
 
     @PatchMapping("/{id}")

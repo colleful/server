@@ -44,6 +44,12 @@ public class TeamService {
         return teamRepository.findAllByStatusOrderByUpdatedAtDesc(pageable, TeamStatus.READY);
     }
 
+    public Page<Team> searchTeams(Pageable pageable, String teamName) {
+        return teamRepository
+            .findAllByStatusAndTeamNameContainingOrderByUpdatedAtDesc(pageable,
+                TeamStatus.READY, teamName);
+    }
+
     public Boolean changeTeamInfo(Team team, String teamName) {
         try {
             team.setTeamName(teamName);
