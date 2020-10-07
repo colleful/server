@@ -1,11 +1,8 @@
 package com.ocupid.server.controller;
 
-import com.ocupid.server.domain.TeamInvitation;
-import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.UserDto.*;
 import com.ocupid.server.exception.AlreadyExistResourceException;
-import com.ocupid.server.exception.ForbiddenBehaviorException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
 import com.ocupid.server.service.DepartmentService;
@@ -14,8 +11,6 @@ import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.UserService;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;

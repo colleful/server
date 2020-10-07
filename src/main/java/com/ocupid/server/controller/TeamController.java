@@ -1,7 +1,6 @@
 package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Team;
-import com.ocupid.server.domain.TeamInvitation;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
@@ -10,7 +9,6 @@ import com.ocupid.server.dto.TeamDto.*;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
 import com.ocupid.server.exception.NotFoundResourceException;
 import com.ocupid.server.security.JwtProvider;
-import com.ocupid.server.service.TeamInvitationService;
 import com.ocupid.server.service.TeamMemberService;
 import com.ocupid.server.service.TeamService;
 import com.ocupid.server.service.UserService;
@@ -82,6 +80,13 @@ public class TeamController {
         }
 
         return new Response(team);
+    }
+
+    @GetMapping("/team-name/{team-name}")
+    public PageDto.Response<Response> searchTeams(@PageableDefault Pageable request,
+        @PathVariable("team-name") String teamName) {
+        Page<Team> teams = teamService.searchTeams(request, teamName);
+        return new PageDto.Response<>(teams.map(Response::new));
     }
 
     @PatchMapping("/{id}")

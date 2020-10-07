@@ -4,7 +4,6 @@ import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.repository.TeamRepository;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +41,12 @@ public class TeamService {
 
     public Page<Team> getAllReadyTeams(Pageable pageable) {
         return teamRepository.findAllByStatusOrderByUpdatedAtDesc(pageable, TeamStatus.READY);
+    }
+
+    public Page<Team> searchTeams(Pageable pageable, String teamName) {
+        return teamRepository
+            .findAllByStatusAndTeamNameContainingOrderByUpdatedAtDesc(pageable,
+                TeamStatus.READY, teamName);
     }
 
     public Boolean changeTeamInfo(Team team, String teamName) {

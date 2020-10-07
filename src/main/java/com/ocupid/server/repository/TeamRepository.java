@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface TeamRepository extends JpaRepository<Team, Long> {
     Page<Team> findAll(Pageable pageable);
     Page<Team> findAllByStatusOrderByUpdatedAtDesc(Pageable pageable, TeamStatus status);
+    Page<Team> findAllByStatusAndTeamNameContainingOrderByUpdatedAtDesc(Pageable pageable,
+        TeamStatus status, String teamName);
 }
