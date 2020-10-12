@@ -1,9 +1,7 @@
 package com.ocupid.server.dto;
 
-import com.ocupid.server.domain.Team;
-import com.ocupid.server.domain.TeamMember;
-import com.ocupid.server.domain.TeamStatus;
-import com.ocupid.server.domain.User;
+import com.ocupid.server.domain.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,6 +73,18 @@ public class TeamDto {
                 members.add(simplifiedUser);
             }
             this.averageAge = sumOfAge.doubleValue() / team.getMembers().size();
+        }
+    }
+
+    @Getter
+    public static class MatchResponse {
+
+        private final Long id;
+        private final TeamDto.Response teamSend;
+
+        public MatchResponse(TeamMatch match) {
+            this.id = match.getId();
+            this.teamSend = new TeamDto.Response(match.getTeamSend());
         }
     }
 }

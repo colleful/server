@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     Optional<TeamMember> findByTeamAndMember(Team team, User member);
+    Optional<TeamMember> findByMember(User member);
     boolean existsByTeamAndMember(Team team, User member);
 }

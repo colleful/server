@@ -6,6 +6,9 @@ import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.TeamMemberRepository;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 @Service
 public class TeamMemberService {
 
@@ -44,5 +47,9 @@ public class TeamMemberService {
 
     public Boolean alreadyJoined(Team team, User member) {
         return teamMemberRepository.existsByTeamAndMember(team, member);
+    }
+
+    public Optional<TeamMember> getTeamInfoByUser (User member){
+        return teamMemberRepository.findByMember(member);
     }
 }
