@@ -77,4 +77,19 @@ public class TeamService {
             return false;
         }
     }
+
+    public Boolean addTeamSet(Team teamSend,Team teamReceive){
+        try {
+            teamSend.setTeamIdMatchedWith(teamReceive.getId());
+            teamSend.setStatus(TeamStatus.MATCHED);
+            teamReceive.setTeamIdMatchedWith(teamSend.getId());
+            teamReceive.setStatus(TeamStatus.MATCHED);
+            teamRepository.save(teamSend);
+            teamRepository.save(teamReceive);
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
