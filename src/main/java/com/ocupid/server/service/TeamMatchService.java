@@ -17,7 +17,7 @@ public class TeamMatchService {
         this.teamMatchRepository = teamMatchRepository;
     }
 
-    public Boolean sendRequest(TeamMatch match) {
+    public Boolean sendMatchRequest(TeamMatch match) {
         try {
             teamMatchRepository.save(match);
             return true;
@@ -30,11 +30,11 @@ public class TeamMatchService {
         return teamMatchRepository.findById(id);
     }
 
-    public List<TeamMatch> getAllMatches(Team team) {
+    public List<TeamMatch> getAllMatchRequests(Team team) {
         return teamMatchRepository.findAllByTeamReceive(team);
     }
 
-    public boolean alreadyRequestMatch(Team teamSend, Team teamReceived) {
+    public boolean alreadyRequestedMatch(Team teamSend, Team teamReceived) {
         return teamMatchRepository.existsByTeamSendAndTeamReceive(teamSend, teamReceived);
     }
 

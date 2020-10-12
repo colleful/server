@@ -55,7 +55,12 @@ public class MatchController {
                 .orElseThrow(() -> new NotFoundResourceException("팀에 속해있지 않은 유저입니다."));
 
         Team team = teamMember.getTeam();
-        List<TeamMatch> matches = teamMatchService.getAllMatches(team);
+
+        if (!team.getLeader().getId().equals(provider.getId(token))) {
+            throw new ForbiddenBehaviorException("리더만 팀에게 온 매칭 신청을 확인할 수 있습니다.");
+        }
+
+        List<TeamMatch> matches = teamMatchService.getAllMatchRequests(team);
         List<MatchResponse> responses = new ArrayList<>();
         for (TeamMatch match : matches) {
             responses.add(new MatchResponse(match));
@@ -65,14 +70,14 @@ public class MatchController {
     }
 
     @PostMapping("{teamSend-id}/{teamReceive-id}")
-    public ResponseEntity<?> createRequest(@RequestHeader(value = "Access-Token") String token,
+    public ResponseEntity<?> createMatchRequest(@RequestHeader(value = "Access-Token") String token,
                                           @PathVariable("teamSend-id") Long teamIdSend, @PathVariable("teamReceive-id") Long teamIdReceive) {
         Team teamSend = teamService.getTeamInfo(teamIdSend)
                 .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
         Team teamReceive = teamService.getTeamInfo(teamIdReceive)
                 .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
 
-        if (teamMatchService.alreadyRequestMatch(teamSend, teamReceive)) {
+        if (teamMatchService.alreadyRequestedMatch(teamSend, teamReceive)) {
             throw new ForbiddenBehaviorException("이미 매칭 신청한 팀입니다.");
         }
 
@@ -89,7 +94,7 @@ public class MatchController {
         }
 
         TeamMatch match = new TeamMatch(teamSend, teamReceive);
-        if (!teamMatchService.sendRequest(match)) {
+        if (!teamMatchService.sendMatchRequest(match)) {
             throw new RuntimeException("매칭 신청에 실패했습니다.");
         }
 
@@ -113,7 +118,7 @@ public class MatchController {
             throw new RuntimeException("매칭 수락에 실패했습니다.");
         }
 
-        if (!teamService.addTeamSet(teamSend,teamReceive)) {
+        if (!teamService.saveMatchInfo(teamSend,teamReceive)) {
             throw new RuntimeException("매칭 수락에 실패했습니다.");
         }
 

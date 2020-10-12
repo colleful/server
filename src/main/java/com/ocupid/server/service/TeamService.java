@@ -78,11 +78,11 @@ public class TeamService {
         }
     }
 
-    public Boolean addTeamSet(Team teamSend,Team teamReceive){
+    public Boolean saveMatchInfo(Team teamSend,Team teamReceive){
         try {
-            teamSend.setTeamIdMatchedWith(teamReceive.getId());
+            teamSend.setMatchedTeam(teamReceive);
             teamSend.setStatus(TeamStatus.MATCHED);
-            teamReceive.setTeamIdMatchedWith(teamSend.getId());
+            teamReceive.setMatchedTeam(teamSend);
             teamReceive.setStatus(TeamStatus.MATCHED);
             teamRepository.save(teamSend);
             teamRepository.save(teamReceive);
