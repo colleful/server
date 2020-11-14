@@ -1,6 +1,9 @@
 package com.ocupid.server.controller;
 
-import com.ocupid.server.domain.*;
+import com.ocupid.server.domain.Team;
+import com.ocupid.server.domain.TeamMatchRequest;
+import com.ocupid.server.domain.TeamStatus;
+import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.MatchResponse;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
 import com.ocupid.server.exception.NotFoundResourceException;

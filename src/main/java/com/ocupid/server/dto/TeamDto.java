@@ -1,7 +1,10 @@
 package com.ocupid.server.dto;
 
-import com.ocupid.server.domain.*;
-
+import com.ocupid.server.domain.Team;
+import com.ocupid.server.domain.TeamMatchRequest;
+import com.ocupid.server.domain.TeamMember;
+import com.ocupid.server.domain.TeamStatus;
+import com.ocupid.server.domain.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
