@@ -14,7 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Getter
 @Setter
-public class TeamMatch {
+public class TeamMatchRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,17 +25,16 @@ public class TeamMatch {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Team teamSend;
+    private Team sender;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Team teamReceive;
+    private Team receiver;
 
-    public TeamMatch() {
-    }
+    public TeamMatchRequest() {}
 
-    public TeamMatch(Team teamSend,Team teamReceive) {
-        this.teamSend = teamSend;
-        this.teamReceive = teamReceive;
+    public TeamMatchRequest(Team sender, Team receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
     }
 }

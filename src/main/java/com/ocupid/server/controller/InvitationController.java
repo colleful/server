@@ -116,7 +116,7 @@ public class InvitationController {
     }
 
     @DeleteMapping("/{id}/refuse")
-    public ResponseEntity<?> declineInvitation(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> refuseInvitation(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
         TeamInvitation invitation = teamInvitationService.getInvitation(id)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));

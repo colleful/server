@@ -27,8 +27,7 @@ public class TeamMember {
     @JoinColumn(nullable = false)
     private User member;
 
-    public TeamMember() {
-    }
+    public TeamMember() {}
 
     public TeamMember(Team team, User member) {
         this.team = team;

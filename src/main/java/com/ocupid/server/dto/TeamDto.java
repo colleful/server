@@ -80,11 +80,11 @@ public class TeamDto {
     public static class MatchResponse {
 
         private final Long id;
-        private final TeamDto.Response teamSend;
+        private final TeamDto.Response sender;
 
-        public MatchResponse(TeamMatch match) {
+        public MatchResponse(TeamMatchRequest match) {
             this.id = match.getId();
-            this.teamSend = new TeamDto.Response(match.getTeamSend());
+            this.sender = new TeamDto.Response(match.getSender());
         }
     }
 }
