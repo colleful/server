@@ -1,36 +1,40 @@
 package com.ocupid.server.domain;
 
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Getter
 @Setter
-public class TeamMember {
+public class TeamMatchRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Team team;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private User member;
+    private Team sender;
 
-    public TeamMember() {}
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Team receiver;
 
-    public TeamMember(Team team, User member) {
-        this.team = team;
-        this.member = member;
+    public TeamMatchRequest() {}
+
+    public TeamMatchRequest(Team sender, Team receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
     }
 }

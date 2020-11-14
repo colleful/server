@@ -1,6 +1,7 @@
 package com.ocupid.server.dto;
 
 import com.ocupid.server.domain.Team;
+import com.ocupid.server.domain.TeamMatchRequest;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
@@ -75,6 +76,18 @@ public class TeamDto {
                 members.add(simplifiedUser);
             }
             this.averageAge = sumOfAge.doubleValue() / team.getMembers().size();
+        }
+    }
+
+    @Getter
+    public static class MatchResponse {
+
+        private final Long id;
+        private final TeamDto.Response sender;
+
+        public MatchResponse(TeamMatchRequest match) {
+            this.id = match.getId();
+            this.sender = new TeamDto.Response(match.getSender());
         }
     }
 }
