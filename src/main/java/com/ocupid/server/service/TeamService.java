@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TeamService {
@@ -75,6 +76,7 @@ public class TeamService {
         }
     }
 
+    @Transactional
     public Boolean deleteTeam(Team team) {
         try {
             if (!clearMatch(team)) {
@@ -91,6 +93,7 @@ public class TeamService {
         try {
             if (team.getMatchedTeam() != null) {
                 team.getMatchedTeam().setMatchedTeam(null);
+                teamRepository.save(team);
             }
             return true;
         } catch (Exception e) {
@@ -98,15 +101,15 @@ public class TeamService {
         }
     }
 
-    public Boolean saveMatchInfo(Team teamSend,Team teamReceive){
+    @Transactional
+    public Boolean saveMatchInfo(Team sender, Team receiver){
         try {
-            teamSend.setMatchedTeam(teamReceive);
-            teamSend.setStatus(TeamStatus.MATCHED);
-            teamReceive.setMatchedTeam(teamSend);
-            teamReceive.setStatus(TeamStatus.MATCHED);
-            teamRepository.save(teamSend);
-            teamRepository.save(teamReceive);
-
+            sender.setMatchedTeam(receiver);
+            sender.setStatus(TeamStatus.MATCHED);
+            receiver.setMatchedTeam(sender);
+            receiver.setStatus(TeamStatus.MATCHED);
+            teamRepository.save(sender);
+            teamRepository.save(receiver);
             return true;
         } catch (Exception e) {
             return false;
