@@ -81,7 +81,7 @@ public class InvitationController {
             throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 
-        if (!team.getLeader().getId().equals(provider.getId(token))) {
+        if (team.isNotLeader(provider.getId(token))) {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
 
@@ -99,7 +99,7 @@ public class InvitationController {
         TeamInvitation invitation = teamInvitationService.getInvitation(id)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
 
-        if (!invitation.getUser().getId().equals(provider.getId(token))) {
+        if (invitation.isNotForMe(provider.getId(token))) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
@@ -121,7 +121,7 @@ public class InvitationController {
         TeamInvitation invitation = teamInvitationService.getInvitation(id)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
 
-        if (!invitation.getUser().getId().equals(provider.getId(token))) {
+        if (invitation.isNotForMe(provider.getId(token))) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 

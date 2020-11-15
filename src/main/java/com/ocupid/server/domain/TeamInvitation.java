@@ -31,11 +31,14 @@ public class TeamInvitation {
     @JoinColumn(nullable = false)
     private User user;
 
-    public TeamInvitation() {
-    }
+    public TeamInvitation() {}
 
     public TeamInvitation(Team team, User user) {
         this.team = team;
         this.user = user;
+    }
+
+    public boolean isNotForMe(Long userId) {
+        return !this.user.getId().equals(userId);
     }
 }
