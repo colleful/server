@@ -2,6 +2,8 @@ package com.ocupid.server.repository;
 
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamStatus;
+import com.ocupid.server.domain.User;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +15,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     Page<Team> findAllByStatusOrderByUpdatedAtDesc(Pageable pageable, TeamStatus status);
     Page<Team> findAllByStatusAndTeamNameContainingOrderByUpdatedAtDesc(Pageable pageable,
         TeamStatus status, String teamName);
+    List<Team> findAllByLeader(User leader);
 }

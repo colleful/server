@@ -116,7 +116,7 @@ public class TeamController {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 
-        if (!teamService.deleteTeam(id)) {
+        if (!teamService.deleteTeam(team)) {
             throw new RuntimeException("팀 삭제에 실패했습니다.");
         }
 

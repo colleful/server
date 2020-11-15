@@ -104,7 +104,10 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@RequestHeader("Access-Token") String token) {
-        if (!userService.withdrawal(provider.getId(token))) {
+        User user = userService.getUserInfo(provider.getId(token))
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        if (!userService.withdrawal(user)) {
             throw new RuntimeException("회원 탈퇴에 실패했습니다.");
         }
 

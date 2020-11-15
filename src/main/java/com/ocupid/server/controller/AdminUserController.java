@@ -57,7 +57,10 @@ public class AdminUserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        if (!userService.withdrawal(id)) {
+        User user = userService.getUserInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        if (!userService.withdrawal(user)) {
             throw new RuntimeException("회원 탈퇴에 실패했습니다.");
         }
 

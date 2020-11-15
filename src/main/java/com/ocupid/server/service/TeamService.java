@@ -3,7 +3,9 @@ package com.ocupid.server.service;
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMember;
 import com.ocupid.server.domain.TeamStatus;
+import com.ocupid.server.domain.User;
 import com.ocupid.server.repository.TeamRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +51,10 @@ public class TeamService {
                 TeamStatus.READY, teamName);
     }
 
+    public List<Team> getAllTeamsByLeader(User leader) {
+        return teamRepository.findAllByLeader(leader);
+    }
+
     public Boolean changeTeamInfo(Team team, String teamName) {
         try {
             team.setTeamName(teamName);
@@ -69,9 +75,23 @@ public class TeamService {
         }
     }
 
-    public Boolean deleteTeam(Long id) {
+    public Boolean deleteTeam(Team team) {
         try {
-            teamRepository.deleteById(id);
+            if (!clearMatch(team)) {
+                return false;
+            }
+            teamRepository.deleteById(team.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Boolean clearMatch(Team team) {
+        try {
+            if (team.getMatchedTeam() != null) {
+                team.getMatchedTeam().setMatchedTeam(null);
+            }
             return true;
         } catch (Exception e) {
             return false;

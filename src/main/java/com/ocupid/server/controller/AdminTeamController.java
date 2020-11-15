@@ -43,7 +43,10 @@ public class AdminTeamController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTeam(@PathVariable Long id) {
-        if (!teamService.deleteTeam(id)) {
+        Team team = teamService.getTeamInfo(id)
+            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+
+        if (!teamService.deleteTeam(team)) {
             throw new RuntimeException("팀 삭제에 실패했습니다.");
         }
 
