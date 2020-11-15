@@ -75,7 +75,7 @@ public class TeamController {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
-        if (team.getStatus().compareTo(TeamStatus.READY) != 0) {
+        if (team.isNotReady()) {
             throw new ForbiddenBehaviorException("준비 상태에 있는 팀만 정보를 볼 수 있습니다.");
         }
 
@@ -95,7 +95,7 @@ public class TeamController {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
-        if (!team.getLeader().getId().equals(provider.getId(token))) {
+        if (team.isNotLeader(provider.getId(token))) {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
@@ -112,7 +112,7 @@ public class TeamController {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
-        if (!team.getLeader().getId().equals(provider.getId(token))) {
+        if (team.isNotLeader(provider.getId(token))) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 

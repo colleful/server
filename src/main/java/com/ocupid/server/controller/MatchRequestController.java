@@ -2,7 +2,6 @@ package com.ocupid.server.controller;
 
 import com.ocupid.server.domain.Team;
 import com.ocupid.server.domain.TeamMatchRequest;
-import com.ocupid.server.domain.TeamStatus;
 import com.ocupid.server.domain.User;
 import com.ocupid.server.dto.TeamDto.MatchResponse;
 import com.ocupid.server.exception.ForbiddenBehaviorException;
@@ -71,15 +70,15 @@ public class MatchRequestController {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
-        if (sender.getLeader().getGender().compareTo(receiver.getLeader().getGender()) == 0) {
+        if (!sender.isDifferentGender(receiver.getGender())) {
             throw new ForbiddenBehaviorException("다른 성별에게만 매칭 요청할 수 있습니다.");
         }
 
-        if (!sender.getLeader().getId().equals(provider.getId(token))) {
+        if (sender.isNotLeader(provider.getId(token))) {
             throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
         }
 
-        if (!receiver.getStatus().equals(TeamStatus.READY)){
+        if (receiver.isNotReady()){
             throw new ForbiddenBehaviorException("준비된 팀에게만 매칭 요청할 수 있습니다.");
         }
 
@@ -100,7 +99,7 @@ public class MatchRequestController {
         Team sender = match.getSender();
         Team receiver = match.getReceiver();
 
-        if (!receiver.getLeader().getId().equals(provider.getId(token))) {
+        if (receiver.isNotLeader(provider.getId(token))) {
             throw new ForbiddenBehaviorException("리더만 매칭 수락할 수 있습니다.");
         }
 
@@ -123,7 +122,7 @@ public class MatchRequestController {
 
         Team receiver = match.getReceiver();
 
-        if (!receiver.getLeader().getId().equals(provider.getId(token))) {
+        if (receiver.isNotLeader(provider.getId(token))) {
             throw new ForbiddenBehaviorException("리더만 매칭 거절할 수 있습니다.");
         }
 

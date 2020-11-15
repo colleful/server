@@ -77,7 +77,7 @@ public class InvitationController {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
         }
 
-        if (team.getLeader().getGender().compareTo(user.getGender()) != 0) {
+        if (team.isDifferentGender(user.getGender())) {
             throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 

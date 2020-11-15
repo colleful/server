@@ -43,4 +43,16 @@ public class Team {
     @OneToOne
     @JoinColumn(unique = true)
     private Team matchedTeam;
+
+    public boolean isNotLeader(Long userId) {
+        return !this.leader.getId().equals(userId);
+    }
+
+    public boolean isDifferentGender(Gender gender) {
+        return this.gender.compareTo(gender) != 0;
+    }
+
+    public boolean isNotReady() {
+        return this.status.compareTo(TeamStatus.READY) != 0;
+    }
 }
