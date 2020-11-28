@@ -5,6 +5,7 @@ import com.colleful.server.domain.TeamMember;
 import com.colleful.server.domain.TeamStatus;
 import com.colleful.server.domain.User;
 import com.colleful.server.dto.PageDto;
+import com.colleful.server.dto.TeamDto;
 import com.colleful.server.dto.TeamDto.*;
 import com.colleful.server.exception.ForbiddenBehaviorException;
 import com.colleful.server.exception.NotFoundResourceException;
@@ -12,6 +13,7 @@ import com.colleful.server.security.JwtProvider;
 import com.colleful.server.service.TeamMemberService;
 import com.colleful.server.service.TeamService;
 import com.colleful.server.service.UserService;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -55,19 +57,22 @@ public class TeamController {
             .orElseThrow(() -> new NotFoundResourceException("리더 정보를 찾을 수 없습니다."));
         Team team = request.toEntity(leader);
 
-        if (!teamService.createTeam(team)) {
+        if (!teamService.createTeam(team, leader)) {
             throw new RuntimeException();
         }
 
-        TeamMember member = new TeamMember(team, team.getLeader());
-        team.getMembers().add(member);
-        return new Response(team);
+        List<TeamMember> members = teamMemberService.getMemberInfoByTeam(team);
+        return new Response(team, members);
     }
 
     @GetMapping
     public PageDto.Response<Response> getAllReadyTeams(@PageableDefault Pageable request) {
         Page<Team> teams = teamService.getAllReadyTeams(request);
-        return new PageDto.Response<>(teams.map(Response::new));
+        Page<Response> responses = teams.map(team -> {
+            List<TeamMember> members = teamMemberService.getMemberInfoByTeam(team);
+            return new Response(team, members);
+        });
+        return new PageDto.Response<>(responses);
     }
 
     @GetMapping("/{id}")
@@ -79,14 +84,19 @@ public class TeamController {
             throw new ForbiddenBehaviorException("준비 상태에 있는 팀만 정보를 볼 수 있습니다.");
         }
 
-        return new Response(team);
+        List<TeamMember> members = teamMemberService.getMemberInfoByTeam(team);
+        return new Response(team, members);
     }
 
     @GetMapping("/team-name/{team-name}")
     public PageDto.Response<Response> searchTeams(@PageableDefault Pageable request,
         @PathVariable("team-name") String teamName) {
         Page<Team> teams = teamService.searchTeams(request, teamName);
-        return new PageDto.Response<>(teams.map(Response::new));
+        Page<Response> responses = teams.map(team -> {
+            List<TeamMember> members = teamMemberService.getMemberInfoByTeam(team);
+            return new Response(team, members);
+        });
+        return new PageDto.Response<>(responses);
     }
 
     @PatchMapping("/{id}")
@@ -103,7 +113,8 @@ public class TeamController {
             throw new RuntimeException("상태 변경에 실패했습니다.");
         }
 
-        return new Response(team);
+        List<TeamMember> members = teamMemberService.getMemberInfoByTeam(team);
+        return new Response(team, members);
     }
 
     @DeleteMapping("/{id}")

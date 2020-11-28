@@ -15,5 +15,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     Page<Team> findAllByStatusOrderByUpdatedAtDesc(Pageable pageable, TeamStatus status);
     Page<Team> findAllByStatusAndTeamNameContainingOrderByUpdatedAtDesc(Pageable pageable,
         TeamStatus status, String teamName);
-    List<Team> findAllByLeader(User leader);
+    List<Team> findAllByLeaderId(Long leaderId);
 }

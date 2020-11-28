@@ -32,7 +32,7 @@ public class TeamMatchRequestService {
     }
 
     public List<TeamMatchRequest> getAllMatchRequests(User leader) {
-        return teamMatchRequestRepository.findAllByReceiver_Leader(leader);
+        return teamMatchRequestRepository.findAllByReceiver_LeaderId(leader.getId());
     }
 
     public boolean isAlreadyRequested(Team sender, Team receiver) {

@@ -4,9 +4,8 @@ import com.colleful.server.domain.Team;
 import com.colleful.server.domain.TeamMember;
 import com.colleful.server.domain.User;
 import com.colleful.server.repository.TeamMemberRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class TeamMemberService {
@@ -48,7 +47,11 @@ public class TeamMemberService {
         return teamMemberRepository.existsByTeamAndMember(team, member);
     }
 
-    public Optional<TeamMember> getTeamInfoByUser (User member){
+    public List<TeamMember> getMemberInfoByTeam(Team team) {
+        return teamMemberRepository.findByTeam(team);
+    }
+
+    public List<TeamMember> getTeamInfoByUser (User member){
         return teamMemberRepository.findByMember(member);
     }
 }

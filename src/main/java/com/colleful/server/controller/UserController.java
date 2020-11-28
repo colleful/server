@@ -6,8 +6,6 @@ import com.colleful.server.exception.AlreadyExistResourceException;
 import com.colleful.server.exception.NotFoundResourceException;
 import com.colleful.server.security.JwtProvider;
 import com.colleful.server.service.DepartmentService;
-import com.colleful.server.service.TeamInvitationService;
-import com.colleful.server.service.TeamMemberService;
 import com.colleful.server.service.UserService;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -31,20 +29,15 @@ public class UserController {
 
     private final UserService userService;
     private final DepartmentService departmentService;
-    private final TeamInvitationService teamInvitationService;
-    private final TeamMemberService teamMemberService;
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService,
         DepartmentService departmentService,
-        TeamInvitationService teamInvitationService,
-        TeamMemberService teamMemberService, JwtProvider provider,
+        JwtProvider provider,
         PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.departmentService = departmentService;
-        this.teamInvitationService = teamInvitationService;
-        this.teamMemberService = teamMemberService;
         this.provider = provider;
         this.passwordEncoder = passwordEncoder;
     }

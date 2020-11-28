@@ -53,7 +53,6 @@ public class UserDto {
         private final String gender;
         private final String department;
         private final String selfIntroduction;
-        private final List<TeamDto.Response> teams;
 
         public Response(User user) {
             this.id = user.getId();
@@ -63,10 +62,6 @@ public class UserDto {
             this.gender = user.getGender().name();
             this.department = user.getDepartment().getDepartmentName();
             this.selfIntroduction = user.getSelfIntroduction();
-            this.teams = new ArrayList<>();
-            for (TeamMember team : user.getTeams()) {
-                this.teams.add(new TeamDto.Response(team.getTeam()));
-            }
         }
     }
 
@@ -98,11 +93,13 @@ public class UserDto {
     public static class InvitationResponse {
 
         private final Long id;
-        private final TeamDto.Response team;
+        private final Long teamId;
+        private final String teamName;
 
         public InvitationResponse(TeamInvitation invitation) {
             this.id = invitation.getId();
-            this.team = new TeamDto.Response(invitation.getTeam());
+            this.teamId = invitation.getTeam().getId();
+            this.teamName = invitation.getTeam().getTeamName();
         }
     }
 }

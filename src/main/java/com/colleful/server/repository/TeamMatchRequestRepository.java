@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamMatchRequestRepository extends JpaRepository<TeamMatchRequest, Long>{
-    List<TeamMatchRequest> findAllByReceiver_Leader(User leader);
+    List<TeamMatchRequest> findAllByReceiver_LeaderId(Long leaderId);
     boolean existsBySenderAndReceiver(Team sender, Team receiver);
 }

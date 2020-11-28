@@ -1,10 +1,6 @@
 package com.colleful.server.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.*;
 
 import lombok.Getter;
@@ -14,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Getter
 @Setter
-@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id")
 public class Team {
 
     @Id
@@ -33,19 +28,14 @@ public class Team {
     @Column(nullable = false)
     private TeamStatus status;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private User leader;
+    @Column(nullable = false)
+    private Long leaderId;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TeamMember> members = new ArrayList<>();
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Team matchedTeam;
+    @Column
+    private Long matchedTeamId;
 
     public boolean isNotLeader(Long userId) {
-        return !this.leader.getId().equals(userId);
+        return !this.leaderId.equals(userId);
     }
 
     public boolean isDifferentGender(Gender gender) {

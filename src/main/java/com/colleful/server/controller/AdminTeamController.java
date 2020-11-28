@@ -1,10 +1,13 @@
 package com.colleful.server.controller;
 
 import com.colleful.server.domain.Team;
+import com.colleful.server.domain.TeamMember;
 import com.colleful.server.dto.PageDto;
 import com.colleful.server.dto.TeamDto.*;
 import com.colleful.server.exception.NotFoundResourceException;
+import com.colleful.server.service.TeamMemberService;
 import com.colleful.server.service.TeamService;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -18,15 +21,22 @@ import org.springframework.web.bind.annotation.*;
 public class AdminTeamController {
 
     private final TeamService teamService;
+    private final TeamMemberService teamMemberService;
 
-    public AdminTeamController(TeamService teamService) {
+    public AdminTeamController(TeamService teamService,
+        TeamMemberService teamMemberService) {
         this.teamService = teamService;
+        this.teamMemberService = teamMemberService;
     }
 
     @GetMapping
     public PageDto.Response<Response> getAllTeams(@PageableDefault Pageable request) {
         Page<Team> teams = teamService.getAllTeams(request);
-        return new PageDto.Response<>(teams.map(Response::new));
+        Page<Response> responses = teams.map(team -> {
+            List<TeamMember> members = teamMemberService.getMemberInfoByTeam(team);
+            return new Response(team, members);
+        });
+        return new PageDto.Response<>(responses);
     }
 
     @PatchMapping("/{id}")
@@ -38,7 +48,8 @@ public class AdminTeamController {
             throw new RuntimeException("팀 정보 변경에 실패했습니다.");
         }
 
-        return new Response(team);
+        List<TeamMember> members = teamMemberService.getMemberInfoByTeam(team);
+        return new Response(team, members);
     }
 
     @DeleteMapping("/{id}")

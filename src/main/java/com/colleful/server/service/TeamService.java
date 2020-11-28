@@ -24,10 +24,11 @@ public class TeamService {
         this.teamMemberService = teamMemberService;
     }
 
-    public Boolean createTeam(Team team) {
+    @Transactional
+    public Boolean createTeam(Team team, User leader) {
         try {
             teamRepository.save(team);
-            TeamMember member = new TeamMember(team, team.getLeader());
+            TeamMember member = new TeamMember(team, leader);
             return teamMemberService.addMember(member);
         } catch (Exception e) {
             return false;
@@ -53,7 +54,7 @@ public class TeamService {
     }
 
     public List<Team> getAllTeamsByLeader(User leader) {
-        return teamRepository.findAllByLeader(leader);
+        return teamRepository.findAllByLeaderId(leader.getId());
     }
 
     public Boolean changeTeamInfo(Team team, String teamName) {
@@ -91,8 +92,8 @@ public class TeamService {
 
     public Boolean clearMatch(Team team) {
         try {
-            if (team.getMatchedTeam() != null) {
-                team.getMatchedTeam().setMatchedTeam(null);
+            if (team.getMatchedTeamId() != null) {
+                team.setMatchedTeamId(null);
                 teamRepository.save(team);
             }
             return true;
@@ -104,9 +105,9 @@ public class TeamService {
     @Transactional
     public Boolean saveMatchInfo(Team sender, Team receiver){
         try {
-            sender.setMatchedTeam(receiver);
+            sender.setMatchedTeamId(receiver.getId());
             sender.setStatus(TeamStatus.MATCHED);
-            receiver.setMatchedTeam(sender);
+            receiver.setMatchedTeamId(sender.getId());
             receiver.setStatus(TeamStatus.MATCHED);
             teamRepository.save(sender);
             teamRepository.save(receiver);
