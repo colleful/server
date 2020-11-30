@@ -1,5 +1,6 @@
 package com.colleful.server.domain.user;
 
+import com.colleful.server.domain.constant.Gender;
 import com.colleful.server.domain.department.Department;
 import java.util.ArrayList;
 import java.util.Collection;

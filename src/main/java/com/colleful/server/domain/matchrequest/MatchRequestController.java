@@ -1,7 +1,6 @@
 package com.colleful.server.domain.matchrequest;
 
 import com.colleful.server.domain.team.Team;
-import com.colleful.server.domain.team.TeamDto.MatchResponse;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.domain.user.User;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
@@ -42,20 +41,20 @@ public class MatchRequestController {
     }
 
     @GetMapping
-    public List<MatchResponse> getAllMatchRequests(@RequestHeader("Access-Token") String token) {
+    public List<MatchDto.Response> getAllMatchRequests(@RequestHeader("Access-Token") String token) {
         User user = userService.getUserInfo(provider.getId(token))
                 .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         List<MatchRequest> matches = matchRequestService.getAllMatchRequests(user);
-        List<MatchResponse> responses = new ArrayList<>();
+        List<MatchDto.Response> responses = new ArrayList<>();
         for (MatchRequest match : matches) {
-            responses.add(new MatchResponse(match));
+            responses.add(new MatchDto.Response(match));
         }
 
         return responses;
     }
 
-    @PostMapping("{sender-id}/{receiver-id}")
+    @PostMapping("/{sender-id}/{receiver-id}")
     public ResponseEntity<?> createMatchRequest(@RequestHeader(value = "Access-Token") String token,
         @PathVariable("sender-id") Long senderId,
         @PathVariable("receiver-id") Long receiverId) {

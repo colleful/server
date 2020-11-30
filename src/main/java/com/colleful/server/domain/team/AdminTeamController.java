@@ -1,7 +1,6 @@
 package com.colleful.server.domain.team;
 
 import com.colleful.server.global.dto.PageDto;
-import com.colleful.server.domain.team.TeamDto.*;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +21,14 @@ public class AdminTeamController {
     }
 
     @GetMapping
-    public PageDto.Response<Response> getAllTeams(@PageableDefault Pageable request) {
+    public PageDto.Response<TeamDto.Response> getAllTeams(@PageableDefault Pageable request) {
         Page<Team> teams = teamService.getAllTeams(request);
-        return new PageDto.Response<>(teams.map(Response::new));
+        return new PageDto.Response<>(teams.map(TeamDto.Response::new));
     }
 
     @PatchMapping("/{id}")
-    public Response updateTeamInfo(@PathVariable Long id, @RequestBody Request request) {
+    public TeamDto.Response updateTeamInfo(@PathVariable Long id
+        , @RequestBody TeamDto.Request request) {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
@@ -36,7 +36,7 @@ public class AdminTeamController {
             throw new RuntimeException("팀 정보 변경에 실패했습니다.");
         }
 
-        return new Response(team);
+        return new TeamDto.Response(team);
     }
 
     @DeleteMapping("/{id}")

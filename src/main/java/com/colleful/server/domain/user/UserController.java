@@ -1,6 +1,5 @@
 package com.colleful.server.domain.user;
 
-import com.colleful.server.domain.user.UserDto.*;
 import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.security.JwtProvider;
@@ -41,30 +40,30 @@ public class UserController {
     }
 
     @GetMapping
-    public Response getMyInfo(@RequestHeader("Access-Token") String token) {
+    public UserDto.Response getMyInfo(@RequestHeader("Access-Token") String token) {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @GetMapping("/{id}")
-    public Response getUserInfo(@PathVariable Long id) {
+    public UserDto.Response getUserInfo(@PathVariable Long id) {
         User user = userService.getUserInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @GetMapping("/nickname/{nickname}")
-    public Response getUserInfo(@PathVariable String nickname) {
+    public UserDto.Response getUserInfo(@PathVariable String nickname) {
         User user = userService
             .getUserInfoByNickname(URLDecoder.decode(nickname, StandardCharsets.UTF_8))
             .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @PatchMapping
-    public Response changeUserInfo(@RequestHeader("Access-Token") String token,
-        @RequestBody Request request) {
+    public UserDto.Response changeUserInfo(@RequestHeader("Access-Token") String token,
+        @RequestBody UserDto.Request request) {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
@@ -77,12 +76,12 @@ public class UserController {
             throw new RuntimeException("회원 정보 수정에 실패했습니다.");
         }
 
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @PatchMapping("/password")
-    public Response changePassword(@RequestHeader("Access-Token") String token,
-        @RequestBody Request request) {
+    public UserDto.Response changePassword(@RequestHeader("Access-Token") String token,
+        @RequestBody UserDto.Request request) {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
@@ -90,7 +89,7 @@ public class UserController {
             throw new RuntimeException("비밀번호 변경에 실패했습니다.");
         }
 
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @DeleteMapping

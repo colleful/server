@@ -1,7 +1,7 @@
 package com.colleful.server.domain.team;
 
+import com.colleful.server.domain.constant.TeamStatus;
 import com.colleful.server.global.dto.PageDto;
-import com.colleful.server.domain.team.TeamDto.*;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.security.JwtProvider;
@@ -35,13 +35,13 @@ public class TeamController {
     }
 
     @GetMapping
-    public PageDto.Response<Response> getAllReadyTeams(@PageableDefault Pageable request) {
+    public PageDto.Response<TeamDto.Response> getAllReadyTeams(@PageableDefault Pageable request) {
         Page<Team> teams = teamService.getAllReadyTeams(request);
-        return new PageDto.Response<>(teams.map(Response::new));
+        return new PageDto.Response<>(teams.map(TeamDto.Response::new));
     }
 
     @GetMapping("/{id}")
-    public Response getTeamInfo(@PathVariable Long id) {
+    public TeamDto.Response getTeamInfo(@PathVariable Long id) {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
@@ -49,31 +49,31 @@ public class TeamController {
             throw new ForbiddenBehaviorException("준비 상태에 있는 팀만 정보를 볼 수 있습니다.");
         }
 
-        return new Response(team);
+        return new TeamDto.Response(team);
     }
 
     @GetMapping("/team-name/{team-name}")
-    public PageDto.Response<Response> searchTeams(@PageableDefault Pageable request,
+    public PageDto.Response<TeamDto.Response> searchTeams(@PageableDefault Pageable request,
         @PathVariable("team-name") String teamName) {
         Page<Team> teams = teamService.searchTeams(request, teamName);
-        return new PageDto.Response<>(teams.map(Response::new));
+        return new PageDto.Response<>(teams.map(TeamDto.Response::new));
     }
 
     @PostMapping
-    public Response createTeam(@RequestHeader(value = "Access-Token") String token,
-        @RequestBody Request request) {
+    public TeamDto.Response createTeam(@RequestHeader(value = "Access-Token") String token,
+        @RequestBody TeamDto.Request request) {
         Team team = request.toEntity(provider.getId(token));
 
         if (!teamService.createTeam(team)) {
             throw new RuntimeException();
         }
 
-        return new Response(team);
+        return new TeamDto.Response(team);
     }
 
     @PatchMapping("/{id}")
-    public Response updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
-        @PathVariable Long id, @RequestBody Request request) {
+    public TeamDto.Response updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
+        @PathVariable Long id, @RequestBody TeamDto.Request request) {
         Team team = teamService.getTeamInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
@@ -85,7 +85,7 @@ public class TeamController {
             throw new RuntimeException("상태 변경에 실패했습니다.");
         }
 
-        return new Response(team);
+        return new TeamDto.Response(team);
     }
 
     @DeleteMapping("/{id}")

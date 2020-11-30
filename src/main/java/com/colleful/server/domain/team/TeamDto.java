@@ -1,6 +1,6 @@
 package com.colleful.server.domain.team;
 
-import com.colleful.server.domain.matchrequest.MatchRequest;
+import com.colleful.server.domain.constant.TeamStatus;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -38,20 +38,6 @@ public class TeamDto {
             this.gender = team.getGender().name();
             this.status = team.getStatus().name();
             this.leaderId = team.getLeaderId();
-        }
-    }
-
-    @Getter
-    public static class MatchResponse {
-
-        private final Long id;
-        private final Long teamId;
-        private final String teamName;
-
-        public MatchResponse(MatchRequest match) {
-            this.id = match.getId();
-            this.teamId = match.getSender().getId();
-            this.teamName = match.getSender().getTeamName();
         }
     }
 }

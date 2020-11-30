@@ -1,7 +1,6 @@
 package com.colleful.server.domain.user;
 
 import com.colleful.server.global.dto.PageDto;
-import com.colleful.server.domain.user.UserDto.*;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.domain.department.DepartmentService;
 import org.springframework.data.domain.Page;
@@ -26,20 +25,21 @@ public class AdminUserController {
     }
 
     @GetMapping
-    public PageDto.Response<Response> getAllUserInfo(@PageableDefault Pageable pageable) {
+    public PageDto.Response<UserDto.Response> getAllUserInfo(@PageableDefault Pageable pageable) {
         Page<User> users = userService.getAllUserInfo(pageable);
-        return new PageDto.Response<>(users.map(Response::new));
+        return new PageDto.Response<>(users.map(UserDto.Response::new));
     }
 
     @GetMapping("/{id}")
-    public Response getUserInfoById(@PathVariable Long id) {
+    public UserDto.Response getUserInfoById(@PathVariable Long id) {
         User user = userService.getUserInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @PatchMapping("/{id}")
-    public Response changeUserInfo(@PathVariable Long id, @RequestBody Request request) {
+    public UserDto.Response changeUserInfo(@PathVariable Long id,
+        @RequestBody UserDto.Request request) {
         User user = userService.getUserInfo(id)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
@@ -48,7 +48,7 @@ public class AdminUserController {
             throw new RuntimeException("회원 정보 수정에 실패했습니다.");
         }
 
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @DeleteMapping("/{id}")

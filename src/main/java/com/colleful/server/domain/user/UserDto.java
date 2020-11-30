@@ -1,5 +1,6 @@
 package com.colleful.server.domain.user;
 
+import com.colleful.server.domain.constant.Gender;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.domain.invitation.Invitation;
 import com.colleful.server.domain.department.DepartmentService;

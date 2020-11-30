@@ -1,9 +1,9 @@
 package com.colleful.server.domain.team;
 
-import com.colleful.server.domain.user.Gender;
+import com.colleful.server.domain.constant.Gender;
+import com.colleful.server.domain.constant.TeamStatus;
 import java.time.LocalDateTime;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;

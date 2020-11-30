@@ -1,5 +1,6 @@
 package com.colleful.server.domain.team;
 
+import com.colleful.server.domain.constant.TeamStatus;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

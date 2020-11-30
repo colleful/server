@@ -1,4 +1,4 @@
-package com.colleful.server.domain.team;
+package com.colleful.server.domain.constant;
 
 public enum TeamStatus {
     PENDING,

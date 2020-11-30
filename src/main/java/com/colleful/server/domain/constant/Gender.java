@@ -1,4 +1,4 @@
-package com.colleful.server.domain.user;
+package com.colleful.server.domain.constant;
 
 public enum Gender {
     MALE,

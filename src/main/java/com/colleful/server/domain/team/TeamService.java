@@ -1,6 +1,6 @@
 package com.colleful.server.domain.team;
 
-import com.colleful.server.domain.user.User;
+import com.colleful.server.domain.constant.TeamStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

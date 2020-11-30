@@ -1,7 +1,6 @@
 package com.colleful.server.domain.user;
 
 import com.colleful.server.domain.emailverification.EmailVerification;
-import com.colleful.server.domain.user.UserDto.*;
 import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.InvalidCodeException;
 import com.colleful.server.global.exception.NotFoundResourceException;
@@ -45,7 +44,7 @@ public class AuthController {
     }
 
     @PostMapping("/join")
-    public Response join(@RequestBody Request request) {
+    public UserDto.Response join(@RequestBody UserDto.Request request) {
         User user = request.toEntity(passwordEncoder, departmentService);
         EmailVerification emailVerification =
             emailVerificationService.getEmailVerificationInfo(request.getEmail())
@@ -67,11 +66,11 @@ public class AuthController {
             throw new RuntimeException("회원가입에 실패했습니다.");
         }
 
-        return new Response(user);
+        return new UserDto.Response(user);
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public UserDto.LoginResponse login(@RequestBody UserDto.LoginRequest request) {
         User user = userService.getUserInfoByEmail(request.getEmail())
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
@@ -80,11 +79,11 @@ public class AuthController {
         }
 
         String token = provider.createToken(user.getEmail(), user.getId(), user.getRoles());
-        return new LoginResponse(token);
+        return new UserDto.LoginResponse(token);
     }
 
     @PostMapping("/join/email")
-    public ResponseEntity<?> sendEmailForRegister(@RequestBody EmailRequest request) {
+    public ResponseEntity<?> sendEmailForRegister(@RequestBody UserDto.EmailRequest request) {
         if (userService.isExist(request.getEmail())) {
             throw new AlreadyExistResourceException("이미 가입된 유저입니다.");
         }
@@ -97,7 +96,7 @@ public class AuthController {
     }
 
     @PostMapping("/password/email")
-    public ResponseEntity<?> sendEmailForPassword(@RequestBody EmailRequest request) {
+    public ResponseEntity<?> sendEmailForPassword(@RequestBody UserDto.EmailRequest request) {
         if (!userService.isExist(request.getEmail())) {
             throw new NotFoundResourceException("가입되지 않은 유저입니다.");
         }
@@ -110,7 +109,7 @@ public class AuthController {
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<?> changePassword(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> changePassword(@RequestBody UserDto.LoginRequest request) {
         User user = userService.getUserInfoByEmail(request.getEmail())
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         EmailVerification emailVerification =
@@ -133,7 +132,7 @@ public class AuthController {
     }
 
     @PatchMapping("/check")
-    public ResponseEntity<?> check(@RequestBody EmailRequest request) {
+    public ResponseEntity<?> check(@RequestBody UserDto.EmailRequest request) {
         if (!emailVerificationService.check(request.getEmail(), request.getCode())) {
             throw new InvalidCodeException("인증번호가 다릅니다.");
         }
