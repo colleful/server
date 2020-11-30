@@ -1,0 +1,37 @@
+package com.colleful.server.domain.teammember;
+
+import com.colleful.server.domain.team.Team;
+import com.colleful.server.domain.user.User;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+public class TeamMember {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Team team;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User member;
+
+    public TeamMember() {}
+
+    public TeamMember(Team team, User member) {
+        this.team = team;
+        this.member = member;
+    }
+}
