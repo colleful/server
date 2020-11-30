@@ -1,4 +1,4 @@
-package com.colleful.server.domain.teaminvitation;
+package com.colleful.server.domain.invitation;
 
 import com.colleful.server.domain.team.Team;
 import com.colleful.server.domain.user.User;
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TeamInvitationRepository extends JpaRepository<TeamInvitation, Long> {
-    List<TeamInvitation> findAllByUser(User user);
+public interface InvitationRepository extends JpaRepository<Invitation, Long> {
+    List<Invitation> findAllByUser(User user);
     boolean existsByTeamAndUser(Team team, User user);
 }

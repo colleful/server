@@ -1,4 +1,4 @@
-package com.colleful.server.domain.teaminvitation;
+package com.colleful.server.domain.invitation;
 
 import com.colleful.server.domain.team.Team;
 import com.colleful.server.domain.user.User;
@@ -16,7 +16,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Getter
 @Setter
-public class TeamInvitation {
+public class Invitation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +33,9 @@ public class TeamInvitation {
     @JoinColumn(nullable = false)
     private User user;
 
-    public TeamInvitation() {}
+    public Invitation() {}
 
-    public TeamInvitation(Team team, User user) {
+    public Invitation(Team team, User user) {
         this.team = team;
         this.user = user;
     }

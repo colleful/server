@@ -1,9 +1,7 @@
 package com.colleful.server.domain.team;
 
-import com.colleful.server.domain.teammatchrequest.TeamMatchRequest;
-import com.colleful.server.domain.teammember.TeamMember;
+import com.colleful.server.domain.matchrequest.MatchRequest;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Getter;
 
 public class TeamDto {
@@ -50,7 +48,7 @@ public class TeamDto {
         private final Long teamId;
         private final String teamName;
 
-        public MatchResponse(TeamMatchRequest match) {
+        public MatchResponse(MatchRequest match) {
             this.id = match.getId();
             this.teamId = match.getSender().getId();
             this.teamName = match.getSender().getTeamName();

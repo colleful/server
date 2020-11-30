@@ -1,4 +1,4 @@
-package com.colleful.server.domain.teammatchrequest;
+package com.colleful.server.domain.matchrequest;
 
 import com.colleful.server.domain.team.Team;
 import com.colleful.server.domain.team.TeamDto.MatchResponse;
@@ -24,20 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/matches")
 @CrossOrigin(origins = "*")
-public class TeamMatchRequestController {
+public class MatchRequestController {
 
     private final UserService userService;
     private final TeamService teamService;
-    private final TeamMatchRequestService teamMatchRequestService;
+    private final MatchRequestService matchRequestService;
     private final JwtProvider provider;
 
-    public TeamMatchRequestController(UserService userService,
+    public MatchRequestController(UserService userService,
         TeamService teamService,
-        TeamMatchRequestService teamMatchRequestService,
+        MatchRequestService matchRequestService,
         JwtProvider provider) {
         this.userService = userService;
         this.teamService = teamService;
-        this.teamMatchRequestService = teamMatchRequestService;
+        this.matchRequestService = matchRequestService;
         this.provider = provider;
     }
 
@@ -46,9 +46,9 @@ public class TeamMatchRequestController {
         User user = userService.getUserInfo(provider.getId(token))
                 .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        List<TeamMatchRequest> matches = teamMatchRequestService.getAllMatchRequests(user);
+        List<MatchRequest> matches = matchRequestService.getAllMatchRequests(user);
         List<MatchResponse> responses = new ArrayList<>();
-        for (TeamMatchRequest match : matches) {
+        for (MatchRequest match : matches) {
             responses.add(new MatchResponse(match));
         }
 
@@ -64,7 +64,7 @@ public class TeamMatchRequestController {
         Team receiver = teamService.getTeamInfo(receiverId)
                 .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
 
-        if (teamMatchRequestService.isAlreadyRequested(sender, receiver)) {
+        if (matchRequestService.isAlreadyRequested(sender, receiver)) {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
@@ -80,8 +80,8 @@ public class TeamMatchRequestController {
             throw new ForbiddenBehaviorException("준비된 팀에게만 매칭 요청할 수 있습니다.");
         }
 
-        TeamMatchRequest match = new TeamMatchRequest(sender, receiver);
-        if (!teamMatchRequestService.sendMatchRequest(match)) {
+        MatchRequest match = new MatchRequest(sender, receiver);
+        if (!matchRequestService.sendMatchRequest(match)) {
             throw new RuntimeException("매칭 요청에 실패했습니다.");
         }
 
@@ -91,7 +91,7 @@ public class TeamMatchRequestController {
     @DeleteMapping("/{id}/accept")
     public ResponseEntity<?> acceptMatchRequest(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
-        TeamMatchRequest match = teamMatchRequestService.getMatchRequest(id)
+        MatchRequest match = matchRequestService.getMatchRequest(id)
                 .orElseThrow(() -> new NotFoundResourceException("매칭 요청 정보가 없습니다."));
 
         Team sender = match.getSender();
@@ -101,7 +101,7 @@ public class TeamMatchRequestController {
             throw new ForbiddenBehaviorException("리더만 매칭 수락할 수 있습니다.");
         }
 
-        if (!teamMatchRequestService.endMatch(id)) {
+        if (!matchRequestService.endMatch(id)) {
             throw new RuntimeException("매칭 수락에 실패했습니다.");
         }
 
@@ -115,7 +115,7 @@ public class TeamMatchRequestController {
     @DeleteMapping("/{id}/refuse")
     public ResponseEntity<?> refuseMatchRequest(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
-        TeamMatchRequest match = teamMatchRequestService.getMatchRequest(id)
+        MatchRequest match = matchRequestService.getMatchRequest(id)
                 .orElseThrow(() -> new NotFoundResourceException("매칭 요청 정보가 없습니다."));
 
         Team receiver = match.getReceiver();
@@ -124,7 +124,7 @@ public class TeamMatchRequestController {
             throw new ForbiddenBehaviorException("리더만 매칭 거절할 수 있습니다.");
         }
 
-        if (!teamMatchRequestService.endMatch(id)) {
+        if (!matchRequestService.endMatch(id)) {
             throw new RuntimeException("매칭 거절에 실패했습니다.");
         }
 

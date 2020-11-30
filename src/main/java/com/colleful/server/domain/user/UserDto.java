@@ -1,9 +1,7 @@
 package com.colleful.server.domain.user;
 
 import com.colleful.server.global.exception.NotFoundResourceException;
-import com.colleful.server.domain.user.Gender;
-import com.colleful.server.domain.teaminvitation.TeamInvitation;
-import com.colleful.server.domain.user.User;
+import com.colleful.server.domain.invitation.Invitation;
 import com.colleful.server.domain.department.DepartmentService;
 import java.util.Calendar;
 import java.util.Collections;
@@ -93,7 +91,7 @@ public class UserDto {
         private final Long teamId;
         private final String teamName;
 
-        public InvitationResponse(TeamInvitation invitation) {
+        public InvitationResponse(Invitation invitation) {
             this.id = invitation.getId();
             this.teamId = invitation.getTeam().getId();
             this.teamName = invitation.getTeam().getTeamName();

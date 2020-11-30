@@ -1,4 +1,4 @@
-package com.colleful.server.domain.teaminvitation;
+package com.colleful.server.domain.invitation;
 
 import com.colleful.server.domain.team.Team;
 import com.colleful.server.domain.teammember.TeamMember;
@@ -26,22 +26,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/invitations")
 @CrossOrigin(origins = "*")
-public class TeamInvitationController {
+public class InvitationController {
 
     private final UserService userService;
     private final TeamService teamService;
     private final TeamMemberService teamMemberService;
-    private final TeamInvitationService teamInvitationService;
+    private final InvitationService invitationService;
     private final JwtProvider provider;
 
-    public TeamInvitationController(UserService userService,
+    public InvitationController(UserService userService,
         TeamService teamService, TeamMemberService teamMemberService,
-        TeamInvitationService teamInvitationService,
+        InvitationService invitationService,
         JwtProvider provider) {
         this.userService = userService;
         this.teamService = teamService;
         this.teamMemberService = teamMemberService;
-        this.teamInvitationService = teamInvitationService;
+        this.invitationService = invitationService;
         this.provider = provider;
     }
 
@@ -50,9 +50,9 @@ public class TeamInvitationController {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        List<TeamInvitation> invitations = teamInvitationService.getAllInvitations(user);
+        List<Invitation> invitations = invitationService.getAllInvitations(user);
         List<InvitationResponse> responses = new ArrayList<>();
-        for (TeamInvitation invitation : invitations) {
+        for (Invitation invitation : invitations) {
             responses.add(new InvitationResponse(invitation));
         }
 
@@ -71,7 +71,7 @@ public class TeamInvitationController {
             throw new ForbiddenBehaviorException("이미 가입된 유저입니다.");
         }
 
-        if (teamInvitationService.alreadyInvited(team, user)) {
+        if (invitationService.alreadyInvited(team, user)) {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
         }
 
@@ -83,8 +83,8 @@ public class TeamInvitationController {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
 
-        TeamInvitation invitation = new TeamInvitation(team, user);
-        if (!teamInvitationService.invite(invitation)) {
+        Invitation invitation = new Invitation(team, user);
+        if (!invitationService.invite(invitation)) {
             throw new RuntimeException("초대에 실패했습니다.");
         }
 
@@ -94,14 +94,14 @@ public class TeamInvitationController {
     @DeleteMapping("/{id}/accept")
     public ResponseEntity<?> acceptInvitation(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
-        TeamInvitation invitation = teamInvitationService.getInvitation(id)
+        Invitation invitation = invitationService.getInvitation(id)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
 
         if (invitation.isNotForMe(provider.getId(token))) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
-        if (!teamInvitationService.endInvitation(id)) {
+        if (!invitationService.endInvitation(id)) {
             throw new RuntimeException("초대 수락에 실패했습니다.");
         }
 
@@ -116,14 +116,14 @@ public class TeamInvitationController {
     @DeleteMapping("/{id}/refuse")
     public ResponseEntity<?> refuseInvitation(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
-        TeamInvitation invitation = teamInvitationService.getInvitation(id)
+        Invitation invitation = invitationService.getInvitation(id)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
 
         if (invitation.isNotForMe(provider.getId(token))) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
-        if (!teamInvitationService.endInvitation(id)) {
+        if (!invitationService.endInvitation(id)) {
             throw new RuntimeException("초대 거절에 실패했습니다.");
         }
 

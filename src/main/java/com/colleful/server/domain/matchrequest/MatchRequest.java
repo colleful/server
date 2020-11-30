@@ -1,4 +1,4 @@
-package com.colleful.server.domain.teammatchrequest;
+package com.colleful.server.domain.matchrequest;
 
 import com.colleful.server.domain.team.Team;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Getter
 @Setter
-public class TeamMatchRequest {
+public class MatchRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +32,9 @@ public class TeamMatchRequest {
     @JoinColumn(nullable = false)
     private Team receiver;
 
-    public TeamMatchRequest() {}
+    public MatchRequest() {}
 
-    public TeamMatchRequest(Team sender, Team receiver) {
+    public MatchRequest(Team sender, Team receiver) {
         this.sender = sender;
         this.receiver = receiver;
     }
