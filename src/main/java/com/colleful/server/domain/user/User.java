@@ -2,6 +2,7 @@ package com.colleful.server.domain.user;
 
 import com.colleful.server.domain.constant.Gender;
 import com.colleful.server.domain.department.Department;
+import com.colleful.server.domain.team.Team;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,8 +54,20 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String selfIntroduction;
 
+    @JoinColumn
+    @ManyToOne
+    private Team team;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
+
+    public void joinTeam(Team team) {
+        this.team = team;
+    }
+
+    public void leaveTeam() {
+        this.team = null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

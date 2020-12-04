@@ -75,6 +75,26 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public Boolean joinTeam(User user, Team team) {
+        try {
+            user.joinTeam(team);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Boolean leaveTeam(User user) {
+        try {
+            user.leaveTeam();
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Transactional
     public Boolean withdrawal(User user) {
         try {

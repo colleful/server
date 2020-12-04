@@ -1,19 +1,17 @@
 package com.colleful.server.domain.invitation;
 
 import com.colleful.server.domain.team.Team;
-import com.colleful.server.domain.teammember.TeamMember;
 import com.colleful.server.domain.user.User;
-import com.colleful.server.domain.user.UserDto.InvitationResponse;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.security.JwtProvider;
-import com.colleful.server.domain.teammember.TeamMemberService;
 import com.colleful.server.domain.team.TeamService;
 import com.colleful.server.domain.user.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,36 +28,34 @@ public class InvitationController {
 
     private final UserService userService;
     private final TeamService teamService;
-    private final TeamMemberService teamMemberService;
     private final InvitationService invitationService;
     private final JwtProvider provider;
 
     public InvitationController(UserService userService,
-        TeamService teamService, TeamMemberService teamMemberService,
+        TeamService teamService,
         InvitationService invitationService,
         JwtProvider provider) {
         this.userService = userService;
         this.teamService = teamService;
-        this.teamMemberService = teamMemberService;
         this.invitationService = invitationService;
         this.provider = provider;
     }
 
     @GetMapping
-    public List<InvitationResponse> getAllInvitations(@RequestHeader("Access-Token") String token) {
+    public List<InvitationDto.Response> getAllInvitations(@RequestHeader("Access-Token") String token) {
         User user = userService.getUserInfo(provider.getId(token))
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         List<Invitation> invitations = invitationService.getAllInvitations(user);
-        List<InvitationResponse> responses = new ArrayList<>();
+        List<InvitationDto.Response> responses = new ArrayList<>();
         for (Invitation invitation : invitations) {
-            responses.add(new InvitationResponse(invitation));
+            responses.add(new InvitationDto.Response(invitation));
         }
 
         return responses;
     }
 
-    @PostMapping("{team-id}/{user-id}")
+    @PostMapping("/{team-id}/{user-id}")
     public ResponseEntity<?> createMember(@RequestHeader(value = "Access-Token") String token,
         @PathVariable("team-id") Long teamId, @PathVariable("user-id") Long userId) {
         Team team = teamService.getTeamInfo(teamId)
@@ -67,7 +63,7 @@ public class InvitationController {
         User user = userService.getUserInfo(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (teamMemberService.alreadyJoined(team, user)) {
+        if (user.getTeam().getId().equals(team.getId())) {
             throw new ForbiddenBehaviorException("이미 가입된 유저입니다.");
         }
 
@@ -91,6 +87,7 @@ public class InvitationController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/{id}/accept")
     public ResponseEntity<?> acceptInvitation(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
@@ -105,8 +102,7 @@ public class InvitationController {
             throw new RuntimeException("초대 수락에 실패했습니다.");
         }
 
-        TeamMember member = new TeamMember(invitation.getTeam(), invitation.getUser());
-        if (!teamMemberService.addMember(member)) {
+        if (!userService.joinTeam(invitation.getUser(), invitation.getTeam())) {
             throw new RuntimeException("초대 수락에 실패했습니다.");
         }
 

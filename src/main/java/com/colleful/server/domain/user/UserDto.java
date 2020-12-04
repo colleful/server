@@ -2,7 +2,6 @@ package com.colleful.server.domain.user;
 
 import com.colleful.server.domain.constant.Gender;
 import com.colleful.server.global.exception.NotFoundResourceException;
-import com.colleful.server.domain.invitation.Invitation;
 import com.colleful.server.domain.department.DepartmentService;
 import java.util.Calendar;
 import java.util.Collections;
@@ -83,19 +82,5 @@ public class UserDto {
 
         private String email;
         private Integer code;
-    }
-
-    @Getter
-    public static class InvitationResponse {
-
-        private final Long id;
-        private final Long teamId;
-        private final String teamName;
-
-        public InvitationResponse(Invitation invitation) {
-            this.id = invitation.getId();
-            this.teamId = invitation.getTeam().getId();
-            this.teamName = invitation.getTeam().getTeamName();
-        }
     }
 }

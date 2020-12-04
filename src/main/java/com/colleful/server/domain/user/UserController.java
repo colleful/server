@@ -92,6 +92,18 @@ public class UserController {
         return new UserDto.Response(user);
     }
 
+    @PatchMapping("/teams")
+    public ResponseEntity<?> leaveTeam(@RequestHeader("Access-Token") String token) {
+        User user = userService.getUserInfo(provider.getId(token))
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        if (!userService.leaveTeam(user)) {
+            throw new RuntimeException("팀 탈퇴에 실패했습니다.");
+        }
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@RequestHeader("Access-Token") String token) {
         User user = userService.getUserInfo(provider.getId(token))
