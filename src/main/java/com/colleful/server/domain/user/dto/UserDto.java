@@ -7,21 +7,23 @@ import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.domain.department.service.DepartmentService;
 import java.util.Calendar;
 import java.util.Collections;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserDto {
 
     @Getter
+    @Builder
     public static class Request {
 
-        private String email;
-        private String password;
-        private String nickname;
-        private Integer birthYear;
-        private String gender;
-        private Long departmentId;
-        private String selfIntroduction;
+        private final String email;
+        private final String password;
+        private final String nickname;
+        private final Integer birthYear;
+        private final String gender;
+        private final Long departmentId;
+        private final String selfIntroduction;
 
         public User toEntity(PasswordEncoder passwordEncoder,
             DepartmentService departmentService) {

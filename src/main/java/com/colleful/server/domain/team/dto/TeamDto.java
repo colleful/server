@@ -4,15 +4,17 @@ import com.colleful.server.domain.team.domain.TeamStatus;
 import com.colleful.server.domain.team.domain.Team;
 import com.colleful.server.domain.user.domain.User;
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
 
 public class TeamDto {
 
     @Getter
+    @Builder
     public static class Request {
 
-        private String teamName;
-        private String status;
+        private final String teamName;
+        private final String status;
 
         public Team toEntity(User leader) {
             return Team.builder()

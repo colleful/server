@@ -55,24 +55,28 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         user.changeInfo(info);
+        userRepository.save(user);
     }
 
     public void changePassword(Long userId, String encodedPassword) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         user.changePassword(encodedPassword);
+        userRepository.save(user);
     }
 
     public void joinTeam(@NotNull Long userId, @NotNull Long teamId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         user.joinTeam(teamId);
+        userRepository.save(user);
     }
 
     public void leaveTeam(Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         user.leaveTeam();
+        userRepository.save(user);
     }
 
     @Transactional

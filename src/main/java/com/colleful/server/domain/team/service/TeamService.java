@@ -8,6 +8,7 @@ import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,12 +24,13 @@ public class TeamService {
     private final UserService userService;
 
     @Transactional
-    public void createTeam(TeamDto.Request dto, Long leaderId) {
+    public Long createTeam(TeamDto.Request dto, Long leaderId) {
         User leader = userService.getUserInfo(leaderId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         Team team = dto.toEntity(leader);
         teamRepository.save(team);
         userService.joinTeam(team.getLeaderId(), team.getId());
+        return team.getId();
     }
 
     public Page<Team> getAllTeams(Pageable pageable) {
@@ -66,6 +68,7 @@ public class TeamService {
         Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
         team.changeTeamName(teamName);
+        teamRepository.save(team);
     }
 
     public void updateTeamStatus(Long teamId, Long userId, TeamStatus status) {
@@ -82,6 +85,8 @@ public class TeamService {
     @Transactional
     public void deleteTeam(Long teamId) {
         clearMatch(teamId);
+        List<User> users = userService.getMembers(teamId);
+        users.forEach(user -> userService.leaveTeam(user.getId()));
         teamRepository.deleteById(teamId);
     }
 
@@ -94,6 +99,8 @@ public class TeamService {
                 .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
             team.endMatch();
             matchedTeam.endMatch();
+            teamRepository.save(team);
+            teamRepository.save(matchedTeam);
         }
     }
 
@@ -105,5 +112,7 @@ public class TeamService {
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
         sender.match(receiverId);
         receiver.match(senderId);
+        teamRepository.save(sender);
+        teamRepository.save(receiver);
     }
 }

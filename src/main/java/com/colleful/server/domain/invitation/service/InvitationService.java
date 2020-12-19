@@ -9,7 +9,6 @@ import com.colleful.server.domain.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class InvitationService {
 
-    InvitationRepository invitationRepository;
-    TeamService teamService;
-    UserService userService;
+    private final InvitationRepository invitationRepository;
+    private final TeamService teamService;
+    private final UserService userService;
 
     @Transactional
     public void invite(Long teamId, Long targetId, Long userId) {
@@ -29,8 +28,8 @@ public class InvitationService {
         User targetUser = userService.getUserInfo(targetId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (targetUser.getTeamId().equals(team.getId())) {
-            throw new ForbiddenBehaviorException("이미 가입된 유저입니다.");
+        if (targetUser.getTeamId() != null) {
+            throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
         }
 
         if (alreadyInvited(teamId, targetId)) {
@@ -49,10 +48,6 @@ public class InvitationService {
         invitationRepository.save(invitation);
     }
 
-    public Optional<Invitation> getInvitation(Long id) {
-        return invitationRepository.findById(id);
-    }
-
     public List<Invitation> getAllInvitations(Long userId) {
         User user = userService.getUserInfo(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
@@ -68,8 +63,8 @@ public class InvitationService {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
-        deleteInvitationInfo(invitationId);
         userService.joinTeam(invitation.getUser().getId(), invitation.getTeam().getId());
+        invitationRepository.deleteById(invitationId);
     }
 
     @Transactional
