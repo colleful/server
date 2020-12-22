@@ -8,7 +8,6 @@ import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MatchingRequestService {
 
-    MatchingRequestRepository matchingRequestRepository;
-    TeamService teamService;
-    UserService userService;
+    private final MatchingRequestRepository matchingRequestRepository;
+    private final TeamService teamService;
+    private final UserService userService;
 
     @Transactional
     public void sendMatchRequest(Long senderId, Long receiverId, Long userId) {
@@ -53,14 +52,16 @@ public class MatchingRequestService {
     public List<MatchingRequest> getAllMatchRequests(Long userId) {
         User user = userService.getUserInfo(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
         if (user.getTeamId() == null) {
-            return new ArrayList<>();
+            throw new ForbiddenBehaviorException("먼저 팀에 가입해주세요.");
         }
 
         Team team = teamService.getTeamInfo(user.getTeamId())
             .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
+
         if (team.isNotLeader(userId)) {
-            return new ArrayList<>();
+            throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");
         }
 
         return matchingRequestRepository.findAllByReceiver(team);

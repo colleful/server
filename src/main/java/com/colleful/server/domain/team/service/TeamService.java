@@ -80,6 +80,7 @@ public class TeamService {
         }
 
         team.changeStatus(status);
+        teamRepository.save(team);
     }
 
     @Transactional
