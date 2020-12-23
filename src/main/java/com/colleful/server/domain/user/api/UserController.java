@@ -50,17 +50,16 @@ public class UserController {
 
     @GetMapping("/teams/{team-id}")
     public List<UserDto.Response> getMembers(@PathVariable("team-id") Long teamId) {
-        List<User> members = userService.getMembers(teamId);
-        return members.stream().map(UserDto.Response::new)
+        List<User> users = userService.getMembers(teamId);
+        return users.stream().map(UserDto.Response::new)
             .collect(Collectors.toList());
     }
 
     @GetMapping("/nickname/{nickname}")
-    public UserDto.Response searchUserByNickname(@PathVariable String nickname) {
-        User user = userService
-            .getUserInfoByNickname(URLDecoder.decode(nickname, StandardCharsets.UTF_8))
-            .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
-        return new UserDto.Response(user);
+    public List<UserDto.Response> searchUserByNickname(@PathVariable String nickname) {
+        List<User> users = userService
+            .getUserInfoByNickname(URLDecoder.decode(nickname, StandardCharsets.UTF_8));
+        return users.stream().map(UserDto.Response::new).collect(Collectors.toList());
     }
 
     @PatchMapping

@@ -35,16 +35,12 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public Optional<User> getUserInfoByNickname(String nickname) {
-        return userRepository.findByNickname(nickname);
+    public List<User> getUserInfoByNickname(String nickname) {
+        return userRepository.findByNicknameContaining(nickname);
     }
 
     public List<User> getMembers(Long teamId) {
         return userRepository.findAllByTeamId(teamId);
-    }
-
-    public Page<User> getAllUserInfo(Pageable pageable){
-        return userRepository.findAll(pageable);
     }
 
     public Boolean isExist(String nickname) {
