@@ -1,157 +1,104 @@
 package com.colleful.server.domain.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
-import com.colleful.server.domain.department.domain.Department;
-import com.colleful.server.domain.department.repository.DepartmentRepository;
-import com.colleful.server.domain.team.domain.Team;
-import com.colleful.server.domain.team.dto.TeamDto;
-import com.colleful.server.domain.team.repository.TeamRepository;
-import com.colleful.server.domain.team.service.TeamService;
-import com.colleful.server.domain.user.domain.Gender;
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
 import com.colleful.server.domain.user.repository.UserRepository;
-import java.util.Collections;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.colleful.server.global.exception.ForbiddenBehaviorException;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    private final UserService userService;
-    private final TeamService teamService;
-    private final UserRepository userRepository;
-    private final TeamRepository teamRepository;
-    private final DepartmentRepository departmentRepository;
-    private final PasswordEncoder passwordEncoder;
+    @InjectMocks
+    private UserService userService;
 
-    private User user1;
-    private User user2;
-
-    @Autowired
-    public UserServiceTest(UserService userService,
-        TeamService teamService,
-        UserRepository userRepository,
-        TeamRepository teamRepository,
-        DepartmentRepository departmentRepository,
-        PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.teamService = teamService;
-        this.userRepository = userRepository;
-        this.teamRepository = teamRepository;
-        this.departmentRepository = departmentRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @BeforeEach
-    public void 사용자_생성() {
-        Department department = departmentRepository.findById(24L).orElse(null);
-        User user1 = User.builder()
-            .email("ssphil21e@jbnu.ac.kr")
-            .password(passwordEncoder.encode("aaa123"))
-            .nickname("박성필")
-            .birthYear(1999)
-            .gender(Gender.MALE)
-            .department(department)
-            .selfIntroduction("ㅎㅇ")
-            .roles(Collections.singletonList("ROLE_USER"))
-            .build();
-        userRepository.save(user1);
-        this.user1 = userRepository.findByEmail("ssphil21e@jbnu.ac.kr").orElse(null);
-
-        User user2 = User.builder()
-            .email("voiciphil@jbnu.ac.kr")
-            .password(passwordEncoder.encode("abc123"))
-            .nickname("패트")
-            .birthYear(1999)
-            .gender(Gender.MALE)
-            .department(department)
-            .selfIntroduction("안녕")
-            .roles(Collections.singletonList("ROLE_USER"))
-            .build();
-        userRepository.save(user2);
-        this.user2 = userRepository.findByEmail("voiciphil@jbnu.ac.kr").orElse(null);
-    }
-
-    @AfterEach
-    public void 사용자_삭제() {
-        if (user1 != null) {
-            user1 = userRepository.findById(user1.getId()).orElse(null);
-            userRepository.deleteById(user1.getId());
-        }
-
-        if (user2 != null) {
-            user2 = userRepository.findById(user2.getId()).orElse(null);
-            userRepository.deleteById(user2.getId());
-        }
-
-        if (user1 != null && user1.getTeamId() != null) {
-            teamRepository.deleteById(user1.getTeamId());
-        }
-
-        if (user2 != null && user2.getTeamId() != null
-            && !user1.getTeamId().equals(user2.getTeamId())) {
-            teamRepository.deleteById(user2.getTeamId());
-        }
-    }
+    @Mock
+    private UserRepository userRepository;
 
     @Test
     public void 회원_정보_변경() {
-        UserDto.Request dto = UserDto.Request.builder()
+        UserDto.Request dto1 = UserDto.Request.builder()
             .nickname("박성팔")
             .selfIntroduction("안녕하세요.")
             .build();
+        UserDto.Request dto2 = UserDto.Request.builder()
+            .nickname("박성팔")
+            .build();
+        UserDto.Request dto3 = UserDto.Request.builder()
+            .selfIntroduction("안녕하세요.")
+            .build();
 
-        userService.changeUserInfo(user1.getId(), dto);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(User.builder()
+            .nickname("박성필").selfIntroduction("안녕").build()));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(User.builder()
+            .nickname("박성필").selfIntroduction("안녕").build()));
+        when(userRepository.findById(3L)).thenReturn(Optional.of(User.builder()
+            .nickname("박성필").selfIntroduction("안녕").build()));
 
-        User result = userRepository.findById(user1.getId()).orElse(null);
-        assertThat(result.getNickname()).isEqualTo("박성팔");
-        assertThat(result.getSelfIntroduction()).isEqualTo("안녕하세요.");
+        userService.changeUserInfo(1L, dto1);
+        userService.changeUserInfo(2L, dto2);
+        userService.changeUserInfo(3L, dto3);
+
+        User result1 = userRepository.findById(1L).orElse(User.builder().build());
+        User result2 = userRepository.findById(2L).orElse(User.builder().build());
+        User result3 = userRepository.findById(3L).orElse(User.builder().build());
+
+        assertThat(result1.getNickname()).isEqualTo("박성팔");
+        assertThat(result1.getSelfIntroduction()).isEqualTo("안녕하세요.");
+        assertThat(result2.getNickname()).isEqualTo("박성팔");
+        assertThat(result2.getSelfIntroduction()).isEqualTo("안녕");
+        assertThat(result3.getNickname()).isEqualTo("박성필");
+        assertThat(result3.getSelfIntroduction()).isEqualTo("안녕하세요.");
     }
 
     @Test
     public void 비밀번호_변경() {
-        userService.changePassword(user1.getId(), passwordEncoder.encode("abc1234"));
+        when(userRepository.findById(1L))
+            .thenReturn(Optional.of(User.builder().password("password").build()));
 
-        User result = userRepository.findById(user1.getId()).orElse(null);
-        assertThat(passwordEncoder.matches("abc1234", result.getPassword())).isTrue();
+        userService.changePassword(1L, "new_password");
+
+        User result = userRepository.findById(1L).orElse(User.builder().build());
+        assertThat(result.getPassword()).isEqualTo("new_password");
     }
 
     @Test
     public void 팀_가입() {
-        TeamDto.Request dto = TeamDto.Request.builder().teamName("sample").build();
-        Long teamId = teamService.createTeam(dto, user1.getId());
+        when(userRepository.findById(1L))
+            .thenReturn(Optional.of(User.builder().build()));
 
-        userService.joinTeam(user2.getId(), teamId);
+        userService.joinTeam(1L, 1L);
 
-        User result = userRepository.findById(user2.getId()).orElse(null);
-        assertThat(result.getTeamId()).isNotNull();
+        User result = userRepository.findById(1L).orElse(User.builder().build());
+        assertThat(result.getTeamId()).isEqualTo(1L);
     }
 
     @Test
     public void 팀_탈퇴() {
-        TeamDto.Request dto = TeamDto.Request.builder().teamName("sample").build();
-        Team team = dto.toEntity(user1);
-        teamRepository.save(team);
-        userService.joinTeam(user2.getId(), team.getId());
+        when(userRepository.findById(1L))
+            .thenReturn(Optional.of(User.builder().teamId(1L).build()));
 
-        userService.leaveTeam(user2.getId());
+        userService.leaveTeam(1L);
 
-        User result = userRepository.findById(user2.getId()).orElse(null);
+        User result = userRepository.findById(1L).orElse(User.builder().build());
         assertThat(result.getTeamId()).isNull();
     }
 
     @Test
     public void 회원탈퇴() {
-        userService.withdrawal(user1.getId());
+        when(userRepository.findById(1L))
+            .thenReturn(Optional.of(User.builder().teamId(1L).build()));
 
-        User result = userRepository.findById(user1.getId()).orElse(null);
-        assertThat(result).isNull();
-        user1 = null;
+        assertThatThrownBy(() -> userService.withdrawal(1L))
+            .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }
