@@ -62,6 +62,12 @@ public class TeamController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    @PostMapping("/leave")
+    public ResponseEntity<?> leaveTeam(@RequestHeader("Access-Token") String token) {
+        teamService.leaveTeam(provider.getId(token));
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
         @PathVariable Long id, @RequestBody TeamDto.Request request) {
@@ -73,14 +79,7 @@ public class TeamController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTeam(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
-        Team team = teamService.getTeamInfo(id)
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
-
-        if (team.isNotLeader(provider.getId(token))) {
-            throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
-        }
-
-        teamService.deleteTeam(id);
+        teamService.deleteTeam(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

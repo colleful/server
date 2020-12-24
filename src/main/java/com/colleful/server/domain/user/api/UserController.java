@@ -48,11 +48,10 @@ public class UserController {
         return new UserDto.Response(user);
     }
 
-    @GetMapping("/teams/{team-id}")
+    @GetMapping("/members/{team-id}")
     public List<UserDto.Response> getMembers(@PathVariable("team-id") Long teamId) {
         List<User> users = userService.getMembers(teamId);
-        return users.stream().map(UserDto.Response::new)
-            .collect(Collectors.toList());
+        return users.stream().map(UserDto.Response::new).collect(Collectors.toList());
     }
 
     @GetMapping("/nickname/{nickname}")
@@ -65,9 +64,6 @@ public class UserController {
     @PatchMapping
     public ResponseEntity<?> changeUserInfo(@RequestHeader("Access-Token") String token,
         @RequestBody UserDto.Request request) {
-        if (userService.isExist(request.getNickname())) {
-            throw new AlreadyExistResourceException("중복된 닉네임입니다.");
-        }
         userService.changeUserInfo(provider.getId(token), request);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -77,12 +73,6 @@ public class UserController {
         @RequestBody UserDto.Request request) {
         userService.changePassword(provider.getId(token),
             passwordEncoder.encode(request.getPassword()));
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
-
-    @PatchMapping("/teams")
-    public ResponseEntity<?> leaveTeam(@RequestHeader("Access-Token") String token) {
-        userService.leaveTeam(provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

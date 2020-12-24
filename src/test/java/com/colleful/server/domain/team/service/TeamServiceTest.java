@@ -144,7 +144,7 @@ public class TeamServiceTest {
         assertThat(result1.getMatchedTeamId()).isEqualTo(result2.getId());
         assertThat(result2.getMatchedTeamId()).isEqualTo(result1.getId());
 
-        teamService.deleteTeam(team2);
+        teamService.deleteTeam(team2, user2.getId());
 
         Team result3 = teamRepository.findById(team1).orElse(null);
         Team result4 = teamRepository.findById(team2).orElse(null);

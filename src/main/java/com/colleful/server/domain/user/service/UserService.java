@@ -3,9 +3,9 @@ package com.colleful.server.domain.user.service;
 import com.colleful.server.domain.user.repository.UserRepository;
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
+import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
-import com.sun.istack.NotNull;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
@@ -48,6 +49,11 @@ public class UserService implements UserDetailsService {
     public void changeUserInfo(Long userId, UserDto.Request info) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        if (isExist(info.getNickname()) && !user.getNickname().equals(info.getNickname())) {
+            throw new AlreadyExistResourceException("중복된 닉네임입니다.");
+        }
+
         user.changeInfo(info);
     }
 
@@ -57,19 +63,6 @@ public class UserService implements UserDetailsService {
         user.changePassword(encodedPassword);
     }
 
-    public void joinTeam(@NotNull Long userId, @NotNull Long teamId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        user.joinTeam(teamId);
-    }
-
-    public void leaveTeam(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        user.leaveTeam();
-    }
-
-    @Transactional
     public void withdrawal(Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));

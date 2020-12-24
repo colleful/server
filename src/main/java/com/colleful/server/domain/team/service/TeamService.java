@@ -17,24 +17,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TeamService {
 
     private final TeamRepository teamRepository;
     private final UserService userService;
 
-    @Transactional
     public Long createTeam(TeamDto.Request dto, Long leaderId) {
         User leader = userService.getUserInfo(leaderId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         Team team = dto.toEntity(leader);
-        teamRepository.save(team);
-        userService.joinTeam(team.getLeaderId(), team.getId());
-        return team.getId();
-    }
-
-    public Page<Team> getAllTeams(Pageable pageable) {
-        return teamRepository.findAll(pageable);
+        Team result = teamRepository.save(team);
+        joinTeam(result.getLeaderId(), result.getId());
+        return result.getId();
     }
 
     public Optional<Team> getTeamInfo(Long id) {
@@ -83,11 +79,36 @@ public class TeamService {
         teamRepository.save(team);
     }
 
-    @Transactional
-    public void deleteTeam(Long teamId) {
+    public void joinTeam(Long userId, Long teamId) {
+        User user = userService.getUserInfo(userId)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        user.joinTeam(teamId);
+    }
+
+    public void leaveTeam(Long userId) {
+        User user = userService.getUserInfo(userId)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        Team team = teamRepository.findById(user.getTeamId())
+            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+
+        if (!team.isNotLeader(userId)) {
+            throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
+        }
+
+        user.leaveTeam();
+    }
+
+    public void deleteTeam(Long teamId, Long userId) {
+        Team team = teamRepository.findById(teamId)
+            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+
+        if (team.isNotLeader(userId)) {
+            throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
+        }
+
         clearMatch(teamId);
         List<User> users = userService.getMembers(teamId);
-        users.forEach(user -> userService.leaveTeam(user.getId()));
+        users.forEach(user -> leaveTeam(user.getId()));
         teamRepository.deleteById(teamId);
     }
 
@@ -105,7 +126,6 @@ public class TeamService {
         }
     }
 
-    @Transactional
     public void saveMatchInfo(Long senderId, Long receiverId){
         Team sender = teamRepository.findById(senderId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));

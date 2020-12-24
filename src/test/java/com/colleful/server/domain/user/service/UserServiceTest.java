@@ -72,28 +72,6 @@ public class UserServiceTest {
     }
 
     @Test
-    public void 팀_가입() {
-        when(userRepository.findById(1L))
-            .thenReturn(Optional.of(User.builder().build()));
-
-        userService.joinTeam(1L, 1L);
-
-        User result = userRepository.findById(1L).orElse(User.builder().build());
-        assertThat(result.getTeamId()).isEqualTo(1L);
-    }
-
-    @Test
-    public void 팀_탈퇴() {
-        when(userRepository.findById(1L))
-            .thenReturn(Optional.of(User.builder().teamId(1L).build()));
-
-        userService.leaveTeam(1L);
-
-        User result = userRepository.findById(1L).orElse(User.builder().build());
-        assertThat(result.getTeamId()).isNull();
-    }
-
-    @Test
     public void 회원탈퇴() {
         when(userRepository.findById(1L))
             .thenReturn(Optional.of(User.builder().teamId(1L).build()));
