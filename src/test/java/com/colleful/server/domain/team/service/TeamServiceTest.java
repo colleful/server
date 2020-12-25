@@ -1,154 +1,133 @@
 package com.colleful.server.domain.team.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.colleful.server.domain.department.domain.Department;
-import com.colleful.server.domain.department.repository.DepartmentRepository;
 import com.colleful.server.domain.team.domain.Team;
 import com.colleful.server.domain.team.domain.TeamStatus;
-import com.colleful.server.domain.team.dto.TeamDto;
 import com.colleful.server.domain.team.repository.TeamRepository;
-import com.colleful.server.domain.user.domain.Gender;
 import com.colleful.server.domain.user.domain.User;
-import com.colleful.server.domain.user.repository.UserRepository;
-import java.util.Collections;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import com.colleful.server.domain.user.service.UserService;
+import com.colleful.server.global.exception.ForbiddenBehaviorException;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class TeamServiceTest {
 
-    private final TeamService teamService;
-    private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
-    private final DepartmentRepository departmentRepository;
-    private final PasswordEncoder passwordEncoder;
+    @InjectMocks
+    private TeamService teamService;
+    @Mock
+    private UserService userService;
+    @Mock
+    private TeamRepository teamRepository;
 
-    private User user1;
-    private User user2;
+    @Test
+    public void 팀_정보_조회() {
+        when(userService.getUserInfo(1L))
+            .thenReturn(Optional.of(User.builder().id(1L).teamId(2L).build()));
+        when(teamRepository.findById(1L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(1L)
+                .status(TeamStatus.PENDING)
+                .leaderId(2L)
+                .build()));
 
-    @Autowired
-    public TeamServiceTest(TeamService teamService,
-        TeamRepository teamRepository,
-        UserRepository userRepository,
-        DepartmentRepository departmentRepository,
-        PasswordEncoder passwordEncoder) {
-        this.teamService = teamService;
-        this.teamRepository = teamRepository;
-        this.userRepository = userRepository;
-        this.departmentRepository = departmentRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @BeforeEach
-    public void 사용자_생성() {
-        Department department = departmentRepository.findById(24L).orElse(null);
-        User user1 = User.builder()
-            .email("ssphil21e@jbnu.ac.kr")
-            .password(passwordEncoder.encode("aaa123"))
-            .nickname("박성필")
-            .birthYear(1999)
-            .gender(Gender.MALE)
-            .department(department)
-            .selfIntroduction("ㅎㅇ")
-            .roles(Collections.singletonList("ROLE_USER"))
-            .build();
-        userRepository.save(user1);
-        this.user1 = userRepository.findByEmail("ssphil21e@jbnu.ac.kr").orElse(null);
-
-        User user2 = User.builder()
-            .email("voiciphil@jbnu.ac.kr")
-            .password(passwordEncoder.encode("abc123"))
-            .nickname("패트")
-            .birthYear(1999)
-            .gender(Gender.FEMALE)
-            .department(department)
-            .selfIntroduction("안녕")
-            .roles(Collections.singletonList("ROLE_USER"))
-            .build();
-        userRepository.save(user2);
-        this.user2 = userRepository.findByEmail("voiciphil@jbnu.ac.kr").orElse(null);
-    }
-
-    @AfterEach
-    public void 사용자_삭제() {
-        if (user1 != null) {
-            user1 = userRepository.findById(user1.getId()).orElse(null);
-            userRepository.deleteById(user1.getId());
-        }
-
-        if (user2 != null) {
-            user2 = userRepository.findById(user2.getId()).orElse(null);
-            userRepository.deleteById(user2.getId());
-        }
-
-        if (user1 != null && user1.getTeamId() != null) {
-            teamRepository.deleteById(user1.getTeamId());
-        }
-
-        if (user2 != null && user2.getTeamId() != null
-            && !user1.getTeamId().equals(user2.getTeamId())) {
-            teamRepository.deleteById(user2.getTeamId());
-        }
+        assertThatThrownBy(() -> teamService.getTeamInfo(1L, 1L))
+            .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
     @Test
-    public void 팀_생성() {
-        TeamDto.Request dto = TeamDto.Request.builder().teamName("컴공 강동원").build();
+    public void 팀_상태_변경() {
+        when(teamRepository.findById(1L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(1L)
+                .status(TeamStatus.PENDING)
+                .leaderId(1L)
+                .build()));
 
-        teamService.createTeam(dto, user1.getId());
+        teamService.updateTeamStatus(1L, 1L, TeamStatus.READY);
 
-        User user = userRepository.findById(user1.getId()).orElse(null);
-        assertThat(user.getTeamId()).isNotNull();
+        Team team = teamRepository.findById(1L).orElse(Team.builder().build());
+        assertThat(team.getStatus()).isEqualTo(TeamStatus.READY);
     }
 
     @Test
-    public void 팀_상태_변경_및_정보_조회() {
-        TeamDto.Request dto = TeamDto.Request.builder().teamName("컴공 강동원").build();
-        teamService.createTeam(dto, user1.getId());
+    public void 팀_가입() {
+        when(userService.getUserInfo(1L))
+            .thenReturn(Optional.of(User.builder().id(1L).build()));
 
-        User user = userRepository.findById(user1.getId()).orElse(null);
-        teamService.updateTeamStatus(user.getTeamId(), user1.getId(), TeamStatus.READY);
+        teamService.joinTeam(1L, 1L);
 
-        Team result = teamService.getTeamInfo(user.getTeamId()).orElse(null);
-        assertThat(result.getTeamName()).isEqualTo("컴공 강동원");
+        User user = userService.getUserInfo(1L).orElse(User.builder().build());
+        assertThat(user.getTeamId()).isEqualTo(1L);
     }
 
     @Test
-    public void 팀_이름_변경() {
-        TeamDto.Request dto = TeamDto.Request.builder().teamName("컴공 강동원").build();
-        teamService.createTeam(dto, user1.getId());
+    public void 팀_탈퇴() {
+        when(userService.getUserInfo(1L))
+            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
+        when(teamRepository.findById(1L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(1L)
+                .status(TeamStatus.PENDING)
+                .leaderId(2L)
+                .build()));
 
-        User user = userRepository.findById(user1.getId()).orElse(null);
-        teamService.changeTeamInfo(user.getTeamId(), "컴공 원빈");
+        teamService.leaveTeam(1L);
 
-        Team result = teamService.getTeamInfo(user.getTeamId()).orElse(null);
-        assertThat(result.getTeamName()).isEqualTo("컴공 원빈");
+        User user = userService.getUserInfo(1L).orElse(User.builder().build());
+        assertThat(user.getTeamId()).isNull();
     }
 
     @Test
-    public void 팀_매치_및_삭제() {
-        Long team1 = teamService
-            .createTeam(TeamDto.Request.builder().teamName("test1").build(), user1.getId());
-        Long team2 = teamService
-            .createTeam(TeamDto.Request.builder().teamName("test2").build(), user2.getId());
+    public void 팀_삭제_시_매칭_취소() {
+        when(teamRepository.findById(1L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(1L)
+                .status(TeamStatus.MATCHED)
+                .leaderId(1L)
+                .matchedTeamId(2L)
+                .build()));
+        when(teamRepository.findById(2L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(2L)
+                .status(TeamStatus.MATCHED)
+                .leaderId(2L)
+                .matchedTeamId(1L)
+                .build()));
 
-        teamService.saveMatchInfo(team1, team2);
+        teamService.deleteTeam(1L, 1L);
 
-        Team result1 = teamRepository.findById(team1).orElse(null);
-        Team result2 = teamRepository.findById(team2).orElse(null);
-        assertThat(result1.getMatchedTeamId()).isEqualTo(result2.getId());
-        assertThat(result2.getMatchedTeamId()).isEqualTo(result1.getId());
+        Team team = teamRepository.findById(2L).orElse(Team.builder().build());
+        assertThat(team.getMatchedTeamId()).isNull();
+        verify(teamRepository).deleteById(1L);
+    }
 
-        teamService.deleteTeam(team2, user2.getId());
+    @Test
+    public void 매칭() {
+        when(teamRepository.findById(1L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(1L)
+                .status(TeamStatus.PENDING)
+                .build()));
+        when(teamRepository.findById(2L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(2L)
+                .status(TeamStatus.READY)
+                .build()));
 
-        Team result3 = teamRepository.findById(team1).orElse(null);
-        Team result4 = teamRepository.findById(team2).orElse(null);
-        assertThat(result3.getMatchedTeamId()).isNull();
-        assertThat(result4).isNull();
+        teamService.saveMatchInfo(1L, 2L);
+
+        Team team1 = teamRepository.findById(1L).orElse(Team.builder().build());
+        Team team2 = teamRepository.findById(2L).orElse(Team.builder().build());
+        assertThat(team1.getMatchedTeamId()).isEqualTo(2L);
+        assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
     }
 }

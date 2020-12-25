@@ -2,6 +2,7 @@ package com.colleful.server.domain.user.domain;
 
 import com.colleful.server.domain.department.domain.Department;
 import com.colleful.server.domain.user.dto.UserDto.Request;
+import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,6 +80,9 @@ public class User implements UserDetails {
     }
 
     public void joinTeam(Long teamId) {
+        if (this.teamId != null) {
+            throw new ForbiddenBehaviorException("이미 다른 팀에 속해있습니다.");
+        }
         this.teamId = teamId;
     }
 

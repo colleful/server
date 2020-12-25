@@ -59,10 +59,6 @@ public class Team {
         return this.status.compareTo(TeamStatus.READY) != 0;
     }
 
-    public void changeTeamName(String teamName) {
-        this.teamName = teamName;
-    }
-
     public void changeStatus(TeamStatus status) {
         this.status = status;
     }

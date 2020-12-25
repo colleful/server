@@ -27,10 +27,9 @@ public class TeamService {
     public Long createTeam(TeamDto.Request dto, Long leaderId) {
         User leader = userService.getUserInfo(leaderId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        Team team = dto.toEntity(leader);
-        Team result = teamRepository.save(team);
-        joinTeam(result.getLeaderId(), result.getId());
-        return result.getId();
+        Team team = teamRepository.save(dto.toEntity(leader));
+        joinTeam(team.getLeaderId(), team.getId());
+        return team.getId();
     }
 
     public Optional<Team> getTeamInfo(Long id) {
@@ -43,7 +42,7 @@ public class TeamService {
         Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
-        if (team.isNotReady() || !user.getTeamId().equals(teamId)) {
+        if (team.isNotReady() && !user.getTeamId().equals(teamId)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
         }
 
@@ -60,13 +59,6 @@ public class TeamService {
                 TeamStatus.READY, teamName);
     }
 
-    public void changeTeamInfo(Long teamId, String teamName) {
-        Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
-        team.changeTeamName(teamName);
-        teamRepository.save(team);
-    }
-
     public void updateTeamStatus(Long teamId, Long userId, TeamStatus status) {
         Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
@@ -76,7 +68,6 @@ public class TeamService {
         }
 
         team.changeStatus(status);
-        teamRepository.save(team);
     }
 
     public void joinTeam(Long userId, Long teamId) {
@@ -108,7 +99,7 @@ public class TeamService {
 
         clearMatch(teamId);
         List<User> users = userService.getMembers(teamId);
-        users.forEach(user -> leaveTeam(user.getId()));
+        users.forEach(User::leaveTeam);
         teamRepository.deleteById(teamId);
     }
 
@@ -121,19 +112,15 @@ public class TeamService {
                 .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
             team.endMatch();
             matchedTeam.endMatch();
-            teamRepository.save(team);
-            teamRepository.save(matchedTeam);
         }
     }
 
-    public void saveMatchInfo(Long senderId, Long receiverId){
+    public void saveMatchInfo(Long senderId, Long receiverId) {
         Team sender = teamRepository.findById(senderId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
         Team receiver = teamRepository.findById(receiverId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
         sender.match(receiverId);
         receiver.match(senderId);
-        teamRepository.save(sender);
-        teamRepository.save(receiver);
     }
 }
