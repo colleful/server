@@ -89,24 +89,28 @@ public class TeamService {
         user.leaveTeam();
     }
 
-    public void deleteTeam(Long teamId, Long userId) {
-        Team team = teamRepository.findById(teamId)
+    public void deleteTeam(Long userId) {
+        User user = userService.getUserInfo(userId)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+
+        if (user.getTeamId() == null) {
+            throw new ForbiddenBehaviorException("팀이 없습니다.");
+        }
+
+        Team team = teamRepository.findById(user.getTeamId())
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
         if (team.isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 
-        clearMatch(teamId);
-        List<User> users = userService.getMembers(teamId);
+        clearMatch(team);
+        List<User> users = userService.getMembers(user.getTeamId());
         users.forEach(User::leaveTeam);
-        teamRepository.deleteById(teamId);
+        teamRepository.deleteById(user.getTeamId());
     }
 
-    public void clearMatch(Long teamId) {
-        Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
-
+    public void clearMatch(Team team) {
         if (team.getMatchedTeamId() != null) {
             Team matchedTeam = teamRepository.findById(team.getMatchedTeamId())
                 .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));

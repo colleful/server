@@ -88,6 +88,8 @@ public class TeamServiceTest {
 
     @Test
     public void 팀_삭제_시_매칭_취소() {
+        when(userService.getUserInfo(1L))
+            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -103,7 +105,7 @@ public class TeamServiceTest {
                 .matchedTeamId(1L)
                 .build()));
 
-        teamService.deleteTeam(1L, 1L);
+        teamService.deleteTeam(1L);
 
         Team team = teamRepository.findById(2L).orElse(Team.builder().build());
         assertThat(team.getMatchedTeamId()).isNull();

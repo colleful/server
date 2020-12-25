@@ -76,10 +76,9 @@ public class TeamController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTeam(@RequestHeader("Access-Token") String token,
-        @PathVariable Long id) {
-        teamService.deleteTeam(id, provider.getId(token));
+    @DeleteMapping
+    public ResponseEntity<?> deleteTeam(@RequestHeader("Access-Token") String token) {
+        teamService.deleteTeam(provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
