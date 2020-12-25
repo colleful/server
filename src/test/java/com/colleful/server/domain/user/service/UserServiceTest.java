@@ -24,39 +24,52 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Test
-    public void 회원_정보_변경() {
+    public void 회원_이름_자기소개_변경() {
         UserDto.Request dto1 = UserDto.Request.builder()
             .nickname("박성팔")
-            .selfIntroduction("안녕하세요.")
-            .build();
-        UserDto.Request dto2 = UserDto.Request.builder()
-            .nickname("박성팔")
-            .build();
-        UserDto.Request dto3 = UserDto.Request.builder()
             .selfIntroduction("안녕하세요.")
             .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(User.builder()
             .nickname("박성필").selfIntroduction("안녕").build()));
+
+        userService.changeUserInfo(1L, dto1);
+
+        User result1 = userRepository.findById(1L).orElse(User.builder().build());
+        assertThat(result1.getNickname()).isEqualTo("박성팔");
+        assertThat(result1.getSelfIntroduction()).isEqualTo("안녕하세요.");
+    }
+
+    @Test
+    public void 회원_이름_변경() {
+        UserDto.Request dto = UserDto.Request.builder()
+            .nickname("박성팔")
+            .build();
+
         when(userRepository.findById(2L)).thenReturn(Optional.of(User.builder()
             .nickname("박성필").selfIntroduction("안녕").build()));
+
+        userService.changeUserInfo(2L, dto);
+
+        User result = userRepository.findById(2L).orElse(User.builder().build());
+        assertThat(result.getNickname()).isEqualTo("박성팔");
+        assertThat(result.getSelfIntroduction()).isEqualTo("안녕");
+    }
+
+    @Test
+    public void 회원_자기소개_변경() {
+        UserDto.Request dto = UserDto.Request.builder()
+            .selfIntroduction("안녕하세요.")
+            .build();
+
         when(userRepository.findById(3L)).thenReturn(Optional.of(User.builder()
             .nickname("박성필").selfIntroduction("안녕").build()));
 
-        userService.changeUserInfo(1L, dto1);
-        userService.changeUserInfo(2L, dto2);
-        userService.changeUserInfo(3L, dto3);
+        userService.changeUserInfo(3L, dto);
 
-        User result1 = userRepository.findById(1L).orElse(User.builder().build());
-        User result2 = userRepository.findById(2L).orElse(User.builder().build());
-        User result3 = userRepository.findById(3L).orElse(User.builder().build());
-
-        assertThat(result1.getNickname()).isEqualTo("박성팔");
-        assertThat(result1.getSelfIntroduction()).isEqualTo("안녕하세요.");
-        assertThat(result2.getNickname()).isEqualTo("박성팔");
-        assertThat(result2.getSelfIntroduction()).isEqualTo("안녕");
-        assertThat(result3.getNickname()).isEqualTo("박성필");
-        assertThat(result3.getSelfIntroduction()).isEqualTo("안녕하세요.");
+        User result = userRepository.findById(3L).orElse(User.builder().build());
+        assertThat(result.getNickname()).isEqualTo("박성필");
+        assertThat(result.getSelfIntroduction()).isEqualTo("안녕하세요.");
     }
 
     @Test
