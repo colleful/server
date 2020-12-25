@@ -1,11 +1,11 @@
 package com.colleful.server.domain.matching.api;
 
-import com.colleful.server.domain.matching.dto.MatchingRequestDto.Response;
+import com.colleful.server.domain.matching.dto.MatchingRequestDto;
 import com.colleful.server.domain.matching.domain.MatchingRequest;
 import com.colleful.server.domain.matching.service.MatchingRequestService;
 import com.colleful.server.global.security.JwtProvider;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +27,11 @@ public class MatchingRequestController {
     private final JwtProvider provider;
 
     @GetMapping
-    public List<Response> getAllMatchRequests(@RequestHeader("Access-Token") String token) {
+    public List<MatchingRequestDto.Response> getAllMatchRequests(
+        @RequestHeader("Access-Token") String token) {
         List<MatchingRequest> matches = matchingRequestService
             .getAllMatchRequests(provider.getId(token));
-        List<Response> responses = new ArrayList<>();
-        for (MatchingRequest match : matches) {
-            responses.add(new Response(match));
-        }
-        return responses;
+        return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
     }
 
     @PostMapping("/{sender-id}/{receiver-id}")
