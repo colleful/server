@@ -39,7 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/api/departments/**").permitAll()
             .antMatchers("/api/**").hasRole("USER")
             .anyRequest().permitAll()
