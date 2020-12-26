@@ -106,8 +106,8 @@ public class TeamService {
 
         clearMatch(team);
         List<User> users = userService.getMembers(user.getTeamId());
-        users.forEach(User::leaveTeam);
         teamRepository.deleteById(user.getTeamId());
+        users.forEach(User::leaveTeam);
     }
 
     public void clearMatch(Team team) {
