@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class EmailVerificationService {
 
@@ -24,7 +25,6 @@ public class EmailVerificationService {
         return emailVerificationRepository.findByEmail(email);
     }
 
-    @Transactional
     public void sendEmail(String email) {
         Integer code = (int) (Math.random() * 900000 + 100000);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

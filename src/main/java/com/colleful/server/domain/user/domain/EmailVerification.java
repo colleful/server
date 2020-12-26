@@ -42,6 +42,10 @@ public class EmailVerification {
         this.isChecked = false;
     }
 
+    public boolean verify(Integer code) {
+        return this.code.equals(code);
+    }
+
     public void check() {
         this.isChecked = true;
     }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class InvitationService {
 
@@ -21,7 +22,6 @@ public class InvitationService {
     private final TeamService teamService;
     private final UserService userService;
 
-    @Transactional
     public void invite(Long teamId, Long targetId, Long userId) {
         Team team = teamService.getTeamInfo(teamId)
             .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
@@ -54,7 +54,6 @@ public class InvitationService {
         return invitationRepository.findAllByUser(user);
     }
 
-    @Transactional
     public void accept(Long invitationId, Long userId) {
         Invitation invitation = invitationRepository.findById(invitationId)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
@@ -67,7 +66,6 @@ public class InvitationService {
         invitationRepository.deleteById(invitationId);
     }
 
-    @Transactional
     public void refuse(Long invitationId, Long userId) {
         Invitation invitation = invitationRepository.findById(invitationId)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
@@ -76,11 +74,7 @@ public class InvitationService {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
-        deleteInvitationInfo(invitationId);
-    }
-
-    public void deleteInvitationInfo(Long id) {
-        invitationRepository.deleteById(id);
+        invitationRepository.deleteById(invitationId);
     }
 
     public boolean alreadyInvited(Long teamId, Long userId) {

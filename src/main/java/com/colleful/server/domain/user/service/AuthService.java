@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -25,7 +26,6 @@ public class AuthService {
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
     public void join(UserDto.Request dto) {
         EmailVerification emailVerification =
             emailVerificationService.getEmailVerificationInfo(dto.getEmail())
@@ -90,7 +90,7 @@ public class AuthService {
             emailVerificationService.getEmailVerificationInfo(dto.getEmail())
                 .orElseThrow(() -> new NotFoundResourceException("인증되지 않은 이메일입니다."));
 
-        if (!emailVerification.getCode().equals(dto.getCode())) {
+        if (!emailVerification.verify(dto.getCode())) {
             throw new InvalidCodeException("인증번호가 다릅니다.");
         }
 

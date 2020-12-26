@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MatchingRequestService {
 
@@ -21,7 +22,6 @@ public class MatchingRequestService {
     private final TeamService teamService;
     private final UserService userService;
 
-    @Transactional
     public void sendMatchRequest(Long senderId, Long receiverId, Long userId) {
         Team sender = teamService.getTeamInfo(senderId)
             .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
@@ -48,7 +48,6 @@ public class MatchingRequestService {
         matchingRequestRepository.save(match);
     }
 
-    @Transactional
     public List<MatchingRequest> getAllMatchRequests(Long userId) {
         User user = userService.getUserInfo(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
@@ -75,7 +74,6 @@ public class MatchingRequestService {
         return matchingRequestRepository.existsBySenderAndReceiver(sender, receiver);
     }
 
-    @Transactional
     public void accept(Long matchId, Long userId) {
         MatchingRequest match = matchingRequestRepository.findById(matchId)
             .orElseThrow(() -> new NotFoundResourceException("매칭 요청 정보가 없습니다."));
@@ -85,10 +83,9 @@ public class MatchingRequestService {
         }
 
         teamService.saveMatchInfo(match.getSender().getId(), match.getReceiver().getId());
-        deleteMatchInfo(matchId);
+        matchingRequestRepository.deleteById(matchId);
     }
 
-    @Transactional
     public void refuse(Long matchId, Long userId) {
         MatchingRequest match = matchingRequestRepository.findById(matchId)
             .orElseThrow(() -> new NotFoundResourceException("매칭 요청 정보가 없습니다."));
@@ -97,10 +94,6 @@ public class MatchingRequestService {
             throw new ForbiddenBehaviorException("리더만 매칭 거절할 수 있습니다.");
         }
 
-        deleteMatchInfo(matchId);
-    }
-
-    public void deleteMatchInfo(Long id) {
-        matchingRequestRepository.deleteById(id);
+        matchingRequestRepository.deleteById(matchId);
     }
 }
