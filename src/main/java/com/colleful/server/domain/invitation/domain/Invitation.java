@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -27,10 +29,12 @@ public class Invitation {
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Team team;
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     public Invitation(Team team, User user) {

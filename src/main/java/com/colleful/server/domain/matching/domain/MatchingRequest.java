@@ -2,6 +2,7 @@ package com.colleful.server.domain.matching.domain;
 
 import com.colleful.server.domain.team.domain.Team;
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -28,10 +31,12 @@ public class MatchingRequest {
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Team sender;
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Team receiver;
 
     public MatchingRequest(Team sender, Team receiver) {
