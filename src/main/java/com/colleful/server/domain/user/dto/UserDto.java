@@ -1,15 +1,9 @@
 package com.colleful.server.domain.user.dto;
 
-import com.colleful.server.domain.user.domain.Gender;
-import com.colleful.server.domain.department.domain.Department;
 import com.colleful.server.domain.user.domain.User;
-import com.colleful.server.global.exception.NotFoundResourceException;
-import com.colleful.server.domain.department.service.DepartmentService;
 import java.util.Calendar;
-import java.util.Collections;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserDto {
 
@@ -24,22 +18,6 @@ public class UserDto {
         private final String gender;
         private final Long departmentId;
         private final String selfIntroduction;
-
-        public User toEntity(PasswordEncoder passwordEncoder,
-            DepartmentService departmentService) {
-            Department department = departmentService.getDepartment(departmentId)
-                .orElseThrow(() -> new NotFoundResourceException("학과 정보가 없습니다."));
-            return User.builder()
-                .email(email)
-                .password(password == null ? null : passwordEncoder.encode(password))
-                .nickname(nickname)
-                .birthYear(birthYear)
-                .gender(gender == null ? null : Gender.valueOf(gender))
-                .department(department)
-                .selfIntroduction(selfIntroduction)
-                .roles(Collections.singletonList("ROLE_USER"))
-                .build();
-        }
     }
 
     @Getter

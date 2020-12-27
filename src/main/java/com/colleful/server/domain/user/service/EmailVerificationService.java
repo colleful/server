@@ -2,8 +2,6 @@ package com.colleful.server.domain.user.service;
 
 import com.colleful.server.domain.user.domain.EmailVerification;
 import com.colleful.server.domain.user.repository.EmailVerificationRepository;
-import com.colleful.server.global.exception.InvalidCodeException;
-import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

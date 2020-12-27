@@ -1,15 +1,19 @@
 package com.colleful.server.domain.user.service;
 
+import com.colleful.server.domain.department.domain.Department;
 import com.colleful.server.domain.department.service.DepartmentService;
 import com.colleful.server.domain.user.domain.EmailVerification;
+import com.colleful.server.domain.user.domain.Gender;
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
+import com.colleful.server.domain.user.repository.UserRepository;
 import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.InvalidCodeException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.exception.NotMatchedPasswordException;
 import com.colleful.server.global.exception.NotVerifiedEmailException;
 import com.colleful.server.global.security.JwtProvider;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final EmailVerificationService emailVerificationService;
     private final DepartmentService departmentService;
     private final JwtProvider provider;
@@ -35,16 +39,29 @@ public class AuthService {
             throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
         }
 
-        if (userService.isExist(dto.getEmail())) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
             throw new AlreadyExistResourceException("중복된 이메일입니다.");
         }
 
         emailVerificationService.deleteVerificationInfo(emailVerification.getId());
-        userService.join(dto.toEntity(passwordEncoder, departmentService));
+
+        Department department = departmentService.getDepartment(dto.getDepartmentId())
+            .orElseThrow(() -> new NotFoundResourceException("학과 정보가 없습니다."));
+        User user = User.builder()
+            .email(dto.getEmail())
+            .password(passwordEncoder.encode(dto.getPassword()))
+            .nickname(dto.getNickname())
+            .birthYear(dto.getBirthYear())
+            .gender(Gender.valueOf(dto.getGender()))
+            .department(department)
+            .selfIntroduction(dto.getSelfIntroduction())
+            .roles(Collections.singletonList("ROLE_USER"))
+            .build();
+        userRepository.save(user);
     }
 
     public String login(UserDto.LoginRequest dto) {
-        User user = userService.getUserInfoByEmail(dto.getEmail())
+        User user = userRepository.findByEmail(dto.getEmail())
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
@@ -55,7 +72,7 @@ public class AuthService {
     }
 
     public void sendEmailForRegistration(String email) {
-        if (userService.isExist(email)) {
+        if (userRepository.existsByEmail(email)) {
             throw new AlreadyExistResourceException("이미 가입된 유저입니다.");
         }
 
@@ -63,7 +80,7 @@ public class AuthService {
     }
 
     public void sendEmailForPassword(String email) {
-        if (!userService.isExist(email)) {
+        if (!userRepository.existsByEmail(email)) {
             throw new NotFoundResourceException("가입되지 않은 유저입니다.");
         }
 
@@ -71,7 +88,7 @@ public class AuthService {
     }
 
     public void changePassword(UserDto.LoginRequest dto) {
-        User user = userService.getUserInfoByEmail(dto.getEmail())
+        User user = userRepository.findByEmail(dto.getEmail())
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
         EmailVerification emailVerification =
             emailVerificationService.getEmailVerificationInfo(dto.getEmail())
@@ -82,7 +99,7 @@ public class AuthService {
         }
 
         emailVerificationService.deleteVerificationInfo(emailVerification.getId());
-        userService.changePassword(user.getId(), dto.getPassword());
+        user.changePassword(passwordEncoder.encode(dto.getPassword()));
     }
 
     public void checkEmail(UserDto.EmailRequest dto) {

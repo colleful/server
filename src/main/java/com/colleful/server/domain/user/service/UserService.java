@@ -22,16 +22,8 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public void join(User user) {
-        userRepository.save(user);
-    }
-
     public Optional<User> getUserInfo(Long id) {
         return userRepository.findById(id);
-    }
-
-    public Optional<User> getUserInfoByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 
     public List<User> getUserInfoByNickname(String nickname) {

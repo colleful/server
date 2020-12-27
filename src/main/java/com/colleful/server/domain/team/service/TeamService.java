@@ -27,7 +27,13 @@ public class TeamService {
     public Long createTeam(TeamDto.Request dto, Long leaderId) {
         User leader = userService.getUserInfo(leaderId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        Team team = teamRepository.save(dto.toEntity(leader));
+        Team team = Team.builder()
+            .teamName(dto.getTeamName())
+            .gender(leader.getGender())
+            .status(TeamStatus.PENDING)
+            .leaderId(leaderId)
+            .build();
+        teamRepository.save(team);
         joinTeam(team.getLeaderId(), team.getId());
         return team.getId();
     }

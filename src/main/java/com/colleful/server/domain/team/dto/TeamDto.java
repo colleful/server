@@ -1,8 +1,6 @@
 package com.colleful.server.domain.team.dto;
 
-import com.colleful.server.domain.team.domain.TeamStatus;
 import com.colleful.server.domain.team.domain.Team;
-import com.colleful.server.domain.user.domain.User;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,15 +13,6 @@ public class TeamDto {
 
         private final String teamName;
         private final String status;
-
-        public Team toEntity(User leader) {
-            return Team.builder()
-                .teamName(teamName)
-                .status(status == null ? TeamStatus.PENDING : TeamStatus.valueOf(status))
-                .leaderId(leader.getId())
-                .gender(leader.getGender())
-                .build();
-        }
     }
 
     @Getter
