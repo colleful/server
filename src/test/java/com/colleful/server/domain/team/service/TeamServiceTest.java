@@ -100,25 +100,4 @@ public class TeamServiceTest {
         assertThat(team.getMatchedTeamId()).isNull();
         verify(teamRepository).deleteById(1L);
     }
-
-    @Test
-    public void 매칭() {
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(Team.builder()
-                .id(1L)
-                .status(TeamStatus.PENDING)
-                .build()));
-        when(teamRepository.findById(2L))
-            .thenReturn(Optional.of(Team.builder()
-                .id(2L)
-                .status(TeamStatus.READY)
-                .build()));
-
-        teamService.saveMatchInfo(1L, 2L);
-
-        Team team1 = teamRepository.findById(1L).orElse(Team.builder().build());
-        Team team2 = teamRepository.findById(2L).orElse(Team.builder().build());
-        assertThat(team1.getMatchedTeamId()).isEqualTo(2L);
-        assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
-    }
 }

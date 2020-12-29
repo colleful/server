@@ -1,5 +1,6 @@
 package com.colleful.server.domain.matching.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -69,6 +70,8 @@ public class MatchingRequestServiceTest {
 
         matchingRequestService.accept(1L, 2L);
 
+        assertThat(team1.getMatchedTeamId()).isEqualTo(2L);
+        assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
         verify(matchingRequestRepository).deleteById(1L);
     }
 

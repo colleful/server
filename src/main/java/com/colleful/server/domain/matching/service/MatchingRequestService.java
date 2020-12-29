@@ -82,7 +82,7 @@ public class MatchingRequestService {
             throw new ForbiddenBehaviorException("리더만 매칭 수락할 수 있습니다.");
         }
 
-        teamService.saveMatchInfo(match.getSender().getId(), match.getReceiver().getId());
+        match.accept();
         matchingRequestRepository.deleteById(matchId);
     }
 

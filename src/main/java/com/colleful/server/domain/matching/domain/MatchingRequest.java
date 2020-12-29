@@ -43,4 +43,9 @@ public class MatchingRequest {
         this.sender = sender;
         this.receiver = receiver;
     }
+
+    public void accept() {
+        this.sender.match(this.receiver.getId());
+        this.receiver.match(this.sender.getId());
+    }
 }

@@ -118,13 +118,4 @@ public class TeamService {
             matchedTeam.endMatch();
         }
     }
-
-    public void saveMatchInfo(Long senderId, Long receiverId) {
-        Team sender = teamRepository.findById(senderId)
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
-        Team receiver = teamRepository.findById(receiverId)
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
-        sender.match(receiverId);
-        receiver.match(senderId);
-    }
 }
