@@ -28,7 +28,7 @@ public class MatchingRequestService {
         Team receiver = teamService.getTeamInfo(receiverId)
             .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
 
-        if (isAlreadyRequested(senderId, receiverId)) {
+        if (matchingRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
@@ -64,14 +64,6 @@ public class MatchingRequestService {
         }
 
         return matchingRequestRepository.findAllByReceiver(team);
-    }
-
-    public boolean isAlreadyRequested(Long senderId, Long receiverId) {
-        Team sender = teamService.getTeamInfo(senderId)
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
-        Team receiver = teamService.getTeamInfo(receiverId)
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
-        return matchingRequestRepository.existsBySenderAndReceiver(sender, receiver);
     }
 
     public void accept(Long matchId, Long userId) {

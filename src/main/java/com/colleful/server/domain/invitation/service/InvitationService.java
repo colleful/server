@@ -32,7 +32,7 @@ public class InvitationService {
             throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
         }
 
-        if (alreadyInvited(teamId, targetId)) {
+        if (invitationRepository.existsByTeamAndUser(team, targetUser)) {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
         }
 
@@ -75,13 +75,5 @@ public class InvitationService {
         }
 
         invitationRepository.deleteById(invitationId);
-    }
-
-    public boolean alreadyInvited(Long teamId, Long userId) {
-        Team team = teamService.getTeamInfo(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
-        User user = userService.getUserInfo(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        return invitationRepository.existsByTeamAndUser(team, user);
     }
 }
