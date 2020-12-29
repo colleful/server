@@ -28,7 +28,7 @@ public class InvitationService {
         User targetUser = userService.getUserInfo(targetId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (targetUser.getTeamId() != null) {
+        if (!targetUser.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
         }
 

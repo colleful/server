@@ -48,7 +48,7 @@ public class TeamService {
         Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
-        if (team.isNotReady() && !user.getTeamId().equals(teamId)) {
+        if (team.isNotReady() && user.isNotMember(teamId)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
         }
 
@@ -93,7 +93,7 @@ public class TeamService {
         User user = userService.getUserInfo(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (user.getTeamId() == null) {
+        if (user.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("팀이 없습니다.");
         }
 
@@ -110,8 +110,8 @@ public class TeamService {
         users.forEach(User::leaveTeam);
     }
 
-    public void clearMatch(Team team) {
-        if (team.getMatchedTeamId() != null) {
+    private void clearMatch(Team team) {
+        if (team.isMatched()) {
             Team matchedTeam = teamRepository.findById(team.getMatchedTeamId())
                 .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
             team.endMatch();

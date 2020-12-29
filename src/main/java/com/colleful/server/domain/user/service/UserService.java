@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (user.getTeamId() != null) {
+        if (!user.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("팀을 먼저 탈퇴해 주세요.");
         }
 

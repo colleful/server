@@ -59,6 +59,10 @@ public class Team {
         return this.status.compareTo(TeamStatus.READY) != 0;
     }
 
+    public boolean isMatched() {
+        return this.matchedTeamId != null;
+    }
+
     public void changeStatus(TeamStatus status) {
         this.status = status;
     }

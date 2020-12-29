@@ -88,6 +88,14 @@ public class User implements UserDetails {
         this.teamId = null;
     }
 
+    public boolean isNotOnAnyTeam() {
+        return this.teamId == null;
+    }
+
+    public boolean isNotMember(Long teamId) {
+        return !this.teamId.equals(teamId);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
