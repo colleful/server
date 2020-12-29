@@ -59,17 +59,6 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void 팀_가입() {
-        when(userService.getUserInfo(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).build()));
-
-        teamService.joinTeam(1L, 1L);
-
-        User user = userService.getUserInfo(1L).orElse(User.builder().build());
-        assertThat(user.getTeamId()).isEqualTo(1L);
-    }
-
-    @Test
     public void 팀_탈퇴() {
         when(userService.getUserInfo(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));

@@ -62,7 +62,7 @@ public class InvitationService {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
-        teamService.joinTeam(invitation.getUser().getId(), invitation.getTeam().getId());
+        invitation.accept();
         invitationRepository.deleteById(invitationId);
     }
 

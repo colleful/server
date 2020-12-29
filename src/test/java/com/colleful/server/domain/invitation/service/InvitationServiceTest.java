@@ -66,6 +66,7 @@ public class InvitationServiceTest {
 
         invitationService.accept(1L, 2L);
 
+        assertThat(user.getTeamId()).isEqualTo(1L);
         verify(invitationRepository).deleteById(1L);
     }
 

@@ -34,7 +34,7 @@ public class TeamService {
             .leaderId(leaderId)
             .build();
         teamRepository.save(team);
-        joinTeam(team.getLeaderId(), team.getId());
+        leader.joinTeam(team.getId());
         return team.getId();
     }
 
@@ -74,12 +74,6 @@ public class TeamService {
         }
 
         team.changeStatus(status);
-    }
-
-    public void joinTeam(Long userId, Long teamId) {
-        User user = userService.getUserInfo(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-        user.joinTeam(teamId);
     }
 
     public void leaveTeam(Long userId) {

@@ -45,4 +45,8 @@ public class Invitation {
     public boolean isNotForMe(Long userId) {
         return !this.user.getId().equals(userId);
     }
+
+    public void accept() {
+        this.user.joinTeam(this.team.getId());
+    }
 }
