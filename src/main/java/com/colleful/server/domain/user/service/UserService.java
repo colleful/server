@@ -34,15 +34,12 @@ public class UserService implements UserDetailsService {
         return userRepository.findAllByTeamId(teamId);
     }
 
-    public Boolean isExist(String nickname) {
-        return userRepository.existsByNickname(nickname);
-    }
-
     public void changeUserInfo(Long userId, UserDto.Request info) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (isExist(info.getNickname()) && !user.getNickname().equals(info.getNickname())) {
+        if (userRepository.existsByNickname(info.getNickname())
+            && !user.getNickname().equals(info.getNickname())) {
             throw new AlreadyExistResourceException("중복된 닉네임입니다.");
         }
 
