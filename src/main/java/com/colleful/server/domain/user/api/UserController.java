@@ -3,7 +3,6 @@ package com.colleful.server.domain.user.api;
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
 import com.colleful.server.domain.user.service.UserService;
-import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.security.JwtProvider;
 import java.net.URLDecoder;

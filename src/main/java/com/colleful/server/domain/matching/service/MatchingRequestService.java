@@ -52,7 +52,7 @@ public class MatchingRequestService {
         User user = userService.getUserInfo(userId)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
 
-        if (user.getTeamId() == null) {
+        if (user.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("먼저 팀에 가입해주세요.");
         }
 
