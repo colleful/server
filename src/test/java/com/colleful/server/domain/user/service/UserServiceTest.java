@@ -2,11 +2,13 @@ package com.colleful.server.domain.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
 import com.colleful.server.domain.user.repository.UserRepository;
+import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -41,7 +43,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void 회원_이름_변경() {
+    public void 회원_닉네임_변경() {
         UserDto.Request dto = UserDto.Request.builder()
             .nickname("박성팔")
             .build();
@@ -54,6 +56,20 @@ public class UserServiceTest {
         User result = userRepository.findById(2L).orElse(User.builder().build());
         assertThat(result.getNickname()).isEqualTo("박성팔");
         assertThat(result.getSelfIntroduction()).isEqualTo("안녕");
+    }
+
+    @Test
+    public void 회원_닉네임_중복() {
+        UserDto.Request dto = UserDto.Request.builder()
+            .nickname("박성팔")
+            .build();
+
+        when(userRepository.findById(2L)).thenReturn(Optional.of(User.builder()
+            .nickname("박성필").selfIntroduction("안녕").build()));
+        when(userRepository.existsByNickname("박성팔")).thenReturn(true);
+
+        assertThatThrownBy(() -> userService.changeUserInfo(2L, dto))
+            .isInstanceOf(AlreadyExistResourceException.class);
     }
 
     @Test
@@ -85,6 +101,16 @@ public class UserServiceTest {
 
     @Test
     public void 회원탈퇴() {
+        when(userRepository.findById(1L))
+            .thenReturn(Optional.of(User.builder().build()));
+
+        userService.withdrawal(1L);
+
+        verify(userRepository).deleteById(1L);
+    }
+
+    @Test
+    public void 회원탈퇴_불가() {
         when(userRepository.findById(1L))
             .thenReturn(Optional.of(User.builder().teamId(1L).build()));
 
