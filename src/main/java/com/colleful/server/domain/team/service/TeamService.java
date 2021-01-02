@@ -37,14 +37,14 @@ public class TeamService {
         return team.getId();
     }
 
-    public Optional<Team> getTeamInfo(Long id) {
-        return teamRepository.findById(id);
+    public Team getTeamInfo(Long id) {
+        return teamRepository.findById(id)
+            .orElseThrow(() -> new NotFoundResourceException("존재하지 않는 팀입니다."));
     }
 
     public Team getTeamInfo(Long teamId, Long userId) {
         User user = userService.getUserInfo(userId);
-        Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+        Team team = getTeamInfo(teamId);
 
         if (team.isNotReady() && user.isNotMember(teamId)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
@@ -76,8 +76,7 @@ public class TeamService {
 
     public void leaveTeam(Long userId) {
         User user = userService.getUserInfo(userId);
-        Team team = teamRepository.findById(user.getTeamId())
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+        Team team = getTeamInfo(user.getTeamId());
 
         if (!team.isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
@@ -93,8 +92,7 @@ public class TeamService {
             throw new ForbiddenBehaviorException("팀이 없습니다.");
         }
 
-        Team team = teamRepository.findById(user.getTeamId())
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+        Team team = getTeamInfo(user.getTeamId());
 
         if (team.isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
@@ -108,8 +106,7 @@ public class TeamService {
 
     private void clearMatch(Team team) {
         if (team.isMatched()) {
-            Team matchedTeam = teamRepository.findById(team.getMatchedTeamId())
-                .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+            Team matchedTeam = getTeamInfo(team.getMatchedTeamId());
             team.endMatch();
             matchedTeam.endMatch();
         }

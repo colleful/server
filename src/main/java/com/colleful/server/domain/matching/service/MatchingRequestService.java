@@ -23,10 +23,8 @@ public class MatchingRequestService {
     private final UserService userService;
 
     public void sendMatchRequest(Long senderId, Long receiverId, Long userId) {
-        Team sender = teamService.getTeamInfo(senderId)
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
-        Team receiver = teamService.getTeamInfo(receiverId)
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
+        Team sender = teamService.getTeamInfo(senderId);
+        Team receiver = teamService.getTeamInfo(receiverId);
 
         if (matchingRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
@@ -55,8 +53,7 @@ public class MatchingRequestService {
             throw new ForbiddenBehaviorException("먼저 팀에 가입해주세요.");
         }
 
-        Team team = teamService.getTeamInfo(user.getTeamId())
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
+        Team team = teamService.getTeamInfo(user.getTeamId());
 
         if (team.isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");

@@ -23,8 +23,7 @@ public class InvitationService {
     private final UserService userService;
 
     public void invite(Long teamId, Long targetId, Long userId) {
-        Team team = teamService.getTeamInfo(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
+        Team team = teamService.getTeamInfo(teamId);
         User targetUser = userService.getUserInfo(targetId);
 
         if (!targetUser.isNotOnAnyTeam()) {
