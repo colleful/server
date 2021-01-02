@@ -46,14 +46,18 @@ public class InvitationService {
         invitationRepository.save(invitation);
     }
 
+    public Invitation getInvitation(Long id) {
+        return invitationRepository.findById(id)
+            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
+    }
+
     public List<Invitation> getAllInvitations(Long userId) {
         User user = userService.getUserInfo(userId);
         return invitationRepository.findAllByUser(user);
     }
 
     public void accept(Long invitationId, Long userId) {
-        Invitation invitation = invitationRepository.findById(invitationId)
-            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
+        Invitation invitation = getInvitation(invitationId);
 
         if (invitation.isNotForMe(userId)) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
@@ -64,8 +68,7 @@ public class InvitationService {
     }
 
     public void refuse(Long invitationId, Long userId) {
-        Invitation invitation = invitationRepository.findById(invitationId)
-            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
+        Invitation invitation = getInvitation(invitationId);
 
         if (invitation.isNotForMe(userId)) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");

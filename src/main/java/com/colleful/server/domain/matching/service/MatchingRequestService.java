@@ -46,6 +46,11 @@ public class MatchingRequestService {
         matchingRequestRepository.save(match);
     }
 
+    public MatchingRequest getMatchingRequest(Long id) {
+        return matchingRequestRepository.findById(id)
+            .orElseThrow(() -> new NotFoundResourceException("매칭 요청이 없습니다."));
+    }
+
     public List<MatchingRequest> getAllMatchRequests(Long userId) {
         User user = userService.getUserInfo(userId);
 
@@ -62,26 +67,24 @@ public class MatchingRequestService {
         return matchingRequestRepository.findAllByReceiver(team);
     }
 
-    public void accept(Long matchId, Long userId) {
-        MatchingRequest match = matchingRequestRepository.findById(matchId)
-            .orElseThrow(() -> new NotFoundResourceException("매칭 요청 정보가 없습니다."));
+    public void accept(Long matchingId, Long userId) {
+        MatchingRequest match = getMatchingRequest(matchingId);
 
         if (match.getReceiver().isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 수락할 수 있습니다.");
         }
 
         match.accept();
-        matchingRequestRepository.deleteById(matchId);
+        matchingRequestRepository.deleteById(matchingId);
     }
 
-    public void refuse(Long matchId, Long userId) {
-        MatchingRequest match = matchingRequestRepository.findById(matchId)
-            .orElseThrow(() -> new NotFoundResourceException("매칭 요청 정보가 없습니다."));
+    public void refuse(Long matchingId, Long userId) {
+        MatchingRequest match = getMatchingRequest(matchingId);
 
         if (match.getReceiver().isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 거절할 수 있습니다.");
         }
 
-        matchingRequestRepository.deleteById(matchId);
+        matchingRequestRepository.deleteById(matchingId);
     }
 }
