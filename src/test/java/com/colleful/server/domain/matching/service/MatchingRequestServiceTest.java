@@ -37,19 +37,19 @@ public class MatchingRequestServiceTest {
     @Test
     public void 매치_요청() {
         when(teamService.getTeam(1L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
-                .build()));
+                .build());
         when(teamService.getTeam(2L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.READY)
-                .build()));
+                .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
         matchingRequestService.sendMatchRequest(1L, 2L, 1L);
@@ -60,19 +60,19 @@ public class MatchingRequestServiceTest {
     @Test
     public void 같은_성별_팀에게_매치_요청() {
         when(teamService.getTeam(1L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
-                .build()));
+                .build());
         when(teamService.getTeam(2L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.READY)
-                .build()));
+                .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
         assertThatThrownBy(() -> matchingRequestService.sendMatchRequest(1L, 2L, 1L))
@@ -82,19 +82,19 @@ public class MatchingRequestServiceTest {
     @Test
     public void 리더가_아닌_사용자가_매치_요청() {
         when(teamService.getTeam(1L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
-                .build()));
+                .build());
         when(teamService.getTeam(2L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.READY)
-                .build()));
+                .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
         assertThatThrownBy(() -> matchingRequestService.sendMatchRequest(1L, 2L, 3L))
@@ -104,19 +104,19 @@ public class MatchingRequestServiceTest {
     @Test
     public void 준비가_안_된_팀에게_매치_요청() {
         when(teamService.getTeam(1L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
-                .build()));
+                .build());
         when(teamService.getTeam(2L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.PENDING)
-                .build()));
+                .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
         assertThatThrownBy(() -> matchingRequestService.sendMatchRequest(1L, 2L, 1L))
@@ -126,9 +126,9 @@ public class MatchingRequestServiceTest {
     @Test
     public void 내_팀에게_온_모든_요청_확인() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamService.getTeam(1L))
-            .thenReturn(Optional.of(Team.builder().id(1L).leaderId(1L).build()));
+            .thenReturn(Team.builder().id(1L).leaderId(1L).build());
 
         matchingRequestService.getAllMatchRequests(1L);
 
@@ -138,7 +138,7 @@ public class MatchingRequestServiceTest {
     @Test
     public void 팀이_없는_사용자가_모든_요청_확인() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).build()));
+            .thenReturn(User.builder().id(1L).build());
 
         assertThatThrownBy(() -> matchingRequestService.getAllMatchRequests(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
@@ -147,9 +147,9 @@ public class MatchingRequestServiceTest {
     @Test
     public void 리더가_아닌_사용자가_내_팀에게_온_모든_요청_확인() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamService.getTeam(1L))
-            .thenReturn(Optional.of(Team.builder().id(1L).leaderId(2L).build()));
+            .thenReturn(Team.builder().id(1L).leaderId(2L).build());
 
         assertThatThrownBy(() -> matchingRequestService.getAllMatchRequests(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);

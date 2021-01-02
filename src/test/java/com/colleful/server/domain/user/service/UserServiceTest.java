@@ -32,12 +32,12 @@ public class UserServiceTest {
             .selfIntroduction("안녕하세요.")
             .build();
 
-        when(userRepository.findById(1L))
-            .thenReturn(User.builder().nickname("박성필").selfIntroduction("안녕").build());
+        when(userRepository.findById(1L)).thenReturn(Optional.of(User.builder()
+            .nickname("박성필").selfIntroduction("안녕").build()));
 
         userService.changeUserInfo(1L, dto1);
 
-        User result1 = userRepository.findById(1L).orElse(User.builder().build());
+        User result1 = userService.getUser(1L);
         assertThat(result1.getNickname()).isEqualTo("박성팔");
         assertThat(result1.getSelfIntroduction()).isEqualTo("안녕하세요.");
     }

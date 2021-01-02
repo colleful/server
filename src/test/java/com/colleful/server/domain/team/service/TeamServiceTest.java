@@ -33,7 +33,7 @@ public class TeamServiceTest {
     @Test
     public void 준비된_팀_정보_조회() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).build()));
+            .thenReturn(User.builder().id(1L).build());
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -48,7 +48,7 @@ public class TeamServiceTest {
     @Test
     public void 자기_팀_정보_조회() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -63,7 +63,7 @@ public class TeamServiceTest {
     @Test
     public void 속하지_않고_준비되지_않은_팀_정보_조회() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).teamId(2L).build()));
+            .thenReturn(User.builder().id(1L).teamId(2L).build());
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -106,7 +106,7 @@ public class TeamServiceTest {
     @Test
     public void 팀_탈퇴() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -116,14 +116,14 @@ public class TeamServiceTest {
 
         teamService.leaveTeam(1L);
 
-        User user = userService.getUser(1L).orElse(User.builder().build());
+        User user = userService.getUser(1L);
         assertThat(user.getTeamId()).isNull();
     }
 
     @Test
     public void 리더가_팀_탈퇴() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -138,7 +138,7 @@ public class TeamServiceTest {
     @Test
     public void 팀이_없는_사용자가_팀_삭제() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).build()));
+            .thenReturn(User.builder().id(1L).build());
 
         assertThatThrownBy(() -> teamService.deleteTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
@@ -147,7 +147,7 @@ public class TeamServiceTest {
     @Test
     public void 리더가_아닌_사용자가_팀_삭제() {
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -168,9 +168,9 @@ public class TeamServiceTest {
         members.add(user2);
 
         when(userService.getUser(1L))
-            .thenReturn(Optional.of(user1));
+            .thenReturn(user1);
         when(userService.getUser(2L))
-            .thenReturn(Optional.of(user2));
+            .thenReturn(user2);
         when(userService.getMembers(1L))
             .thenReturn(members);
         when(teamRepository.findById(1L))
@@ -190,8 +190,8 @@ public class TeamServiceTest {
 
         teamService.deleteTeam(1L);
 
-        Team team = teamRepository.findById(2L).orElse(Team.builder().build());
-        User user = userService.getUser(2L).orElse(User.builder().build());
+        Team team = teamService.getTeam(2L);
+        User user = userService.getUser(2L);
         assertThat(team.getMatchedTeamId()).isNull();
         assertThat(user.getTeamId()).isNull();
         verify(teamRepository).deleteById(1L);

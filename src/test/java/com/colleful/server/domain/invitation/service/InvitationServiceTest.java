@@ -35,14 +35,14 @@ public class InvitationServiceTest {
     @Test
     public void 초대() {
         when(teamService.getTeam(1L))
-            .thenReturn(Optional.of(Team.builder()
+            .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
-                .build()));
+                .build());
         when(userService.getUser(2L))
-            .thenReturn(Optional.of(User.builder().id(2L).gender(Gender.MALE).build()));
+            .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
         invitationService.invite(1L, 2L, 1L);
 
