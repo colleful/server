@@ -6,8 +6,6 @@ import com.colleful.server.domain.team.dto.TeamDto;
 import com.colleful.server.domain.team.dto.TeamDto.Response;
 import com.colleful.server.domain.team.service.TeamService;
 import com.colleful.server.global.dto.PageDto;
-import com.colleful.server.global.exception.ForbiddenBehaviorException;
-import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,7 +42,7 @@ public class TeamController {
     @GetMapping("/{id}")
     public TeamDto.Response getTeamInfo(@RequestHeader(value = "Access-Token") String token,
         @PathVariable Long id) {
-        Team team = teamService.getTeamInfo(id, provider.getId(token));
+        Team team = teamService.getTeam(id, provider.getId(token));
         return new TeamDto.Response(team);
     }
 

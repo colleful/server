@@ -7,7 +7,6 @@ import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +21,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public User getUserInfo(Long id) {
+    public User getUser(Long id) {
         return userRepository.findById(id)
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
     }
@@ -36,7 +35,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void changeUserInfo(Long userId, UserDto.Request info) {
-        User user = getUserInfo(userId);
+        User user = getUser(userId);
 
         if (userRepository.existsByNickname(info.getNickname())
             && !user.getNickname().equals(info.getNickname())) {
@@ -47,12 +46,12 @@ public class UserService implements UserDetailsService {
     }
 
     public void changePassword(Long userId, String encodedPassword) {
-        User user = getUserInfo(userId);
+        User user = getUser(userId);
         user.changePassword(encodedPassword);
     }
 
     public void withdrawal(Long userId) {
-        User user = getUserInfo(userId);
+        User user = getUser(userId);
 
         if (!user.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("팀을 먼저 탈퇴해 주세요.");

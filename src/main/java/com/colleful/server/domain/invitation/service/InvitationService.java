@@ -23,8 +23,8 @@ public class InvitationService {
     private final UserService userService;
 
     public void invite(Long teamId, Long targetId, Long userId) {
-        Team team = teamService.getTeamInfo(teamId);
-        User targetUser = userService.getUserInfo(targetId);
+        Team team = teamService.getTeam(teamId);
+        User targetUser = userService.getUser(targetId);
 
         if (!targetUser.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
@@ -52,7 +52,7 @@ public class InvitationService {
     }
 
     public List<Invitation> getAllInvitations(Long userId) {
-        User user = userService.getUserInfo(userId);
+        User user = userService.getUser(userId);
         return invitationRepository.findAllByUser(user);
     }
 

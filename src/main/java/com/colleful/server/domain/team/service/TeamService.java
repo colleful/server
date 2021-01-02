@@ -9,7 +9,6 @@ import com.colleful.server.domain.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,7 @@ public class TeamService {
     private final UserService userService;
 
     public Long createTeam(TeamDto.Request dto, Long leaderId) {
-        User leader = userService.getUserInfo(leaderId);
+        User leader = userService.getUser(leaderId);
         Team team = Team.builder()
             .teamName(dto.getTeamName())
             .gender(leader.getGender())
@@ -37,14 +36,14 @@ public class TeamService {
         return team.getId();
     }
 
-    public Team getTeamInfo(Long id) {
+    public Team getTeam(Long id) {
         return teamRepository.findById(id)
             .orElseThrow(() -> new NotFoundResourceException("존재하지 않는 팀입니다."));
     }
 
-    public Team getTeamInfo(Long teamId, Long userId) {
-        User user = userService.getUserInfo(userId);
-        Team team = getTeamInfo(teamId);
+    public Team getTeam(Long teamId, Long userId) {
+        User user = userService.getUser(userId);
+        Team team = getTeam(teamId);
 
         if (team.isNotReady() && user.isNotMember(teamId)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
@@ -75,8 +74,8 @@ public class TeamService {
     }
 
     public void leaveTeam(Long userId) {
-        User user = userService.getUserInfo(userId);
-        Team team = getTeamInfo(user.getTeamId());
+        User user = userService.getUser(userId);
+        Team team = getTeam(user.getTeamId());
 
         if (!team.isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
@@ -86,13 +85,13 @@ public class TeamService {
     }
 
     public void deleteTeam(Long userId) {
-        User user = userService.getUserInfo(userId);
+        User user = userService.getUser(userId);
 
         if (user.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("팀이 없습니다.");
         }
 
-        Team team = getTeamInfo(user.getTeamId());
+        Team team = getTeam(user.getTeamId());
 
         if (team.isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
@@ -106,7 +105,7 @@ public class TeamService {
 
     private void clearMatch(Team team) {
         if (team.isMatched()) {
-            Team matchedTeam = getTeamInfo(team.getMatchedTeamId());
+            Team matchedTeam = getTeam(team.getMatchedTeamId());
             team.endMatch();
             matchedTeam.endMatch();
         }

@@ -36,14 +36,14 @@ public class MatchingRequestServiceTest {
 
     @Test
     public void 매치_요청() {
-        when(teamService.getTeamInfo(1L))
+        when(teamService.getTeam(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build()));
-        when(teamService.getTeamInfo(2L))
+        when(teamService.getTeam(2L))
             .thenReturn(Optional.of(Team.builder()
                 .id(2L)
                 .leaderId(2L)
@@ -59,14 +59,14 @@ public class MatchingRequestServiceTest {
 
     @Test
     public void 같은_성별_팀에게_매치_요청() {
-        when(teamService.getTeamInfo(1L))
+        when(teamService.getTeam(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build()));
-        when(teamService.getTeamInfo(2L))
+        when(teamService.getTeam(2L))
             .thenReturn(Optional.of(Team.builder()
                 .id(2L)
                 .leaderId(2L)
@@ -81,14 +81,14 @@ public class MatchingRequestServiceTest {
 
     @Test
     public void 리더가_아닌_사용자가_매치_요청() {
-        when(teamService.getTeamInfo(1L))
+        when(teamService.getTeam(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build()));
-        when(teamService.getTeamInfo(2L))
+        when(teamService.getTeam(2L))
             .thenReturn(Optional.of(Team.builder()
                 .id(2L)
                 .leaderId(2L)
@@ -103,14 +103,14 @@ public class MatchingRequestServiceTest {
 
     @Test
     public void 준비가_안_된_팀에게_매치_요청() {
-        when(teamService.getTeamInfo(1L))
+        when(teamService.getTeam(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build()));
-        when(teamService.getTeamInfo(2L))
+        when(teamService.getTeam(2L))
             .thenReturn(Optional.of(Team.builder()
                 .id(2L)
                 .leaderId(2L)
@@ -125,9 +125,9 @@ public class MatchingRequestServiceTest {
 
     @Test
     public void 내_팀에게_온_모든_요청_확인() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
-        when(teamService.getTeamInfo(1L))
+        when(teamService.getTeam(1L))
             .thenReturn(Optional.of(Team.builder().id(1L).leaderId(1L).build()));
 
         matchingRequestService.getAllMatchRequests(1L);
@@ -137,7 +137,7 @@ public class MatchingRequestServiceTest {
 
     @Test
     public void 팀이_없는_사용자가_모든_요청_확인() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).build()));
 
         assertThatThrownBy(() -> matchingRequestService.getAllMatchRequests(1L))
@@ -146,9 +146,9 @@ public class MatchingRequestServiceTest {
 
     @Test
     public void 리더가_아닌_사용자가_내_팀에게_온_모든_요청_확인() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
-        when(teamService.getTeamInfo(1L))
+        when(teamService.getTeam(1L))
             .thenReturn(Optional.of(Team.builder().id(1L).leaderId(2L).build()));
 
         assertThatThrownBy(() -> matchingRequestService.getAllMatchRequests(1L))

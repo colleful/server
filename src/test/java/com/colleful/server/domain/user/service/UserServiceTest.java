@@ -32,8 +32,8 @@ public class UserServiceTest {
             .selfIntroduction("안녕하세요.")
             .build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(User.builder()
-            .nickname("박성필").selfIntroduction("안녕").build()));
+        when(userRepository.findById(1L))
+            .thenReturn(User.builder().nickname("박성필").selfIntroduction("안녕").build());
 
         userService.changeUserInfo(1L, dto1);
 

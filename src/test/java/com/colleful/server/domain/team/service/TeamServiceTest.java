@@ -32,7 +32,7 @@ public class TeamServiceTest {
 
     @Test
     public void 준비된_팀_정보_조회() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).build()));
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
@@ -41,13 +41,13 @@ public class TeamServiceTest {
                 .leaderId(2L)
                 .build()));
 
-        Team team = teamService.getTeamInfo(1L, 1L);
+        Team team = teamService.getTeam(1L, 1L);
         assertThat(team.getId()).isEqualTo(1L);
     }
 
     @Test
     public void 자기_팀_정보_조회() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
@@ -56,13 +56,13 @@ public class TeamServiceTest {
                 .leaderId(2L)
                 .build()));
 
-        Team team = teamService.getTeamInfo(1L, 1L);
+        Team team = teamService.getTeam(1L, 1L);
         assertThat(team.getId()).isEqualTo(1L);
     }
 
     @Test
     public void 속하지_않고_준비되지_않은_팀_정보_조회() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(2L).build()));
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
@@ -71,7 +71,7 @@ public class TeamServiceTest {
                 .leaderId(2L)
                 .build()));
 
-        assertThatThrownBy(() -> teamService.getTeamInfo(1L, 1L))
+        assertThatThrownBy(() -> teamService.getTeam(1L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -105,7 +105,7 @@ public class TeamServiceTest {
 
     @Test
     public void 팀_탈퇴() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
@@ -116,13 +116,13 @@ public class TeamServiceTest {
 
         teamService.leaveTeam(1L);
 
-        User user = userService.getUserInfo(1L).orElse(User.builder().build());
+        User user = userService.getUser(1L).orElse(User.builder().build());
         assertThat(user.getTeamId()).isNull();
     }
 
     @Test
     public void 리더가_팀_탈퇴() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
@@ -137,7 +137,7 @@ public class TeamServiceTest {
 
     @Test
     public void 팀이_없는_사용자가_팀_삭제() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).build()));
 
         assertThatThrownBy(() -> teamService.deleteTeam(1L))
@@ -146,7 +146,7 @@ public class TeamServiceTest {
 
     @Test
     public void 리더가_아닌_사용자가_팀_삭제() {
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(User.builder().id(1L).teamId(1L).build()));
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
@@ -167,9 +167,9 @@ public class TeamServiceTest {
         members.add(user1);
         members.add(user2);
 
-        when(userService.getUserInfo(1L))
+        when(userService.getUser(1L))
             .thenReturn(Optional.of(user1));
-        when(userService.getUserInfo(2L))
+        when(userService.getUser(2L))
             .thenReturn(Optional.of(user2));
         when(userService.getMembers(1L))
             .thenReturn(members);
@@ -191,7 +191,7 @@ public class TeamServiceTest {
         teamService.deleteTeam(1L);
 
         Team team = teamRepository.findById(2L).orElse(Team.builder().build());
-        User user = userService.getUserInfo(2L).orElse(User.builder().build());
+        User user = userService.getUser(2L).orElse(User.builder().build());
         assertThat(team.getMatchedTeamId()).isNull();
         assertThat(user.getTeamId()).isNull();
         verify(teamRepository).deleteById(1L);

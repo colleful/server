@@ -3,7 +3,6 @@ package com.colleful.server.domain.user.api;
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
 import com.colleful.server.domain.user.service.UserService;
-import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.security.JwtProvider;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -35,13 +34,13 @@ public class UserController {
 
     @GetMapping
     public UserDto.Response getMyInfo(@RequestHeader("Access-Token") String token) {
-        User user = userService.getUserInfo(provider.getId(token));
+        User user = userService.getUser(provider.getId(token));
         return new UserDto.Response(user);
     }
 
     @GetMapping("/{id}")
     public UserDto.Response getUserInfo(@PathVariable Long id) {
-        User user = userService.getUserInfo(id);
+        User user = userService.getUser(id);
         return new UserDto.Response(user);
     }
 
