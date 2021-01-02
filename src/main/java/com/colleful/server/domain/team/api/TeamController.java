@@ -5,8 +5,12 @@ import com.colleful.server.domain.team.domain.Team;
 import com.colleful.server.domain.team.dto.TeamDto;
 import com.colleful.server.domain.team.dto.TeamDto.Response;
 import com.colleful.server.domain.team.service.TeamService;
+import com.colleful.server.domain.user.domain.User;
+import com.colleful.server.domain.user.dto.UserDto;
 import com.colleful.server.global.dto.PageDto;
 import com.colleful.server.global.security.JwtProvider;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +55,12 @@ public class TeamController {
         @PathVariable("team-name") String teamName) {
         Page<Team> teams = teamService.searchTeams(request, teamName);
         return new PageDto.Response<>(teams.map(TeamDto.Response::new));
+    }
+
+    @GetMapping("/{id}/members")
+    public List<UserDto.Response> getMembers(@PathVariable Long id) {
+        List<User> users = teamService.getMembers(id);
+        return users.stream().map(UserDto.Response::new).collect(Collectors.toList());
     }
 
     @PostMapping

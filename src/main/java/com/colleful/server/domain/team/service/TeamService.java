@@ -56,6 +56,10 @@ public class TeamService {
         return teamRepository.findAllByStatusOrderByUpdatedAtDesc(pageable, TeamStatus.READY);
     }
 
+    public List<User> getMembers(Long teamId) {
+        return userService.getMembers(teamId);
+    }
+
     public Page<Team> searchTeams(Pageable pageable, String teamName) {
         return teamRepository
             .findAllByStatusAndTeamNameContainingOrderByUpdatedAtDesc(pageable,
@@ -63,8 +67,7 @@ public class TeamService {
     }
 
     public void updateStatus(Long teamId, Long userId, TeamStatus status) {
-        Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
+        Team team = getTeam(teamId);
 
         if (team.isNotLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");

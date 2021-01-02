@@ -44,12 +44,6 @@ public class UserController {
         return new UserDto.Response(user);
     }
 
-    @GetMapping("/members/{team-id}")
-    public List<UserDto.Response> getMembers(@PathVariable("team-id") Long teamId) {
-        List<User> users = userService.getMembers(teamId);
-        return users.stream().map(UserDto.Response::new).collect(Collectors.toList());
-    }
-
     @GetMapping("/nickname/{nickname}")
     public List<UserDto.Response> searchUserByNickname(@PathVariable String nickname) {
         List<User> users = userService
