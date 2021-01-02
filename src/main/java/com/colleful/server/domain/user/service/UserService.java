@@ -22,8 +22,9 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public Optional<User> getUserInfo(Long id) {
-        return userRepository.findById(id);
+    public User getUserInfo(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
     }
 
     public List<User> getUserInfoByNickname(String nickname) {
@@ -35,8 +36,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void changeUserInfo(Long userId, UserDto.Request info) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = getUserInfo(userId);
 
         if (userRepository.existsByNickname(info.getNickname())
             && !user.getNickname().equals(info.getNickname())) {
@@ -47,14 +47,12 @@ public class UserService implements UserDetailsService {
     }
 
     public void changePassword(Long userId, String encodedPassword) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = getUserInfo(userId);
         user.changePassword(encodedPassword);
     }
 
     public void withdrawal(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = getUserInfo(userId);
 
         if (!user.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("팀을 먼저 탈퇴해 주세요.");

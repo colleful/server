@@ -25,8 +25,7 @@ public class InvitationService {
     public void invite(Long teamId, Long targetId, Long userId) {
         Team team = teamService.getTeamInfo(teamId)
             .orElseThrow(() -> new NotFoundResourceException("생성되지 않은 팀입니다."));
-        User targetUser = userService.getUserInfo(targetId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User targetUser = userService.getUserInfo(targetId);
 
         if (!targetUser.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
@@ -49,8 +48,7 @@ public class InvitationService {
     }
 
     public List<Invitation> getAllInvitations(Long userId) {
-        User user = userService.getUserInfo(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = userService.getUserInfo(userId);
         return invitationRepository.findAllByUser(user);
     }
 

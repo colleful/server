@@ -25,8 +25,7 @@ public class TeamService {
     private final UserService userService;
 
     public Long createTeam(TeamDto.Request dto, Long leaderId) {
-        User leader = userService.getUserInfo(leaderId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User leader = userService.getUserInfo(leaderId);
         Team team = Team.builder()
             .teamName(dto.getTeamName())
             .gender(leader.getGender())
@@ -43,8 +42,7 @@ public class TeamService {
     }
 
     public Team getTeamInfo(Long teamId, Long userId) {
-        User user = userService.getUserInfo(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = userService.getUserInfo(userId);
         Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
@@ -77,8 +75,7 @@ public class TeamService {
     }
 
     public void leaveTeam(Long userId) {
-        User user = userService.getUserInfo(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = userService.getUserInfo(userId);
         Team team = teamRepository.findById(user.getTeamId())
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 
@@ -90,8 +87,7 @@ public class TeamService {
     }
 
     public void deleteTeam(Long userId) {
-        User user = userService.getUserInfo(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = userService.getUserInfo(userId);
 
         if (user.isNotOnAnyTeam()) {
             throw new ForbiddenBehaviorException("팀이 없습니다.");

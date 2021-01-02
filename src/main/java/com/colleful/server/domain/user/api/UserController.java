@@ -35,15 +35,13 @@ public class UserController {
 
     @GetMapping
     public UserDto.Response getMyInfo(@RequestHeader("Access-Token") String token) {
-        User user = userService.getUserInfo(provider.getId(token))
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = userService.getUserInfo(provider.getId(token));
         return new UserDto.Response(user);
     }
 
     @GetMapping("/{id}")
     public UserDto.Response getUserInfo(@PathVariable Long id) {
-        User user = userService.getUserInfo(id)
-            .orElseThrow(() -> new NotFoundResourceException("유저를 찾을 수 없습니다."));
+        User user = userService.getUserInfo(id);
         return new UserDto.Response(user);
     }
 
