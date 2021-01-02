@@ -84,7 +84,7 @@ public class TeamServiceTest {
                 .leaderId(1L)
                 .build()));
 
-        teamService.updateTeamStatus(1L, 1L, TeamStatus.READY);
+        teamService.updateStatus(1L, 1L, TeamStatus.READY);
 
         Team team = teamRepository.findById(1L).orElse(Team.builder().build());
         assertThat(team.getStatus()).isEqualTo(TeamStatus.READY);
@@ -99,7 +99,7 @@ public class TeamServiceTest {
                 .leaderId(1L)
                 .build()));
 
-        assertThatThrownBy(() -> teamService.updateTeamStatus(1L, 2L, TeamStatus.READY))
+        assertThatThrownBy(() -> teamService.updateStatus(1L, 2L, TeamStatus.READY))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 

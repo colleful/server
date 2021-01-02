@@ -62,7 +62,7 @@ public class TeamService {
                 TeamStatus.READY, teamName);
     }
 
-    public void updateTeamStatus(Long teamId, Long userId, TeamStatus status) {
+    public void updateStatus(Long teamId, Long userId, TeamStatus status) {
         Team team = teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundResourceException("팀이 존재하지 않습니다."));
 

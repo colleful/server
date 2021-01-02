@@ -69,7 +69,7 @@ public class TeamController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
         @PathVariable Long id, @RequestBody TeamDto.Request request) {
-        teamService.updateTeamStatus(id, provider.getId(token),
+        teamService.updateStatus(id, provider.getId(token),
             TeamStatus.valueOf(request.getStatus()));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
