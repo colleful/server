@@ -34,6 +34,7 @@ public class AcceptanceTest {
             .leaderId(1L)
             .gender(Gender.MALE)
             .status(TeamStatus.PENDING)
+            .headcount(1)
             .build();
         User user = User.builder()
             .id(2L)

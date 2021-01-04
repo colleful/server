@@ -39,6 +39,7 @@ public class LeavingTest {
                 .id(1L)
                 .status(TeamStatus.PENDING)
                 .leaderId(2L)
+                .headcount(2)
                 .build()));
 
         teamService.leaveTeam(1L);

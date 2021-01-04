@@ -45,7 +45,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        matchingRequestService.sendMatchRequest(1L, 2L, 1L);
+        matchingRequestService.request(1L, 2L, 1L);
 
         verify(matchingRequestRepository).save(any());
     }
@@ -68,7 +68,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.sendMatchRequest(1L, 2L, 1L))
+        assertThatThrownBy(() -> matchingRequestService.request(1L, 2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -90,7 +90,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.sendMatchRequest(1L, 2L, 3L))
+        assertThatThrownBy(() -> matchingRequestService.request(1L, 2L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -112,7 +112,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.sendMatchRequest(1L, 2L, 1L))
+        assertThatThrownBy(() -> matchingRequestService.request(1L, 2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }
