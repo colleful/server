@@ -3,7 +3,6 @@ package com.colleful.server.domain.team.api;
 import com.colleful.server.domain.team.domain.TeamStatus;
 import com.colleful.server.domain.team.domain.Team;
 import com.colleful.server.domain.team.dto.TeamDto;
-import com.colleful.server.domain.team.dto.TeamDto.Response;
 import com.colleful.server.domain.team.service.TeamService;
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
@@ -38,7 +37,7 @@ public class TeamController {
     private final JwtProvider provider;
 
     @GetMapping
-    public PageDto.Response<Response> getAllReadyTeams(@PageableDefault Pageable request) {
+    public PageDto.Response<TeamDto.Response> getAllReadyTeams(@PageableDefault Pageable request) {
         Page<Team> teams = teamService.getAllReadyTeams(request);
         return new PageDto.Response<>(teams.map(TeamDto.Response::new));
     }

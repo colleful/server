@@ -29,10 +29,12 @@ public class TeamService {
             .teamName(dto.getTeamName())
             .gender(leader.getGender())
             .status(TeamStatus.PENDING)
+            .headcount(0)
             .leaderId(leaderId)
             .build();
         teamRepository.save(team);
         leader.joinTeam(team.getId());
+        team.join();
         return team.getId();
     }
 
@@ -84,6 +86,7 @@ public class TeamService {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
         }
 
+        team.leave();
         user.leaveTeam();
     }
 

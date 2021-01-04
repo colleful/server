@@ -42,6 +42,9 @@ public class Team {
     private TeamStatus status;
 
     @Column(nullable = false)
+    private Integer headcount;
+
+    @Column(nullable = false)
     private Long leaderId;
 
     @Column
@@ -61,6 +64,14 @@ public class Team {
 
     public boolean isMatched() {
         return this.matchedTeamId != null;
+    }
+
+    public void join() {
+        this.headcount++;
+    }
+
+    public void leave() {
+        this.headcount--;
     }
 
     public void changeStatus(TeamStatus status) {

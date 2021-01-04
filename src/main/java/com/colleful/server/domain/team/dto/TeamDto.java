@@ -23,6 +23,7 @@ public class TeamDto {
         private final String teamName;
         private final String gender;
         private final String status;
+        private final Integer headcount;
         private final Long leaderId;
 
         public Response(Team team) {
@@ -31,6 +32,7 @@ public class TeamDto {
             this.teamName = team.getTeamName();
             this.gender = team.getGender().name();
             this.status = team.getStatus().name();
+            this.headcount = team.getHeadcount();
             this.leaderId = team.getLeaderId();
         }
     }
