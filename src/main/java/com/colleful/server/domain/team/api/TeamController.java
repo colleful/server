@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -65,8 +66,10 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<?> createTeam(@RequestHeader(value = "Access-Token") String token,
         @RequestBody TeamDto.Request request) {
-        teamService.createTeam(request, provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        Long teamId = teamService.createTeam(request, provider.getId(token));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.LOCATION, "/api/teams/" + teamId);
+        return ResponseEntity.ok().headers(headers).build();
     }
 
     @PostMapping("/leave")

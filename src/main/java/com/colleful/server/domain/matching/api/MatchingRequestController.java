@@ -7,6 +7,7 @@ import com.colleful.server.global.security.JwtProvider;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,22 +36,25 @@ public class MatchingRequestController {
     }
 
     @PostMapping("/{sender-id}/{receiver-id}")
-    public ResponseEntity<?> createMatchRequest(@RequestHeader(value = "Access-Token") String token,
+    public ResponseEntity<?> request(@RequestHeader(value = "Access-Token") String token,
         @PathVariable("sender-id") Long senderId,
         @PathVariable("receiver-id") Long receiverId) {
-        matchingRequestService.sendMatchRequest(senderId, receiverId, provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        Long requestId = matchingRequestService
+            .request(senderId, receiverId, provider.getId(token));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.LOCATION, "/api/matching/" + requestId);
+        return ResponseEntity.ok().headers(headers).build();
     }
 
     @PostMapping("/{id}/accept")
-    public ResponseEntity<?> acceptMatchRequest(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> accept(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
         matchingRequestService.accept(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PostMapping("/{id}/refuse")
-    public ResponseEntity<?> refuseMatchRequest(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> refuse(@RequestHeader("Access-Token") String token,
         @PathVariable Long id) {
         matchingRequestService.refuse(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);

@@ -22,7 +22,7 @@ public class MatchingRequestService {
     private final TeamService teamService;
     private final UserService userService;
 
-    public void sendMatchRequest(Long senderId, Long receiverId, Long userId) {
+    public Long request(Long senderId, Long receiverId, Long userId) {
         Team sender = teamService.getTeam(senderId);
         Team receiver = teamService.getTeam(receiverId);
 
@@ -44,6 +44,7 @@ public class MatchingRequestService {
 
         MatchingRequest match = new MatchingRequest(sender, receiver);
         matchingRequestRepository.save(match);
+        return match.getId();
     }
 
     public MatchingRequest getMatchingRequest(Long id) {

@@ -22,7 +22,7 @@ public class InvitationService {
     private final TeamService teamService;
     private final UserService userService;
 
-    public void invite(Long teamId, Long targetId, Long userId) {
+    public Long invite(Long teamId, Long targetId, Long userId) {
         Team team = teamService.getTeam(teamId);
         User targetUser = userService.getUser(targetId);
 
@@ -44,6 +44,7 @@ public class InvitationService {
 
         Invitation invitation = new Invitation(team, targetUser);
         invitationRepository.save(invitation);
+        return invitation.getId();
     }
 
     public Invitation getInvitation(Long id) {

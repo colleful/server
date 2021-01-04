@@ -30,7 +30,7 @@ public class AuthService {
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
-    public void join(UserDto.Request dto) {
+    public Long join(UserDto.Request dto) {
         EmailVerification emailVerification =
             emailVerificationService.getEmailVerificationInfo(dto.getEmail())
                 .orElseThrow(() -> new NotVerifiedEmailException("인증되지 않은 이메일입니다."));
@@ -58,6 +58,7 @@ public class AuthService {
             .roles(Collections.singletonList("ROLE_USER"))
             .build();
         userRepository.save(user);
+        return user.getId();
     }
 
     public String login(UserDto.LoginRequest dto) {
