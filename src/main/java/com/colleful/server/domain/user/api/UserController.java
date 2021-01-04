@@ -33,7 +33,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public UserDto.Response getMyInfo(@RequestHeader("Access-Token") String token) {
+    public UserDto.Response getMyInfo(@RequestHeader("Authorization") String token) {
         User user = userService.getUser(provider.getId(token));
         return new UserDto.Response(user);
     }
@@ -52,14 +52,14 @@ public class UserController {
     }
 
     @PatchMapping
-    public ResponseEntity<?> changeUserInfo(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> changeUserInfo(@RequestHeader("Authorization") String token,
         @RequestBody UserDto.Request request) {
         userService.changeUserInfo(provider.getId(token), request);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<?> changePassword(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String token,
         @RequestBody UserDto.Request request) {
         userService.changePassword(provider.getId(token),
             passwordEncoder.encode(request.getPassword()));
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteUser(@RequestHeader("Access-Token") String token) {
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String token) {
         userService.withdrawal(provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

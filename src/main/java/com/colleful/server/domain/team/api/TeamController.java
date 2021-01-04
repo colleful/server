@@ -44,7 +44,7 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public TeamDto.Response getTeamInfo(@RequestHeader(value = "Access-Token") String token,
+    public TeamDto.Response getTeamInfo(@RequestHeader(value = "Authorization") String token,
         @PathVariable Long id) {
         Team team = teamService.getTeam(id, provider.getId(token));
         return new TeamDto.Response(team);
@@ -64,7 +64,7 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTeam(@RequestHeader(value = "Access-Token") String token,
+    public ResponseEntity<?> createTeam(@RequestHeader(value = "Authorization") String token,
         @RequestBody TeamDto.Request request) {
         Long teamId = teamService.createTeam(request, provider.getId(token));
         HttpHeaders headers = new HttpHeaders();
@@ -73,13 +73,13 @@ public class TeamController {
     }
 
     @PostMapping("/leave")
-    public ResponseEntity<?> leaveTeam(@RequestHeader("Access-Token") String token) {
+    public ResponseEntity<?> leaveTeam(@RequestHeader("Authorization") String token) {
         teamService.leaveTeam(provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateTeamStatus(@RequestHeader(value = "Access-Token") String token,
+    public ResponseEntity<?> updateTeamStatus(@RequestHeader(value = "Authorization") String token,
         @PathVariable Long id, @RequestBody TeamDto.Request request) {
         teamService.updateStatus(id, provider.getId(token),
             TeamStatus.valueOf(request.getStatus()));
@@ -87,7 +87,7 @@ public class TeamController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteTeam(@RequestHeader("Access-Token") String token) {
+    public ResponseEntity<?> deleteTeam(@RequestHeader("Authorization") String token) {
         teamService.deleteTeam(provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

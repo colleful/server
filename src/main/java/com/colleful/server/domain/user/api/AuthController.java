@@ -2,7 +2,6 @@ package com.colleful.server.domain.user.api;
 
 import com.colleful.server.domain.user.dto.UserDto.EmailRequest;
 import com.colleful.server.domain.user.dto.UserDto.LoginRequest;
-import com.colleful.server.domain.user.dto.UserDto.LoginResponse;
 import com.colleful.server.domain.user.dto.UserDto.Request;
 import com.colleful.server.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +32,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
-        return new LoginResponse(authService.login(request));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        String token = authService.login(request);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, token);
+        return ResponseEntity.ok().headers(headers).build();
     }
 
     @PostMapping("/join/email")

@@ -39,7 +39,7 @@ public class JwtProvider {
         claims.put("roles", roles);
 
         Date now = new Date();
-        return Jwts.builder()
+        return JwtProperties.TYPE + " " + Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(now)
             .setExpiration(new Date(now.getTime() + JwtProperties.EXPIRATION_TIME))

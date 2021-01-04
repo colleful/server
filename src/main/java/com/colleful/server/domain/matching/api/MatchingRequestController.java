@@ -29,14 +29,14 @@ public class MatchingRequestController {
 
     @GetMapping
     public List<MatchingRequestDto.Response> getAllMatchRequests(
-        @RequestHeader("Access-Token") String token) {
+        @RequestHeader("Authorization") String token) {
         List<MatchingRequest> matches = matchingRequestService
             .getAllMatchRequests(provider.getId(token));
         return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
     }
 
     @PostMapping("/{sender-id}/{receiver-id}")
-    public ResponseEntity<?> request(@RequestHeader(value = "Access-Token") String token,
+    public ResponseEntity<?> request(@RequestHeader(value = "Authorization") String token,
         @PathVariable("sender-id") Long senderId,
         @PathVariable("receiver-id") Long receiverId) {
         Long requestId = matchingRequestService
@@ -47,14 +47,14 @@ public class MatchingRequestController {
     }
 
     @PostMapping("/{id}/accept")
-    public ResponseEntity<?> accept(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> accept(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         matchingRequestService.accept(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PostMapping("/{id}/refuse")
-    public ResponseEntity<?> refuse(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> refuse(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         matchingRequestService.refuse(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);

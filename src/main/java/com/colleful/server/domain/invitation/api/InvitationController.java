@@ -28,7 +28,7 @@ public class InvitationController {
     private final JwtProvider provider;
 
     @GetMapping
-    public List<Response> getAllInvitations(@RequestHeader("Access-Token") String token) {
+    public List<Response> getAllInvitations(@RequestHeader("Authorization") String token) {
         List<Invitation> invitations = invitationService.getAllInvitations(provider.getId(token));
         List<Response> responses = new ArrayList<>();
         for (Invitation invitation : invitations) {
@@ -38,7 +38,7 @@ public class InvitationController {
     }
 
     @PostMapping("/{team-id}/{target-user-id}")
-    public ResponseEntity<?> invite(@RequestHeader(value = "Access-Token") String token,
+    public ResponseEntity<?> invite(@RequestHeader(value = "Authorization") String token,
         @PathVariable("team-id") Long teamId, @PathVariable("target-user-id") Long targetId) {
         Long invitationId = invitationService.invite(teamId, targetId, provider.getId(token));
         HttpHeaders headers = new HttpHeaders();
@@ -47,14 +47,14 @@ public class InvitationController {
     }
 
     @PostMapping("/{id}/accept")
-    public ResponseEntity<?> accept(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> accept(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         invitationService.accept(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PostMapping("/{id}/refuse")
-    public ResponseEntity<?> refuse(@RequestHeader("Access-Token") String token,
+    public ResponseEntity<?> refuse(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         invitationService.refuse(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);

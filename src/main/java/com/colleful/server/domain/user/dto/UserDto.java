@@ -50,16 +50,6 @@ public class UserDto {
     }
 
     @Getter
-    public static class LoginResponse {
-
-        private final String token;
-
-        public LoginResponse(String token) {
-            this.token = token;
-        }
-    }
-
-    @Getter
     public static class EmailRequest {
 
         private String email;
