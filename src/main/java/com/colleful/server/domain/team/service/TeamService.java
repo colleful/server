@@ -78,7 +78,7 @@ public class TeamService {
     public void updateStatus(Long teamId, Long userId, TeamStatus status) {
         Team team = getTeam(teamId);
 
-        if (team.isNotLeader(userId)) {
+        if (!team.isLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
@@ -89,7 +89,7 @@ public class TeamService {
         User user = userService.getUser(userId);
         Team team = getTeam(user.getTeamId());
 
-        if (!team.isNotLeader(userId)) {
+        if (team.isLeader(userId)) {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
         }
 
@@ -106,7 +106,7 @@ public class TeamService {
 
         Team team = getTeam(user.getTeamId());
 
-        if (team.isNotLeader(userId)) {
+        if (!team.isLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 

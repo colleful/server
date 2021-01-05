@@ -38,7 +38,7 @@ public class InvitationService {
             throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 
-        if (team.isNotLeader(userId)) {
+        if (!team.isLeader(userId)) {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
 

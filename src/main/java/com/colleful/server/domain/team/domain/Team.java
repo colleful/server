@@ -50,8 +50,8 @@ public class Team {
     @Column
     private Long matchedTeamId;
 
-    public boolean isNotLeader(Long userId) {
-        return !this.leaderId.equals(userId);
+    public boolean isLeader(Long userId) {
+        return this.leaderId.equals(userId);
     }
 
     public boolean isDifferentGender(Gender gender) {
