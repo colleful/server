@@ -45,7 +45,9 @@ public class LeavingTest {
         teamService.leaveTeam(1L);
 
         User user = userService.getUser(1L);
+        Team team = teamService.getTeam(1L);
         assertThat(user.getTeamId()).isNull();
+        assertThat(team.getHeadcount()).isEqualTo(1);
     }
 
     @Test

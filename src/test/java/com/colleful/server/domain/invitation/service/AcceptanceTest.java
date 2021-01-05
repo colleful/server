@@ -46,6 +46,7 @@ public class AcceptanceTest {
         invitationService.accept(1L, 2L);
 
         assertThat(user.getTeamId()).isEqualTo(1L);
+        assertThat(team.getHeadcount()).isEqualTo(2);
         verify(invitationRepository).deleteById(1L);
     }
 
