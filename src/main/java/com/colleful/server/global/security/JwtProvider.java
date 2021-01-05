@@ -1,6 +1,7 @@
 package com.colleful.server.global.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Base64;
@@ -48,9 +49,14 @@ public class JwtProvider {
     }
 
     public Claims getBody(String token) {
+        String[] s = token.split(" ");
+        if (s.length != 2 || !s[0].equals(JwtProperties.TYPE)) {
+            throw new IllegalArgumentException();
+        }
+
         return Jwts.parser()
             .setSigningKey(secretKey)
-            .parseClaimsJws(token)
+            .parseClaimsJws(s[1])
             .getBody();
     }
 
