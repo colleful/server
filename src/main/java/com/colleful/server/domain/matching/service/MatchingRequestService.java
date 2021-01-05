@@ -55,7 +55,7 @@ public class MatchingRequestService {
     public List<MatchingRequest> getAllMatchRequests(Long userId) {
         User user = userService.getUser(userId);
 
-        if (user.isNotOnAnyTeam()) {
+        if (!user.hasTeam()) {
             throw new ForbiddenBehaviorException("먼저 팀에 가입해주세요.");
         }
 

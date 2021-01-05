@@ -26,7 +26,7 @@ public class InvitationService {
         Team team = teamService.getTeam(teamId);
         User targetUser = userService.getUser(targetId);
 
-        if (!targetUser.isNotOnAnyTeam()) {
+        if (targetUser.hasTeam()) {
             throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
         }
 

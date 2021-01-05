@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
     public void withdrawal(Long userId) {
         User user = getUser(userId);
 
-        if (!user.isNotOnAnyTeam()) {
+        if (user.hasTeam()) {
             throw new ForbiddenBehaviorException("팀을 먼저 탈퇴해 주세요.");
         }
 

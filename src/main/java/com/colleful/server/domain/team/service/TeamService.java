@@ -25,7 +25,8 @@ public class TeamService {
 
     public Long createTeam(TeamDto.Request dto, Long leaderId) {
         User leader = userService.getUser(leaderId);
-        if (!leader.isNotOnAnyTeam()) {
+
+        if (leader.hasTeam()) {
             throw new ForbiddenBehaviorException("이미 팀에 가입되어 있습니다.");
         }
 
@@ -99,7 +100,7 @@ public class TeamService {
     public void deleteTeam(Long userId) {
         User user = userService.getUser(userId);
 
-        if (user.isNotOnAnyTeam()) {
+        if (!user.hasTeam()) {
             throw new ForbiddenBehaviorException("팀이 없습니다.");
         }
 

@@ -88,8 +88,8 @@ public class User implements UserDetails {
         this.teamId = null;
     }
 
-    public boolean isNotOnAnyTeam() {
-        return this.teamId == null;
+    public boolean hasTeam() {
+        return this.teamId != null;
     }
 
     public boolean isNotMember(Long teamId) {
