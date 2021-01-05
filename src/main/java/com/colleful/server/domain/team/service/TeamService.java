@@ -25,6 +25,10 @@ public class TeamService {
 
     public Long createTeam(TeamDto.Request dto, Long leaderId) {
         User leader = userService.getUser(leaderId);
+        if (!leader.isNotOnAnyTeam()) {
+            throw new ForbiddenBehaviorException("이미 팀에 가입되어 있습니다.");
+        }
+
         Team team = Team.builder()
             .teamName(dto.getTeamName())
             .gender(leader.getGender())
@@ -33,8 +37,10 @@ public class TeamService {
             .leaderId(leaderId)
             .build();
         teamRepository.save(team);
+
         leader.joinTeam(team.getId());
         team.join();
+
         return team.getId();
     }
 
