@@ -96,6 +96,10 @@ public class User implements UserDetails {
         return !this.teamId.equals(teamId);
     }
 
+    public boolean isNotMyNickname(String nickname) {
+        return !this.nickname.equals(nickname);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());

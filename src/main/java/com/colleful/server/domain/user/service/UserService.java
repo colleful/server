@@ -38,7 +38,7 @@ public class UserService implements UserDetailsService {
         User user = getUser(userId);
 
         if (userRepository.existsByNickname(info.getNickname())
-            && !user.getNickname().equals(info.getNickname())) {
+            && user.isNotMyNickname(info.getNickname())) {
             throw new AlreadyExistResourceException("중복된 닉네임입니다.");
         }
 
