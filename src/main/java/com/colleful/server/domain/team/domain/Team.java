@@ -55,11 +55,11 @@ public class Team {
     }
 
     public boolean isDifferentGender(Gender gender) {
-        return this.gender.compareTo(gender) != 0;
+        return this.gender != gender;
     }
 
     public boolean isNotReady() {
-        return this.status.compareTo(TeamStatus.READY) != 0;
+        return this.status != TeamStatus.READY;
     }
 
     public boolean isMatched() {
