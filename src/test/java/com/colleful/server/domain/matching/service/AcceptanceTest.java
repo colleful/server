@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.colleful.server.domain.matching.domain.MatchingRequest;
 import com.colleful.server.domain.matching.repository.MatchingRequestRepository;
 import com.colleful.server.domain.team.domain.Team;
+import com.colleful.server.domain.team.domain.TeamStatus;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,8 @@ public class AcceptanceTest {
 
         assertThat(team1.getMatchedTeamId()).isEqualTo(2L);
         assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
+        assertThat(team1.getStatus()).isEqualTo(TeamStatus.MATCHED);
+        assertThat(team2.getStatus()).isEqualTo(TeamStatus.MATCHED);
         verify(matchingRequestRepository).deleteById(1L);
     }
 
