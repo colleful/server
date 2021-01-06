@@ -88,5 +88,6 @@ public class Team {
 
     public void endMatch() {
         this.matchedTeamId = null;
+        this.status = TeamStatus.PENDING;
     }
 }
