@@ -1,6 +1,8 @@
 package com.colleful.server.domain.matching.dto;
 
 import com.colleful.server.domain.matching.domain.MatchingRequest;
+import com.colleful.server.domain.team.dto.TeamDto;
+import com.colleful.server.domain.team.dto.TeamDto.Response;
 import lombok.Getter;
 
 public class MatchingRequestDto {
@@ -9,13 +11,11 @@ public class MatchingRequestDto {
     public static class Response {
 
         private final Long id;
-        private final Long teamId;
-        private final String teamName;
+        private final TeamDto.Response sender;
 
         public Response(MatchingRequest match) {
             this.id = match.getId();
-            this.teamId = match.getSender().getId();
-            this.teamName = match.getSender().getTeamName();
+            this.sender = new TeamDto.Response(match.getSender());
         }
     }
 }
