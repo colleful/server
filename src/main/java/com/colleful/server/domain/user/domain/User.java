@@ -1,7 +1,7 @@
 package com.colleful.server.domain.user.domain;
 
 import com.colleful.server.domain.department.domain.Department;
-import com.colleful.server.domain.user.dto.UserDto.Request;
+import com.colleful.server.domain.user.dto.UserDto;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Collection;
 import java.util.List;
@@ -65,7 +65,7 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
-    public void changeInfo(Request info) {
+    public void changeInfo(UserDto.Request info) {
         this.nickname = info.getNickname() != null ? info.getNickname() : this.nickname;
         this.selfIntroduction =
             info.getSelfIntroduction() != null ?
@@ -92,11 +92,11 @@ public class User implements UserDetails {
         return this.teamId != null;
     }
 
-    public boolean isNotMember(Long teamId) {
+    public boolean isNotMemberOf(Long teamId) {
         return !this.teamId.equals(teamId);
     }
 
-    public boolean isNotMyNickname(String nickname) {
+    public boolean hasDifferentNicknameFrom(String nickname) {
         return !this.nickname.equals(nickname);
     }
 

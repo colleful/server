@@ -36,11 +36,11 @@ public class MatchingRequestService {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
-        if (!sender.isDifferentGender(receiver.getGender())) {
+        if (!sender.isDifferentGenderFrom(receiver.getGender())) {
             throw new ForbiddenBehaviorException("다른 성별에게만 매칭 요청할 수 있습니다.");
         }
 
-        if (!sender.isLeader(userId)) {
+        if (!sender.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
         }
 
@@ -67,7 +67,7 @@ public class MatchingRequestService {
 
         Team team = teamService.getTeam(user.getTeamId());
 
-        if (!team.isLeader(userId)) {
+        if (!team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");
         }
 
@@ -77,7 +77,7 @@ public class MatchingRequestService {
     public void accept(Long matchingId, Long userId) {
         MatchingRequest match = getMatchingRequest(matchingId);
 
-        if (!match.getReceiver().isLeader(userId)) {
+        if (!match.getReceiver().isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 수락할 수 있습니다.");
         }
 
@@ -88,7 +88,7 @@ public class MatchingRequestService {
     public void refuse(Long matchingId, Long userId) {
         MatchingRequest match = getMatchingRequest(matchingId);
 
-        if (!match.getReceiver().isLeader(userId)) {
+        if (!match.getReceiver().isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 거절할 수 있습니다.");
         }
 

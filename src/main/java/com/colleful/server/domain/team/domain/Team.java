@@ -50,11 +50,11 @@ public class Team {
     @Column
     private Long matchedTeamId;
 
-    public boolean isLeader(Long userId) {
+    public boolean isLedBy(Long userId) {
         return this.leaderId.equals(userId);
     }
 
-    public boolean isDifferentGender(Gender gender) {
+    public boolean isDifferentGenderFrom(Gender gender) {
         return this.gender != gender;
     }
 
@@ -66,11 +66,11 @@ public class Team {
         return this.matchedTeamId != null;
     }
 
-    public void join() {
+    public void addMember() {
         this.headcount++;
     }
 
-    public void leave() {
+    public void removeMember() {
         this.headcount--;
     }
 
@@ -83,11 +83,11 @@ public class Team {
             throw new ForbiddenBehaviorException("이미 다른 팀과 매칭되어 있습니다.");
         }
         this.matchedTeamId = matchedTeamId;
-        this.status = TeamStatus.MATCHED;
+        this.changeStatus(TeamStatus.MATCHED);
     }
 
     public void endMatch() {
         this.matchedTeamId = null;
-        this.status = TeamStatus.PENDING;
+        this.changeStatus(TeamStatus.PENDING);
     }
 }

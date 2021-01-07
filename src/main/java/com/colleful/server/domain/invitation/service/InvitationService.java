@@ -34,11 +34,11 @@ public class InvitationService {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
         }
 
-        if (team.isDifferentGender(targetUser.getGender())) {
+        if (team.isDifferentGenderFrom(targetUser.getGender())) {
             throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 
-        if (!team.isLeader(userId)) {
+        if (!team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
 

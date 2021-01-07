@@ -40,7 +40,7 @@ public class TeamService {
         teamRepository.save(team);
 
         leader.joinTeam(team.getId());
-        team.join();
+        team.addMember();
 
         return team.getId();
     }
@@ -54,7 +54,7 @@ public class TeamService {
         User user = userService.getUser(userId);
         Team team = getTeam(teamId);
 
-        if (team.isNotReady() && user.isNotMember(teamId)) {
+        if (team.isNotReady() && user.isNotMemberOf(teamId)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
         }
 
@@ -78,7 +78,7 @@ public class TeamService {
     public void updateStatus(Long teamId, Long userId, TeamStatus status) {
         Team team = getTeam(teamId);
 
-        if (!team.isLeader(userId)) {
+        if (!team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
@@ -89,11 +89,11 @@ public class TeamService {
         User user = userService.getUser(userId);
         Team team = getTeam(user.getTeamId());
 
-        if (team.isLeader(userId)) {
+        if (team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
         }
 
-        team.leave();
+        team.removeMember();
         user.leaveTeam();
     }
 
@@ -106,7 +106,7 @@ public class TeamService {
 
         Team team = getTeam(user.getTeamId());
 
-        if (!team.isLeader(userId)) {
+        if (!team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 

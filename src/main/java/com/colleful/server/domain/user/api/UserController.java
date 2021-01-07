@@ -47,7 +47,7 @@ public class UserController {
     @GetMapping("/nickname/{nickname}")
     public List<UserDto.Response> searchUserByNickname(@PathVariable String nickname) {
         List<User> users = userService
-            .getUserInfoByNickname(URLDecoder.decode(nickname, StandardCharsets.UTF_8));
+            .getUserByNickname(URLDecoder.decode(nickname, StandardCharsets.UTF_8));
         return users.stream().map(UserDto.Response::new).collect(Collectors.toList());
     }
 

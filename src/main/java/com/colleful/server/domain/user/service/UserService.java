@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
             .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
     }
 
-    public List<User> getUserInfoByNickname(String nickname) {
+    public List<User> getUserByNickname(String nickname) {
         return userRepository.findByNicknameContaining(nickname);
     }
 
@@ -38,7 +38,7 @@ public class UserService implements UserDetailsService {
         User user = getUser(userId);
 
         if (userRepository.existsByNickname(info.getNickname())
-            && user.isNotMyNickname(info.getNickname())) {
+            && user.hasDifferentNicknameFrom(info.getNickname())) {
             throw new AlreadyExistResourceException("중복된 닉네임입니다.");
         }
 
