@@ -8,7 +8,7 @@
 5. [매칭 관련](#5-매칭-관련)
 6. [학과 정보](#6-학과-정보)
 
-## 응답
+## 응답 형식
 
 **페이징 응답 형식**
 |name|type|description|
@@ -18,18 +18,18 @@
 |pageSize|Integer|현재 응답의 데이터 개수|
 |totalPages|Integer|총 페이지 개수|
 
-**User 정보**
-|name            |type   |description          |
-|----------------|-------|---------------------|
+**유저 정보**
+|name|type|description|
+|----|----|-----------|
 |id|Long|id|
-|email|String |이메일|
-|nickname|String |닉네임|
+|email|String|이메일|
+|nickname|String|닉네임|
 |age|Integer|나이|
 |gender|String |성별("MALE", "FEMALE")|
 |department|String |학과|
 |selfIntroduction|String |자기소개|
 
-**Team 정보**
+**팀 정보**
 |name|type|description|
 |----|----|-----------|
 |id|Long|id|
@@ -47,6 +47,12 @@
 |id|Long|id|
 |team|Team|초대받은 팀 정보|
 
+**매칭 정보**
+|name|type|description|
+|----|----|-----------|
+|id|Long|id|
+|sender|Team|요청을 보낸 팀 정보|
+
 **학과 정보**
 |name|type|description|
 |----|----|-----------|
@@ -61,7 +67,7 @@
 
 **Request Body**
 |name|type|required|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |email|String|Yes|이메일|
 |password|String|Yes|비밀번호|
 |nickname|String|Yes|닉네임|
@@ -75,7 +81,7 @@
 
 **Request Body**
 |name|type|requires|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |email|String|Yes|이메일|
 |password|String|Yes|비밀번호|
 
@@ -84,7 +90,7 @@
 
 **Request Body**
 |name|type|requires|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |email|String|Yes|이메일|
 
 ### POST /auth/password/email
@@ -92,7 +98,7 @@
 
 **Request Body**
 |name|type|requires|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |email|String|Yes|이메일|
 
 ### PATCH /auth/password
@@ -100,7 +106,7 @@
 
 **Request Body**
 |name|type|requires|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |email|String|Yes|이메일|
 |password|String|Yes|비밀번호|
 
@@ -109,7 +115,7 @@
 
 **Request Body**
 |name|type|requires|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |email|String|Yes|이메일|
 |code|Integer|Yes|인증번호|
 
@@ -129,7 +135,7 @@
 
 **Request Body**
 |name|type|required|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |nickname|String|No|닉네임|
 |selfIntroduction|String|No|자기소개|
 
@@ -138,7 +144,7 @@
 
 **Request Body**
 |name|type|requires|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |password|String|Yes|비밀번호|
 
 
@@ -153,7 +159,7 @@
 
 **Query Parameter**
 |name|default|description|
-|--|--|--|
+|----|-------|-----------|
 |page|0|페이지 번호 (0부터 시작)|
 |size|10|데이터 개수|
 
@@ -174,7 +180,7 @@
 
 **Request Body**
 |name|type|required|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |teamName|String|Yes|팀 이름|
 
 ### PATCH /api/teams/{id}
@@ -182,7 +188,7 @@
 
 **Request Body**
 |name|type|required|description|
-|--|--|--|--|
+|----|----|--------|-----------|
 |status|String|Yes|팀 상태("PENDING", "READY", "WATCHING", "MATCHED")|
 
 ### DELETE /api/teams/{id}
