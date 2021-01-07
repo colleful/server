@@ -1,6 +1,8 @@
 package com.colleful.server.domain.invitation.dto;
 
 import com.colleful.server.domain.invitation.domain.Invitation;
+import com.colleful.server.domain.team.dto.TeamDto;
+import com.colleful.server.domain.team.dto.TeamDto.Response;
 import lombok.Getter;
 
 public class InvitationDto {
@@ -9,13 +11,11 @@ public class InvitationDto {
     public static class Response {
 
         private final Long id;
-        private final Long teamId;
-        private final String teamName;
+        private final TeamDto.Response team;
 
         public Response(Invitation invitation) {
             this.id = invitation.getId();
-            this.teamId = invitation.getTeam().getId();
-            this.teamName = invitation.getTeam().getTeamName();
+            this.team = new TeamDto.Response(invitation.getTeam());
         }
     }
 }
