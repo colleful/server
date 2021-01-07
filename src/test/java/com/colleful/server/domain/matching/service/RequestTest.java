@@ -10,6 +10,8 @@ import com.colleful.server.domain.team.domain.Team;
 import com.colleful.server.domain.team.domain.TeamStatus;
 import com.colleful.server.domain.team.service.TeamService;
 import com.colleful.server.domain.user.domain.Gender;
+import com.colleful.server.domain.user.domain.User;
+import com.colleful.server.domain.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,9 +28,13 @@ public class RequestTest {
     private MatchingRequestRepository matchingRequestRepository;
     @Mock
     private TeamService teamService;
+    @Mock
+    private UserService userService;
 
     @Test
     public void 매치_요청() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamService.getTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
@@ -45,13 +51,24 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        matchingRequestService.request(1L, 2L, 1L);
+        matchingRequestService.request(2L, 1L);
 
         verify(matchingRequestRepository).save(any());
     }
 
     @Test
+    public void 팀에_속하지_않은_사용자가_매치_요청() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).build());
+
+        assertThatThrownBy(() -> matchingRequestService.request(2L, 1L))
+            .isInstanceOf(ForbiddenBehaviorException.class);
+    }
+
+    @Test
     public void 같은_성별_팀에게_매치_요청() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamService.getTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
@@ -68,12 +85,14 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.request(1L, 2L, 1L))
+        assertThatThrownBy(() -> matchingRequestService.request(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
     @Test
     public void 리더가_아닌_사용자가_매치_요청() {
+        when(userService.getUser(3L))
+            .thenReturn(User.builder().id(3L).teamId(1L).build());
         when(teamService.getTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
@@ -90,12 +109,14 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.request(1L, 2L, 3L))
+        assertThatThrownBy(() -> matchingRequestService.request(2L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
     @Test
     public void 준비가_안_된_팀에게_매치_요청() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamService.getTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
@@ -112,7 +133,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.request(1L, 2L, 1L))
+        assertThatThrownBy(() -> matchingRequestService.request(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }
