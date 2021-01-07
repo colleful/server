@@ -22,8 +22,14 @@ public class MatchingRequestService {
     private final TeamService teamService;
     private final UserService userService;
 
-    public Long request(Long senderId, Long receiverId, Long userId) {
-        Team sender = teamService.getTeam(senderId);
+    public Long request(Long receiverId, Long userId) {
+        User user = userService.getUser(userId);
+
+        if (!user.hasTeam()) {
+            throw new ForbiddenBehaviorException("팀을 먼저 생성해 주세요.");
+        }
+
+        Team sender = teamService.getTeam(user.getTeamId());
         Team receiver = teamService.getTeam(receiverId);
 
         if (matchingRequestRepository.existsBySenderAndReceiver(sender, receiver)) {

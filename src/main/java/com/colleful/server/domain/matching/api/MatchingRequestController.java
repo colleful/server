@@ -35,12 +35,11 @@ public class MatchingRequestController {
         return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
     }
 
-    @PostMapping("/{sender-id}/{receiver-id}")
+    @PostMapping("/{team-id}")
     public ResponseEntity<?> request(@RequestHeader(value = "Authorization") String token,
-        @PathVariable("sender-id") Long senderId,
-        @PathVariable("receiver-id") Long receiverId) {
+        @PathVariable("team-id") Long teamId) {
         Long requestId = matchingRequestService
-            .request(senderId, receiverId, provider.getId(token));
+            .request(teamId, provider.getId(token));
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.LOCATION, "/api/matching/" + requestId);
         return ResponseEntity.ok().headers(headers).build();
