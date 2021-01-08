@@ -8,13 +8,13 @@ import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
 import com.colleful.server.global.dto.PageDto;
 import com.colleful.server.global.security.JwtProvider;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -67,9 +67,7 @@ public class TeamController {
     public ResponseEntity<?> createTeam(@RequestHeader(value = "Authorization") String token,
         @RequestBody TeamDto.Request request) {
         Long teamId = teamService.createTeam(request, provider.getId(token));
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, "/api/teams/" + teamId);
-        return ResponseEntity.ok().headers(headers).build();
+        return ResponseEntity.created(URI.create("/api/teams/" + teamId)).build();
     }
 
     @PostMapping("/leave")

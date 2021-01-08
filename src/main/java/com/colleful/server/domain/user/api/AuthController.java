@@ -4,6 +4,7 @@ import com.colleful.server.domain.user.dto.UserDto.EmailRequest;
 import com.colleful.server.domain.user.dto.UserDto.LoginRequest;
 import com.colleful.server.domain.user.dto.UserDto.Request;
 import com.colleful.server.domain.user.service.AuthService;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,16 +27,14 @@ public class AuthController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody Request request) {
         Long userId = authService.join(request);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, "/api/users/" + userId);
-        return ResponseEntity.ok().headers(headers).build();
+        return ResponseEntity.created(URI.create("/api/users/" + userId)).build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String token = authService.login(request);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, token);
+        headers.setBearerAuth(token);
         return ResponseEntity.ok().headers(headers).build();
     }
 
