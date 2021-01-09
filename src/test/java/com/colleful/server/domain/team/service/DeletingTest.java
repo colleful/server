@@ -50,6 +50,7 @@ public class DeletingTest {
                 .status(TeamStatus.MATCHED)
                 .leaderId(1L)
                 .matchedTeamId(2L)
+                .headcount(2)
                 .build()));
         when(teamRepository.findById(2L))
             .thenReturn(Optional.of(Team.builder()

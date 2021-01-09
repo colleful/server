@@ -1,6 +1,7 @@
 package com.colleful.server.domain.team.domain;
 
 import com.colleful.server.domain.user.domain.Gender;
+import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -66,11 +67,16 @@ public class Team {
         return this.matchedTeamId != null;
     }
 
-    public void addMember() {
+    public void addMember(User user) {
+        user.joinTeam(this.id);
         this.headcount++;
     }
 
-    public void removeMember() {
+    public void removeMember(User user) {
+        if (user.isNotMemberOf(this.id)) {
+            throw new ForbiddenBehaviorException("이 팀의 멤버가 아닙니다.");
+        }
+        user.leaveTeam();
         this.headcount--;
     }
 

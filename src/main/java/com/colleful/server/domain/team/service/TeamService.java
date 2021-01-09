@@ -39,8 +39,7 @@ public class TeamService {
             .build();
         teamRepository.save(team);
 
-        leader.joinTeam(team.getId());
-        team.addMember();
+        team.addMember(leader);
 
         return team.getId();
     }
@@ -93,8 +92,7 @@ public class TeamService {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
         }
 
-        team.removeMember();
-        user.leaveTeam();
+        team.removeMember(user);
     }
 
     public void deleteTeam(Long userId) {
@@ -112,8 +110,8 @@ public class TeamService {
 
         clearMatch(team);
         List<User> users = userService.getMembers(user.getTeamId());
-        teamRepository.deleteById(user.getTeamId());
-        users.forEach(User::leaveTeam);
+        users.forEach(team::removeMember);
+        teamRepository.deleteById(team.getId());
     }
 
     private void clearMatch(Team team) {

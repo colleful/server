@@ -47,7 +47,6 @@ public class Invitation {
     }
 
     public void accept() {
-        this.team.addMember();
-        this.user.joinTeam(this.team.getId());
+        this.team.addMember(this.user);
     }
 }
