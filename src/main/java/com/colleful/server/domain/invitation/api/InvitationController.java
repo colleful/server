@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,5 +59,12 @@ public class InvitationController {
         @PathVariable Long id) {
         invitationService.refuse(id, provider.getId(token));
         return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> cancel(@RequestHeader("Authorization") String token,
+        @PathVariable Long id) {
+        invitationService.cancel(id, provider.getId(token));
+        return ResponseEntity.ok().build();
     }
 }

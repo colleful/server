@@ -77,4 +77,14 @@ public class InvitationService {
 
         invitationRepository.deleteById(invitationId);
     }
+
+    public void cancel(Long invitationId, Long userId) {
+        Invitation invitation = getInvitation(invitationId);
+
+        if (!invitation.getTeam().isLedBy(userId)) {
+            throw new ForbiddenBehaviorException("취소 권한이 없습니다.");
+        }
+
+        invitationRepository.deleteById(invitationId);
+    }
 }
