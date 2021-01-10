@@ -84,11 +84,11 @@ public class Team {
         this.status = status;
     }
 
-    public void match(Long matchedTeamId) {
+    public void match(Long teamId) {
         if (this.matchedTeamId != null) {
             throw new ForbiddenBehaviorException("이미 다른 팀과 매칭되어 있습니다.");
         }
-        this.matchedTeamId = matchedTeamId;
+        this.matchedTeamId = teamId;
         this.changeStatus(TeamStatus.MATCHED);
     }
 
