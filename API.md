@@ -8,6 +8,9 @@
 5. [매칭 관련](#5-매칭-관련)
 6. [학과 정보](#6-학과-정보)
 
+## 인증 및 인가
+/api로 시작되는 URI는 모두 인증 정보가 필요하다.  
+로그인 시 응답의 Authorization 헤더에 전송되는 JWT를 요청 시 Authorization 헤더에 추가해야 한다. 
 ## 응답 형식
 
 **페이징 응답 형식**
@@ -37,7 +40,7 @@
 |teamName|String|닉네임|
 |headcount|Integer|인원 수|
 |gender|String|성별("MALE", "FEMALE")|
-|status|String|상태|
+|status|String|팀 상태("PENDING", "READY", "WATCHING", "MATCHED")|
 |leaderId|Long|리더 id|
 |matchedTeamId|Long|매치된 팀의 아이디|
 
@@ -192,7 +195,7 @@
 |status|String|Yes|팀 상태("PENDING", "READY", "WATCHING", "MATCHED")|
 
 ### DELETE /api/teams/{id}
-> id에 해당하는 팀 상태 삭제
+> id에 해당하는 팀 삭제
 
 ## 4. 초대 관련
 
@@ -203,10 +206,13 @@
 > user-id에 해당하는 유저를 team-id에 해당하는 팀에 초대
 
 ### POST /api/invitations/{id}/accept
-> 초대 수락
+> id에 해당하는 초대 수락
 
 ### POST /api/invitations/{id}/refuse
-> 초대 거절
+> id에 해당하는 초대 거절
+
+### POST /api/invitations/{id}
+> id에 해당하는 초대 취소
 
 ## 5. 매칭 관련
 
@@ -221,6 +227,9 @@
 
 ### POST /api/matching/{id}/refuse
 > id에 해당하는 매칭 요청 거절
+
+### DELETE /api/matching/{id}
+> id에 해당하는 매칭 요청 취소
 
 ## 6. 학과 정보
 
