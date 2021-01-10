@@ -94,4 +94,14 @@ public class MatchingRequestService {
 
         matchingRequestRepository.deleteById(matchingId);
     }
+
+    public void cancel(Long matchingId, Long userId) {
+        MatchingRequest match = getMatchingRequest(matchingId);
+
+        if (!match.getSender().isLedBy(userId)) {
+            throw new ForbiddenBehaviorException("취소 권한이 없습니다.");
+        }
+
+        matchingRequestRepository.deleteById(matchingId);
+    }
 }

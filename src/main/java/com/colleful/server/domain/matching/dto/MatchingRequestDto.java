@@ -2,7 +2,6 @@ package com.colleful.server.domain.matching.dto;
 
 import com.colleful.server.domain.matching.domain.MatchingRequest;
 import com.colleful.server.domain.team.dto.TeamDto;
-import com.colleful.server.domain.team.dto.TeamDto.Response;
 import lombok.Getter;
 
 public class MatchingRequestDto {
