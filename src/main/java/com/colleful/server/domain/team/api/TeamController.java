@@ -73,7 +73,7 @@ public class TeamController {
     @PostMapping("/leave")
     public ResponseEntity<?> leaveTeam(@RequestHeader("Authorization") String token) {
         teamService.leaveTeam(provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}")
@@ -81,12 +81,12 @@ public class TeamController {
         @PathVariable Long id, @RequestBody TeamDto.Request request) {
         teamService.updateStatus(id, provider.getId(token),
             TeamStatus.valueOf(request.getStatus()));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     public ResponseEntity<?> deleteTeam(@RequestHeader("Authorization") String token) {
         teamService.deleteTeam(provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }

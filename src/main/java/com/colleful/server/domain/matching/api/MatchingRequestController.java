@@ -50,14 +50,14 @@ public class MatchingRequestController {
     public ResponseEntity<?> accept(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         matchingRequestService.accept(id, provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/refuse")
     public ResponseEntity<?> refuse(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         matchingRequestService.refuse(id, provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

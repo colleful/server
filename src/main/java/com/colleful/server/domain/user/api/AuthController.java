@@ -41,24 +41,24 @@ public class AuthController {
     @PostMapping("/join/email")
     public ResponseEntity<?> sendEmailForRegistration(@RequestBody EmailRequest request) {
         authService.sendEmailForRegistration(request.getEmail());
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password/email")
     public ResponseEntity<?> sendEmailForPassword(@RequestBody EmailRequest request) {
         authService.sendEmailForPassword(request.getEmail());
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/password")
     public ResponseEntity<?> changePassword(@RequestBody LoginRequest request) {
         authService.changePassword(request);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/check")
     public ResponseEntity<?> check(@RequestBody EmailRequest request) {
         authService.checkEmail(request);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }

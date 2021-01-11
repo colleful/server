@@ -1,14 +1,13 @@
 package com.colleful.server.domain.invitation.api;
 
-import com.colleful.server.domain.invitation.dto.InvitationDto.Response;
+import com.colleful.server.domain.invitation.dto.InvitationDto;
 import com.colleful.server.domain.invitation.service.InvitationService;
 import com.colleful.server.domain.invitation.domain.Invitation;
 import com.colleful.server.global.security.JwtProvider;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,13 +28,10 @@ public class InvitationController {
     private final JwtProvider provider;
 
     @GetMapping
-    public List<Response> getAllInvitations(@RequestHeader("Authorization") String token) {
+    public List<InvitationDto.Response> getAllInvitations(
+        @RequestHeader("Authorization") String token) {
         List<Invitation> invitations = invitationService.getAllInvitations(provider.getId(token));
-        List<Response> responses = new ArrayList<>();
-        for (Invitation invitation : invitations) {
-            responses.add(new Response(invitation));
-        }
-        return responses;
+        return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
     }
 
     @PostMapping("/{team-id}/{target-user-id}")
@@ -51,14 +47,14 @@ public class InvitationController {
     public ResponseEntity<?> accept(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         invitationService.accept(id, provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/refuse")
     public ResponseEntity<?> refuse(@RequestHeader("Authorization") String token,
         @PathVariable Long id) {
         invitationService.refuse(id, provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

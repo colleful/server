@@ -55,7 +55,7 @@ public class UserController {
     public ResponseEntity<?> changeUserInfo(@RequestHeader("Authorization") String token,
         @RequestBody UserDto.Request request) {
         userService.changeUserInfo(provider.getId(token), request);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/password")
@@ -63,12 +63,12 @@ public class UserController {
         @RequestBody UserDto.Request request) {
         userService.changePassword(provider.getId(token),
             passwordEncoder.encode(request.getPassword()));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String token) {
         userService.withdrawal(provider.getId(token));
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }
