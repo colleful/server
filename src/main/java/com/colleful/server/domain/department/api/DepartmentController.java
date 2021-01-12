@@ -26,7 +26,6 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     public Department getDepartment(@PathVariable Long id) {
-        return departmentService.getDepartment(id)
-            .orElseThrow(() -> new NotFoundResourceException("학과 정보가 없습니다."));
+        return departmentService.getDepartment(id);
     }
 }

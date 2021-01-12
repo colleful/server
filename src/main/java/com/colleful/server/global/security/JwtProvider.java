@@ -25,7 +25,7 @@ public class JwtProvider {
     private final UserDetailsService userDetailsService;
 
     public JwtProvider(
-        @Qualifier("userService") UserDetailsService userDetailsService) {
+        @Qualifier("userServiceImpl") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

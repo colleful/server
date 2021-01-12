@@ -1,67 +1,20 @@
 package com.colleful.server.domain.user.service;
 
-import com.colleful.server.domain.user.repository.UserRepository;
 import com.colleful.server.domain.user.domain.User;
 import com.colleful.server.domain.user.dto.UserDto;
-import com.colleful.server.global.exception.AlreadyExistResourceException;
-import com.colleful.server.global.exception.ForbiddenBehaviorException;
-import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@Transactional
-@RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public interface UserService {
 
-    private final UserRepository userRepository;
+    User getUser(Long userId);
 
-    public User getUser(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
-    }
+    List<User> getUserByNickname(String nickname);
 
-    public List<User> getUserByNickname(String nickname) {
-        return userRepository.findByNicknameContaining(nickname);
-    }
+    List<User> getMembers(Long teamId);
 
-    public List<User> getMembers(Long teamId) {
-        return userRepository.findAllByTeamId(teamId);
-    }
+    void changeUserInfo(Long userId, UserDto.Request info);
 
-    public void changeUserInfo(Long userId, UserDto.Request info) {
-        User user = getUser(userId);
+    void changePassword(Long userId, String encodedPassword);
 
-        if (userRepository.existsByNickname(info.getNickname())
-            && user.hasDifferentNicknameFrom(info.getNickname())) {
-            throw new AlreadyExistResourceException("중복된 닉네임입니다.");
-        }
-
-        user.changeInfo(info);
-    }
-
-    public void changePassword(Long userId, String encodedPassword) {
-        User user = getUser(userId);
-        user.changePassword(encodedPassword);
-    }
-
-    public void withdrawal(Long userId) {
-        User user = getUser(userId);
-
-        if (user.hasTeam()) {
-            throw new ForbiddenBehaviorException("팀을 먼저 탈퇴해 주세요.");
-        }
-
-        userRepository.deleteById(userId);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(RuntimeException::new);
-    }
+    void withdrawal(Long userId);
 }

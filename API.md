@@ -202,8 +202,8 @@
 ### GET /api/invitations
 > 자신에게 온 초대 정보 모두 보기
 
-### POST /api/invitations/{team-id}/{user-id}
-> user-id에 해당하는 유저를 team-id에 해당하는 팀에 초대
+### POST /api/invitations/{user-id}
+> user-id에 해당하는 유저를 자신의 팀에 초대(리더만 초대 가능)
 
 ### POST /api/invitations/{id}/accept
 > id에 해당하는 초대 수락

@@ -66,7 +66,7 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<?> createTeam(@RequestHeader(value = "Authorization") String token,
         @RequestBody TeamDto.Request request) {
-        Long teamId = teamService.createTeam(request, provider.getId(token));
+        Long teamId = teamService.createTeam(provider.getId(token), request);
         return ResponseEntity.created(URI.create("/api/teams/" + teamId)).build();
     }
 
