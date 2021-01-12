@@ -92,7 +92,7 @@ public class Team {
         this.changeStatus(TeamStatus.MATCHED);
     }
 
-    public void endMatch() {
+    public void finishMatch() {
         this.matchedTeamId = null;
         this.changeStatus(TeamStatus.PENDING);
     }

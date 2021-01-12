@@ -99,7 +99,7 @@ public class TeamService {
         User user = userService.getUser(userId);
 
         if (!user.hasTeam()) {
-            throw new ForbiddenBehaviorException("팀이 없습니다.");
+            throw new ForbiddenBehaviorException("가입된 팀이 없습니다.");
         }
 
         Team team = getTeam(user.getTeamId());
@@ -108,17 +108,31 @@ public class TeamService {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 
-        clearMatch(team);
+        finishMatchTransaction(team);
         List<User> users = userService.getMembers(user.getTeamId());
         users.forEach(team::removeMember);
         teamRepository.deleteById(team.getId());
     }
 
-    private void clearMatch(Team team) {
-        if (team.isMatched()) {
-            Team matchedTeam = getTeam(team.getMatchedTeamId());
-            team.endMatch();
-            matchedTeam.endMatch();
+    public void finishMatch(Long userId) {
+        User user = userService.getUser(userId);
+
+        if (!user.hasTeam()) {
+            throw new ForbiddenBehaviorException("가입된 팀이 없습니다.");
         }
+
+        Team team = getTeam(user.getTeamId());
+
+        if (!team.isLedBy(userId)) {
+            throw new ForbiddenBehaviorException("리더만 매칭을 끝낼 수 있습니다.");
+        }
+
+        finishMatchTransaction(team);
+    }
+
+    private void finishMatchTransaction(Team team) {
+        Team matchedTeam = getTeam(team.getMatchedTeamId());
+        team.finishMatch();
+        matchedTeam.finishMatch();
     }
 }

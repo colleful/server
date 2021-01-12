@@ -76,6 +76,12 @@ public class TeamController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/finish-match")
+    public ResponseEntity<?> finishMatch(@RequestHeader("Authorization") String token) {
+        teamService.finishMatch(provider.getId(token));
+        return ResponseEntity.ok().build();
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateTeamStatus(@RequestHeader(value = "Authorization") String token,
         @PathVariable Long id, @RequestBody TeamDto.Request request) {
