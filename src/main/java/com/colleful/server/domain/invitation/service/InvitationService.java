@@ -7,7 +7,9 @@ public interface InvitationService {
 
     Long invite(Long targetId, Long userId);
 
-    List<Invitation> getAllInvitations(Long userId);
+    List<Invitation> getAllInvitationsToMe(Long userId);
+
+    List<Invitation> getAllInvitationsFromMyTeam(Long userId);
 
     void accept(Long invitationId, Long userId);
 

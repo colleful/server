@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/invitation")
+@RequestMapping("/api/invitations")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class InvitationController {
@@ -27,10 +27,17 @@ public class InvitationController {
     private final InvitationService invitationService;
     private final JwtProvider provider;
 
-    @GetMapping
-    public List<InvitationDto.Response> getAllInvitations(
-        @RequestHeader("Authorization") String token) {
-        List<Invitation> invitations = invitationService.getAllInvitations(provider.getId(token));
+    @GetMapping("/users")
+    public List<InvitationDto.Response> getAllInvitationsToMe(@RequestHeader("Authorization") String token) {
+        List<Invitation> invitations = invitationService
+            .getAllInvitationsToMe(provider.getId(token));
+        return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/teams")
+    public List<InvitationDto.Response> getAllInvitationsFromMyTeam(@RequestHeader("Authorization") String token) {
+        List<Invitation> invitations = invitationService
+            .getAllInvitationsFromMyTeam(provider.getId(token));
         return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
     }
 

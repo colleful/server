@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MatchingRequestRepository extends JpaRepository<MatchingRequest, Long> {
+
     List<MatchingRequest> findAllByReceiver(Team receiver);
+
     boolean existsBySenderAndReceiver(Team sender, Team receiver);
 }

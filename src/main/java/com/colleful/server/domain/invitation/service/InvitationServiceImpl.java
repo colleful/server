@@ -56,9 +56,26 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public List<Invitation> getAllInvitations(Long userId) {
+    public List<Invitation> getAllInvitationsToMe(Long userId) {
         User user = userService.getUser(userId);
         return invitationRepository.findAllByUser(user);
+    }
+
+    @Override
+    public List<Invitation> getAllInvitationsFromMyTeam(Long userId) {
+        User user = userService.getUser(userId);
+
+        if (!user.hasTeam()) {
+            throw new ForbiddenBehaviorException("팀을 먼저 생성해 주세요.");
+        }
+
+        Team team = teamService.getTeam(user.getTeamId());
+
+        if (!team.isLedBy(userId)) {
+            throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");
+        }
+
+        return invitationRepository.findAllByTeam(team);
     }
 
     @Override
@@ -70,7 +87,10 @@ public class InvitationServiceImpl implements InvitationService {
         }
 
         invitation.accept();
-        invitationRepository.deleteById(invitationId);
+
+        List<Invitation> myInvitations = invitationRepository.findAllByUser(invitation.getUser());
+        myInvitations
+            .forEach(myInvitation -> invitationRepository.deleteById(myInvitation.getId()));
     }
 
     @Override
