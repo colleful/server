@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class SearchingTest {
 
     @InjectMocks
-    private TeamService teamService;
+    private TeamServiceImpl teamServiceImpl;
     @Mock
     private UserService userService;
     @Mock
@@ -38,7 +38,7 @@ public class SearchingTest {
                 .leaderId(2L)
                 .build()));
 
-        Team team = teamService.getTeam(1L, 1L);
+        Team team = teamServiceImpl.getTeam(1L, 1L);
         assertThat(team.getId()).isEqualTo(1L);
     }
 
@@ -53,7 +53,7 @@ public class SearchingTest {
                 .leaderId(2L)
                 .build()));
 
-        Team team = teamService.getTeam(1L, 1L);
+        Team team = teamServiceImpl.getTeam(1L, 1L);
         assertThat(team.getId()).isEqualTo(1L);
     }
 
@@ -68,7 +68,7 @@ public class SearchingTest {
                 .leaderId(2L)
                 .build()));
 
-        assertThatThrownBy(() -> teamService.getTeam(1L, 1L))
+        assertThatThrownBy(() -> teamServiceImpl.getTeam(1L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

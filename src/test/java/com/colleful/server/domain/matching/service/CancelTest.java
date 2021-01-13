@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class CancelTest {
 
     @InjectMocks
-    private MatchingRequestService matchingRequestService;
+    private MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
     private MatchingRequestRepository matchingRequestRepository;
 
@@ -30,7 +30,7 @@ public class CancelTest {
         when(matchingRequestRepository.findById(1L))
             .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
 
-        matchingRequestService.cancel(1L, 1L);
+        matchingRequestServiceImpl.cancel(1L, 1L);
 
         verify(matchingRequestRepository).deleteById(1L);
     }
@@ -42,7 +42,7 @@ public class CancelTest {
         when(matchingRequestRepository.findById(1L))
             .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
 
-        assertThatThrownBy(() -> matchingRequestService.cancel(1L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.cancel(1L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ChangingStatusTest {
 
     @InjectMocks
-    private TeamService teamService;
+    private TeamServiceImpl teamServiceImpl;
     @Mock
     private TeamRepository teamRepository;
 
@@ -32,7 +32,7 @@ public class ChangingStatusTest {
                 .leaderId(1L)
                 .build()));
 
-        teamService.updateStatus(1L, 1L, TeamStatus.READY);
+        teamServiceImpl.updateStatus(1L, 1L, TeamStatus.READY);
 
         Team team = teamRepository.findById(1L).orElse(Team.builder().build());
         assertThat(team.getStatus()).isEqualTo(TeamStatus.READY);
@@ -47,7 +47,7 @@ public class ChangingStatusTest {
                 .leaderId(1L)
                 .build()));
 
-        assertThatThrownBy(() -> teamService.updateStatus(1L, 2L, TeamStatus.READY))
+        assertThatThrownBy(() -> teamServiceImpl.updateStatus(1L, 2L, TeamStatus.READY))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

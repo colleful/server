@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class LeavingTest {
 
     @InjectMocks
-    private TeamService teamService;
+    private TeamServiceImpl teamServiceImpl;
     @Mock
     private UserService userService;
     @Mock
@@ -39,10 +39,10 @@ public class LeavingTest {
                 .headcount(2)
                 .build()));
 
-        teamService.leaveTeam(1L);
+        teamServiceImpl.leaveTeam(1L);
 
         User user = userService.getUser(1L);
-        Team team = teamService.getTeam(1L);
+        Team team = teamServiceImpl.getTeam(1L);
         assertThat(user.getTeamId()).isNull();
         assertThat(team.getHeadcount()).isEqualTo(1);
     }
@@ -58,7 +58,7 @@ public class LeavingTest {
                 .leaderId(1L)
                 .build()));
 
-        assertThatThrownBy(() -> teamService.leaveTeam(1L))
+        assertThatThrownBy(() -> teamServiceImpl.leaveTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class DeletingTest {
 
     @InjectMocks
-    private TeamService teamService;
+    private TeamServiceImpl teamServiceImpl;
     @Mock
     private UserService userService;
     @Mock
@@ -60,9 +60,9 @@ public class DeletingTest {
                 .matchedTeamId(1L)
                 .build()));
 
-        teamService.deleteTeam(1L);
+        teamServiceImpl.deleteTeam(1L);
 
-        Team team = teamService.getTeam(2L);
+        Team team = teamServiceImpl.getTeam(2L);
         User user = userService.getUser(2L);
         assertThat(team.getMatchedTeamId()).isNull();
         assertThat(team.getStatus()).isEqualTo(TeamStatus.PENDING);
@@ -75,7 +75,7 @@ public class DeletingTest {
         when(userService.getUser(1L))
             .thenReturn(User.builder().id(1L).build());
 
-        assertThatThrownBy(() -> teamService.deleteTeam(1L))
+        assertThatThrownBy(() -> teamServiceImpl.deleteTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -90,7 +90,7 @@ public class DeletingTest {
                 .leaderId(2L)
                 .build()));
 
-        assertThatThrownBy(() -> teamService.deleteTeam(1L))
+        assertThatThrownBy(() -> teamServiceImpl.deleteTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

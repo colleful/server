@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class WithdrawTest {
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     @Mock
     private UserRepository userRepository;
 
@@ -27,7 +27,7 @@ public class WithdrawTest {
         when(userRepository.findById(1L))
             .thenReturn(Optional.of(User.builder().build()));
 
-        userService.withdrawal(1L);
+        userServiceImpl.withdrawal(1L);
 
         verify(userRepository).deleteById(1L);
     }
@@ -37,7 +37,7 @@ public class WithdrawTest {
         when(userRepository.findById(1L))
             .thenReturn(Optional.of(User.builder().teamId(1L).build()));
 
-        assertThatThrownBy(() -> userService.withdrawal(1L))
+        assertThatThrownBy(() -> userServiceImpl.withdrawal(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

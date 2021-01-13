@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class InvitationTest {
 
     @InjectMocks
-    private InvitationService invitationService;
+    private InvitationServiceImpl invitationServiceImpl;
     @Mock
     private InvitationRepository invitationRepository;
     @Mock
@@ -40,10 +40,12 @@ public class InvitationTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(userService.getUser(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
-        invitationService.invite(2L, 1L);
+        invitationServiceImpl.invite(2L, 1L);
 
         verify(invitationRepository).save(any());
     }
@@ -57,10 +59,12 @@ public class InvitationTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(userService.getUser(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).teamId(2L).build());
 
-        assertThatThrownBy(() -> invitationService.invite(2L, 1L))
+        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -73,10 +77,12 @@ public class InvitationTest {
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.PENDING)
                 .build());
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(userService.getUser(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
-        assertThatThrownBy(() -> invitationService.invite(2L, 1L))
+        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -89,10 +95,10 @@ public class InvitationTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(2L))
-            .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
+        when(userService.getUser(3L))
+            .thenReturn(User.builder().id(3L).teamId(1L).build());
 
-        assertThatThrownBy(() -> invitationService.invite(2L, 3L))
+        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

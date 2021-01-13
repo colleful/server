@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class CheckingRequestTest {
 
     @InjectMocks
-    private MatchingRequestService matchingRequestService;
+    private MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
     private MatchingRequestRepository matchingRequestRepository;
     @Mock
@@ -36,7 +36,7 @@ public class CheckingRequestTest {
         when(teamService.getTeam(1L))
             .thenReturn(Team.builder().id(1L).leaderId(1L).build());
 
-        matchingRequestService.getAllMatchRequests(1L);
+        matchingRequestServiceImpl.getAllMatchingRequestsToMyTeam(1L);
 
         verify(matchingRequestRepository).findAllByReceiver(any());
     }
@@ -46,7 +46,7 @@ public class CheckingRequestTest {
         when(userService.getUser(1L))
             .thenReturn(User.builder().id(1L).build());
 
-        assertThatThrownBy(() -> matchingRequestService.getAllMatchRequests(1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.getAllMatchingRequestsToMyTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -57,7 +57,7 @@ public class CheckingRequestTest {
         when(teamService.getTeam(1L))
             .thenReturn(Team.builder().id(1L).leaderId(2L).build());
 
-        assertThatThrownBy(() -> matchingRequestService.getAllMatchRequests(1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.getAllMatchingRequestsToMyTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

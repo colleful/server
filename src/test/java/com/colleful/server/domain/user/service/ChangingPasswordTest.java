@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ChangingPasswordTest {
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     @Mock
     private UserRepository userRepository;
 
@@ -25,7 +25,7 @@ public class ChangingPasswordTest {
         when(userRepository.findById(1L))
             .thenReturn(Optional.of(User.builder().password("password").build()));
 
-        userService.changePassword(1L, "new_password");
+        userServiceImpl.changePassword(1L, "new_password");
 
         User result = userRepository.findById(1L).orElse(User.builder().build());
         assertThat(result.getPassword()).isEqualTo("new_password");

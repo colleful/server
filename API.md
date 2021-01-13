@@ -199,8 +199,11 @@
 
 ## 4. 초대 관련
 
-### GET /api/invitations
-> 자신에게 온 초대 정보 모두 보기
+### GET /api/invitations/sent
+> 자신이 보낸 초대 정보 모두 조회
+
+### GET /api/invitations/received
+> 자신에게 온 초대 정보 모두 조회
 
 ### POST /api/invitations/{user-id}
 > user-id에 해당하는 유저를 자신의 팀에 초대(리더만 초대 가능)
@@ -216,7 +219,9 @@
 
 ## 5. 매칭 관련
 
-### GET /api/matching
+### GET /api/matching/sent
+> 자신이 보낸 매칭 요청 조회(리더만 조회 간)
+### GET /api/matching/received
 > 자신의 팀에게 온 매칭 요청 조회(리더만 조회 가능)
 
 ### POST /api/matching/{team-id}

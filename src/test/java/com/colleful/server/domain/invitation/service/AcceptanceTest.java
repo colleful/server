@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class AcceptanceTest {
 
     @InjectMocks
-    private InvitationService invitationService;
+    private InvitationServiceImpl invitationServiceImpl;
     @Mock
     private InvitationRepository invitationRepository;
 
@@ -43,11 +43,10 @@ public class AcceptanceTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        invitationService.accept(1L, 2L);
+        invitationServiceImpl.accept(1L, 2L);
 
         assertThat(user.getTeamId()).isEqualTo(1L);
         assertThat(team.getHeadcount()).isEqualTo(2);
-        verify(invitationRepository).deleteById(1L);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class AcceptanceTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationService.accept(1L, 3L))
+        assertThatThrownBy(() -> invitationServiceImpl.accept(1L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

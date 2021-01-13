@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class CancelTest {
 
     @InjectMocks
-    private InvitationService invitationService;
+    private InvitationServiceImpl invitationServiceImpl;
     @Mock
     private InvitationRepository invitationRepository;
 
@@ -31,7 +31,7 @@ public class CancelTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        invitationService.cancel(1L, 1L);
+        invitationServiceImpl.cancel(1L, 1L);
 
         verify(invitationRepository).deleteById(1L);
     }
@@ -43,7 +43,7 @@ public class CancelTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationService.cancel(1L, 3L))
+        assertThatThrownBy(() -> invitationServiceImpl.cancel(1L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

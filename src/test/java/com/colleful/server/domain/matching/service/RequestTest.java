@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class RequestTest {
 
     @InjectMocks
-    private MatchingRequestService matchingRequestService;
+    private MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
     private MatchingRequestRepository matchingRequestRepository;
     @Mock
@@ -51,7 +51,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        matchingRequestService.request(2L, 1L);
+        matchingRequestServiceImpl.request(2L, 1L);
 
         verify(matchingRequestRepository).save(any());
     }
@@ -61,7 +61,7 @@ public class RequestTest {
         when(userService.getUser(1L))
             .thenReturn(User.builder().id(1L).build());
 
-        assertThatThrownBy(() -> matchingRequestService.request(2L, 1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -85,7 +85,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.request(2L, 1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -109,7 +109,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.request(2L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -133,7 +133,7 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestService.request(2L, 1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

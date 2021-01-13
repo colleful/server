@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class RefusalTest {
 
     @InjectMocks
-    private InvitationService invitationService;
+    private InvitationServiceImpl invitationServiceImpl;
     @Mock
     private InvitationRepository invitationRepository;
 
@@ -41,7 +41,7 @@ public class RefusalTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        invitationService.refuse(1L, 2L);
+        invitationServiceImpl.refuse(1L, 2L);
 
         verify(invitationRepository).deleteById(1L);
     }
@@ -61,7 +61,7 @@ public class RefusalTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationService.refuse(1L, 3L))
+        assertThatThrownBy(() -> invitationServiceImpl.refuse(1L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

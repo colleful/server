@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class AcceptanceTest {
 
     @InjectMocks
-    private MatchingRequestService matchingRequestService;
+    private MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
     private MatchingRequestRepository matchingRequestRepository;
 
@@ -38,13 +38,12 @@ public class AcceptanceTest {
         when(matchingRequestRepository.findById(1L))
             .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
 
-        matchingRequestService.accept(1L, 2L);
+        matchingRequestServiceImpl.accept(1L, 2L);
 
         assertThat(team1.getMatchedTeamId()).isEqualTo(2L);
         assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
         assertThat(team1.getStatus()).isEqualTo(TeamStatus.MATCHED);
         assertThat(team2.getStatus()).isEqualTo(TeamStatus.MATCHED);
-        verify(matchingRequestRepository).deleteById(1L);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class AcceptanceTest {
         when(matchingRequestRepository.findById(1L))
             .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
 
-        assertThatThrownBy(() -> matchingRequestService.accept(1L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.accept(1L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

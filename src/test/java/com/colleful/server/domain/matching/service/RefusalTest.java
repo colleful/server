@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class RefusalTest {
 
     @InjectMocks
-    private MatchingRequestService matchingRequestService;
+    private MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
     private MatchingRequestRepository matchingRequestRepository;
 
@@ -36,7 +36,7 @@ public class RefusalTest {
         when(matchingRequestRepository.findById(1L))
             .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
 
-        matchingRequestService.refuse(1L, 2L);
+        matchingRequestServiceImpl.refuse(1L, 2L);
 
         verify(matchingRequestRepository).deleteById(1L);
     }
@@ -54,7 +54,7 @@ public class RefusalTest {
         when(matchingRequestRepository.findById(1L))
             .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
 
-        assertThatThrownBy(() -> matchingRequestService.refuse(1L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.refuse(1L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }
