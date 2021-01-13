@@ -55,7 +55,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     }
 
     @Override
-    public List<MatchingRequest> getAllMatchRequests(Long userId) {
+    public List<MatchingRequest> getAllMatchingRequestsToMyTeam(Long userId) {
         User user = userService.getUser(userId);
 
         if (!user.hasTeam()) {
@@ -69,6 +69,23 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         }
 
         return matchingRequestRepository.findAllByReceiver(team);
+    }
+
+    @Override
+    public List<MatchingRequest> getAllMatchingRequestsFromMyTeam(Long userId) {
+        User user = userService.getUser(userId);
+
+        if (!user.hasTeam()) {
+            throw new ForbiddenBehaviorException("먼저 팀에 가입해주세요.");
+        }
+
+        Team team = teamService.getTeam(user.getTeamId());
+
+        if (!team.isLedBy(userId)) {
+            throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");
+        }
+
+        return matchingRequestRepository.findAllBySender(team);
     }
 
     @Override

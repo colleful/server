@@ -27,11 +27,19 @@ public class MatchingRequestController {
     private final MatchingRequestService matchingRequestService;
     private final JwtProvider provider;
 
-    @GetMapping
-    public List<MatchingRequestDto.Response> getAllMatchRequests(
+    @GetMapping("/sent")
+    public List<MatchingRequestDto.Response> getAllMatchingRequestFromMyTeam(
         @RequestHeader("Authorization") String token) {
         List<MatchingRequest> matches = matchingRequestService
-            .getAllMatchRequests(provider.getId(token));
+            .getAllMatchingRequestsFromMyTeam(provider.getId(token));
+        return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/received")
+    public List<MatchingRequestDto.Response> getAllMatchingRequestsToMyTeam(
+        @RequestHeader("Authorization") String token) {
+        List<MatchingRequest> matches = matchingRequestService
+            .getAllMatchingRequestsToMyTeam(provider.getId(token));
         return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
     }
 

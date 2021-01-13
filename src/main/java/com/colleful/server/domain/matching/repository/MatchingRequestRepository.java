@@ -11,5 +11,7 @@ public interface MatchingRequestRepository extends JpaRepository<MatchingRequest
 
     List<MatchingRequest> findAllByReceiver(Team receiver);
 
+    List<MatchingRequest> findAllBySender(Team sender);
+
     boolean existsBySenderAndReceiver(Team sender, Team receiver);
 }

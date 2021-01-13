@@ -7,7 +7,9 @@ public interface MatchingRequestService {
 
     Long request(Long receiverId, Long userId);
 
-    List<MatchingRequest> getAllMatchRequests(Long userId);
+    List<MatchingRequest> getAllMatchingRequestsToMyTeam(Long userId);
+
+    List<MatchingRequest> getAllMatchingRequestsFromMyTeam(Long userId);
 
     void accept(Long matchingId, Long userId);
 
