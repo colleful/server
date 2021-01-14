@@ -1,7 +1,6 @@
 package com.colleful.server.global.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Base64;
@@ -9,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,8 +22,7 @@ public class JwtProvider {
     private String secretKey;
     private final UserDetailsService userDetailsService;
 
-    public JwtProvider(
-        @Qualifier("userServiceImpl") UserDetailsService userDetailsService) {
+    public JwtProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
