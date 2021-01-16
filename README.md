@@ -5,6 +5,11 @@
 전북대학교 과팅 매칭 플랫폼 Colleful의 API 서버.  
 College와 Colorful의 합성어로, 다채로운 대학 생활을 제공해 주겠다는 의미이다.
 
+## API 문서
+
+* [API.md](/API.md)
+* [Swagger](http://203.254.143.247:8080/swagger-ui.html)
+
 ## 기술 스택
 
 ### Server-side
