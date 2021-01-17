@@ -63,3 +63,25 @@ $ java -jar build/libs/server-{버전 명}.jar
 ## JPA Entity 관계도
 
 ![jpa entity](https://user-images.githubusercontent.com/55437583/104817272-9fbe7d80-5863-11eb-8ffe-5e2d646694d0.png)
+
+## 리팩토링
+
+### 처음 구조의 문제점
+
+- 필요한 클래스가 점점 많아지면서 Layer Architecture가 비효율적으로 느껴짐
+- 복잡한 패키지, 클래스 간 의존성
+- 비즈니스 로직이 Controller, Service layer에 마구잡이로 섞여 있음
+- 테스트 코드 없음
+
+### 리팩토링 규칙
+
+- Domain 중심 Architecture를 사용한다.
+- Setter를 되도록 사용하지 않는다.
+- Service 클래스를 인터페이스와 구체 클래스로 분리한다.
+- 조건식을 추상화하고 의미있는 이름을 부여한다.
+- 클래스와 패키지 간 의존성 사이클이 생기지 않도록 한다.
+- Controller 클래스는 모든 로직을 Service 클래스에 위임하고 받은 데이터를 가공하여 응답해 주는 역할만 한다.
+- Service 클래스는 트랜잭션을 보장하고, 예외 처리를 담당한다.
+- Domain 클래스는 비즈니스 로직을 담당한다.
+- 도메인 패키지의 api 패키지는 같은 패키지의 service 패키지에만 의존한다.
+- 도메인 패키지의 service 패키지는 같은 패키지의 repository 패키지와 다른 패키지의 service 패키지에 의존한다.
