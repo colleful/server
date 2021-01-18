@@ -71,10 +71,6 @@ public class InvitationServiceImpl implements InvitationService {
 
         Team team = teamService.getTeam(user.getTeamId());
 
-        if (!team.isLedBy(userId)) {
-            throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");
-        }
-
         return invitationRepository.findAllByTeam(team);
     }
 
