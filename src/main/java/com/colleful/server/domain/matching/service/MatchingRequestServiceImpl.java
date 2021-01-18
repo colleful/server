@@ -64,10 +64,6 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
 
         Team team = teamService.getTeam(user.getTeamId());
 
-        if (!team.isLedBy(userId)) {
-            throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");
-        }
-
         return matchingRequestRepository.findAllByReceiver(team);
     }
 
@@ -80,10 +76,6 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         }
 
         Team team = teamService.getTeam(user.getTeamId());
-
-        if (!team.isLedBy(userId)) {
-            throw new ForbiddenBehaviorException("리더만 조회할 수 있습니다.");
-        }
 
         return matchingRequestRepository.findAllBySender(team);
     }
