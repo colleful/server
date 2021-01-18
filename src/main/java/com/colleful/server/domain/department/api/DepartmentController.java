@@ -2,7 +2,6 @@ package com.colleful.server.domain.department.api;
 
 import com.colleful.server.domain.department.domain.Department;
 import com.colleful.server.domain.department.service.DepartmentService;
-import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;

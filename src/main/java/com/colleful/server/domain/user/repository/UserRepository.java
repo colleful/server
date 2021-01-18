@@ -10,10 +10,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
     Page<User> findAll(Pageable pageable);
+
     Optional<User> findByEmail(String email);
+
     List<User> findByNicknameContaining(String nickname);
+
     List<User> findAllByTeamId(Long teamId);
+
     boolean existsByNickname(String nickname);
+
     boolean existsByEmail(String email);
 }

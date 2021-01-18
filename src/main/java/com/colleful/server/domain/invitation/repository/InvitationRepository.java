@@ -9,7 +9,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
+
     List<Invitation> findAllByUser(User user);
+
     List<Invitation> findAllByTeam(Team team);
+
     boolean existsByTeamAndUser(Team team, User user);
 }

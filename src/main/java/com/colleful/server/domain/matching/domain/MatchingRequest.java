@@ -2,7 +2,6 @@ package com.colleful.server.domain.matching.domain;
 
 import com.colleful.server.domain.team.domain.Team;
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

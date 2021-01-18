@@ -2,7 +2,6 @@ package com.colleful.server.domain.invitation.dto;
 
 import com.colleful.server.domain.invitation.domain.Invitation;
 import com.colleful.server.domain.team.dto.TeamDto;
-import com.colleful.server.domain.team.dto.TeamDto.Response;
 import lombok.Getter;
 
 public class InvitationDto {
