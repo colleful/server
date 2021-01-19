@@ -85,7 +85,7 @@ public class Team {
     }
 
     public void match(Long teamId) {
-        if (this.matchedTeamId != null) {
+        if (this.isMatched()) {
             throw new ForbiddenBehaviorException("이미 다른 팀과 매칭되어 있습니다.");
         }
         this.matchedTeamId = teamId;
