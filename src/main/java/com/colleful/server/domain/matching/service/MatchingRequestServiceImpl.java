@@ -89,7 +89,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         }
 
         match.accept();
-        matchingRequestRepository.deleteById(matchingId);
+        deleteAllMatchingRequestsToMyTeam(match.getReceiver());
     }
 
     @Override
@@ -117,5 +117,11 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     private MatchingRequest getMatchingRequest(Long id) {
         return matchingRequestRepository.findById(id)
             .orElseThrow(() -> new NotFoundResourceException("매칭 요청이 없습니다."));
+    }
+
+    private void deleteAllMatchingRequestsToMyTeam(Team team) {
+        List<MatchingRequest> matchingRequests = matchingRequestRepository.findAllByReceiver(team);
+        matchingRequests.forEach(
+            matchingRequest -> matchingRequestRepository.deleteById(matchingRequest.getId()));
     }
 }
