@@ -49,15 +49,4 @@ public class CheckingRequestTest {
         assertThatThrownBy(() -> matchingRequestServiceImpl.getAllMatchingRequestsToMyTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
-
-    @Test
-    public void 리더가_아닌_사용자가_내_팀에게_온_모든_요청_확인() {
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
-        when(teamService.getTeam(1L))
-            .thenReturn(Team.builder().id(1L).leaderId(2L).build());
-
-        assertThatThrownBy(() -> matchingRequestServiceImpl.getAllMatchingRequestsToMyTeam(1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
-    }
 }
