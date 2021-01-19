@@ -101,4 +101,13 @@ public class InvitationTest {
         assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 3L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
+
+    @Test
+    public void 팀에_속하지_않은_사용자가_초대() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).build());
+
+        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
+            .isInstanceOf(ForbiddenBehaviorException.class);
+    }
 }
