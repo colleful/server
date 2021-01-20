@@ -8,13 +8,11 @@ College와 Colorful의 합성어로, 다채로운 대학 생활을 제공해 주
 ## 🔓 설치 방법
 
 ### 1. 프로젝트 다운 받기
-
 ```
 $ git clone https://github.com/colleful/server.git
 ```
 
 ### 2. 설정 정보
-
 `src/main/resources/application-local.properties`에 다음과 같이 적어준다.
 
 ```
@@ -29,7 +27,6 @@ jwt.secret={jwt 비밀 키}
 ```
 
 ### 3. 빌드 및 실행
-
 ```
 $ ./gradlew build
 $ java -jar build/libs/server-{버전 명}.jar
@@ -43,20 +40,17 @@ $ java -jar build/libs/server-{버전 명}.jar
 ## 💡 기술 스택
 
 ### Server-side
-
 - Spring Boot, Spring Web
 - MySQL, Spring Data Jpa, Hibernate
 - Spring Security, JWT
 - JUnit, Mockito
 
 ### Deployment
-
 - AWS EC2 -> JCloud
 - Github Workflow
 - Jenkins
 
 ### Documentation
-
 - Swagger
 
 ## 🌴 브랜치 전략
@@ -66,14 +60,12 @@ $ java -jar build/libs/server-{버전 명}.jar
 ## 🛠 리팩토링
 
 ### 처음 구조의 문제점
-
 - 필요한 클래스가 점점 많아지면서 Layer Architecture가 비효율적으로 느껴졌다.
 - 패키지, 클래스 간 의존성이 복잡하다.
 - 비즈니스 로직이 Controller, Service layer에 마구잡이로 섞여 있다.
 - 테스트 코드가 없다.
 
 ### 리팩토링 규칙
-
 - Domain 중심 디렉토리 구조를 사용한다.
 - Setter를 되도록 사용하지 않는다.
 - Service 클래스를 인터페이스와 구체 클래스로 분리한다.
@@ -92,6 +84,9 @@ $ java -jar build/libs/server-{버전 명}.jar
 - 객체의 역할을 명확히 정하니 코딩할 때 혼란이 덜 하였다.
 - 객체 간 의존 규칙을 정하니 코드 변경 시에 어떤 부분이 영향을 받는지 쉽게 파악하고 고칠 수 있었다.
 - 테스트 코드를 추가하니 코드 변경 시에 발생할 수 있는 문제를 잡을 수 있었다.
+
+### 참고 자료
+- [우아한 객체지향](https://youtu.be/dJ5C4qRqAgA)
 
 ## 🧪 테스트
 
