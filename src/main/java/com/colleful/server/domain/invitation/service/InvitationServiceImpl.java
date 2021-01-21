@@ -83,7 +83,8 @@ public class InvitationServiceImpl implements InvitationService {
         }
 
         invitation.accept();
-        deleteAllInvitationsToMe(invitation.getUser());
+
+        invitationRepository.deleteAllByUser(invitation.getUser());
     }
 
     @Override
@@ -111,10 +112,5 @@ public class InvitationServiceImpl implements InvitationService {
     private Invitation getInvitation(Long id) {
         return invitationRepository.findById(id)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
-    }
-
-    private void deleteAllInvitationsToMe(User user) {
-        List<Invitation> invitations = invitationRepository.findAllByUser(user);
-        invitations.forEach(invitation -> invitationRepository.deleteById(invitation.getId()));
     }
 }

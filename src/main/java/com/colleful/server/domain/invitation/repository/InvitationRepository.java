@@ -15,4 +15,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     List<Invitation> findAllByTeam(Team team);
 
     boolean existsByTeamAndUser(Team team, User user);
+
+    void deleteAllByUser(User user);
 }
