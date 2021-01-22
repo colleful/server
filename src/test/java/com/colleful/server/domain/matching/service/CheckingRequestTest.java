@@ -42,11 +42,25 @@ public class CheckingRequestTest {
     }
 
     @Test
+    public void 내_팀이_보낸_모든_요청_확인() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
+        when(teamService.getTeam(1L))
+            .thenReturn(Team.builder().id(1L).leaderId(1L).build());
+
+        matchingRequestServiceImpl.getAllMatchingRequestsFromMyTeam(1L);
+
+        verify(matchingRequestRepository).findAllBySender(any());
+    }
+
+    @Test
     public void 팀이_없는_사용자가_모든_요청_확인() {
         when(userService.getUser(1L))
             .thenReturn(User.builder().id(1L).build());
 
         assertThatThrownBy(() -> matchingRequestServiceImpl.getAllMatchingRequestsToMyTeam(1L))
+            .isInstanceOf(ForbiddenBehaviorException.class);
+        assertThatThrownBy(() -> matchingRequestServiceImpl.getAllMatchingRequestsFromMyTeam(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }
