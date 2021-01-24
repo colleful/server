@@ -33,26 +33,14 @@ public class JwtProvider {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("id", id);
         claims.put("roles", roles);
-
         Date now = new Date();
+
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(now)
             .setExpiration(new Date(now.getTime() + JwtProperties.EXPIRATION_TIME))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
-    }
-
-    public Claims getBody(String token) {
-        String[] s = token.split(" ");
-        if (s.length != 2 || !s[0].equals(JwtProperties.TYPE)) {
-            throw new IllegalArgumentException();
-        }
-
-        return Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(s[1])
-            .getBody();
     }
 
     public Long getId(String token) {
@@ -73,11 +61,27 @@ public class JwtProvider {
         return request.getHeader(JwtProperties.HEADER);
     }
 
-    public Boolean isValidateToken(String token) {
+    public boolean isValidateToken(String token) {
         try {
             return !getBody(token).getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private Claims getBody(String token) {
+        if (!checkType(token)) {
+            throw new IllegalArgumentException();
+        }
+
+        return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token.split(" ")[1])
+            .getBody();
+    }
+
+    private boolean checkType(String token) {
+        String[] s = token.split(" ");
+        return s.length == 2 && s[0].equals(JwtProperties.TYPE);
     }
 }
