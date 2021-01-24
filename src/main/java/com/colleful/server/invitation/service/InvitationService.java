@@ -1,0 +1,19 @@
+package com.colleful.server.invitation.service;
+
+import com.colleful.server.invitation.domain.Invitation;
+import java.util.List;
+
+public interface InvitationService {
+
+    Long invite(Long targetId, Long userId);
+
+    List<Invitation> getAllInvitationsToMe(Long userId);
+
+    List<Invitation> getAllInvitationsFromMyTeam(Long userId);
+
+    void accept(Long invitationId, Long userId);
+
+    void refuse(Long invitationId, Long userId);
+
+    void cancel(Long invitationId, Long userId);
+}
