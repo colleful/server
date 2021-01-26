@@ -10,8 +10,6 @@ import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.service.TeamService;
 import com.colleful.server.user.domain.Gender;
-import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,14 +26,10 @@ public class RequestTest {
     private MatchingRequestRepository matchingRequestRepository;
     @Mock
     private TeamService teamService;
-    @Mock
-    private UserService userService;
 
     @Test
     public void 매치_요청() {
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
@@ -57,19 +51,8 @@ public class RequestTest {
     }
 
     @Test
-    public void 팀에_속하지_않은_사용자가_매치_요청() {
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).build());
-
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
-    }
-
-    @Test
     public void 같은_성별_팀에게_매치_요청() {
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
@@ -91,12 +74,10 @@ public class RequestTest {
 
     @Test
     public void 리더가_아닌_사용자가_매치_요청() {
-        when(userService.getUser(3L))
-            .thenReturn(User.builder().id(3L).teamId(1L).build());
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
-                .leaderId(1L)
+                .leaderId(3L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
@@ -109,15 +90,13 @@ public class RequestTest {
                 .build());
         when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
     @Test
     public void 준비가_안_된_팀에게_매치_요청() {
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)

@@ -33,15 +33,13 @@ public class InvitationTest {
 
     @Test
     public void 초대() {
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(userService.getUser(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
@@ -52,15 +50,13 @@ public class InvitationTest {
 
     @Test
     public void 팀이_있는_사용자_초대() {
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(userService.getUser(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).teamId(2L).build());
 
@@ -70,15 +66,13 @@ public class InvitationTest {
 
     @Test
     public void 다른_성별_초대() {
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
                 .leaderId(1L)
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(userService.getUser(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
@@ -88,24 +82,13 @@ public class InvitationTest {
 
     @Test
     public void 리더가_아닌_사용자가_초대() {
-        when(teamService.getTeam(1L))
+        when(teamService.getUserTeam(1L))
             .thenReturn(Team.builder()
                 .id(1L)
-                .leaderId(1L)
+                .leaderId(3L)
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(3L))
-            .thenReturn(User.builder().id(3L).teamId(1L).build());
-
-        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 3L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
-    }
-
-    @Test
-    public void 팀에_속하지_않은_사용자가_초대() {
-        when(userService.getUser(1L))
-            .thenReturn(User.builder().id(1L).build());
 
         assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);

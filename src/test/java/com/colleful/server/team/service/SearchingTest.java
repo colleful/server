@@ -71,4 +71,28 @@ public class SearchingTest {
         assertThatThrownBy(() -> teamServiceImpl.getTeam(1L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
+
+    @Test
+    public void 유저의_팀_조회() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).teamId(1L).build());
+        when(teamRepository.findById(1L))
+            .thenReturn(Optional.of(Team.builder()
+                .id(1L)
+                .status(TeamStatus.PENDING)
+                .leaderId(2L)
+                .build()));
+
+        Team team = teamServiceImpl.getUserTeam(1L);
+        assertThat(team.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    public void 팀이_없는_유저의_팀_조회() {
+        when(userService.getUser(1L))
+            .thenReturn(User.builder().id(1L).build());
+
+        assertThatThrownBy(() -> teamServiceImpl.getUserTeam(1L))
+            .isInstanceOf(ForbiddenBehaviorException.class);
+    }
 }
