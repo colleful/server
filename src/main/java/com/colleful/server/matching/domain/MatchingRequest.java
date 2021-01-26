@@ -1,5 +1,6 @@
 package com.colleful.server.matching.domain;
 
+import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.team.domain.Team;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
@@ -38,7 +39,19 @@ public class MatchingRequest {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Team receiver;
 
-    public MatchingRequest(Team sender, Team receiver) {
+    public MatchingRequest(Team sender, Team receiver, Long leaderIdOfSender) {
+        if (!sender.isDifferentGenderFrom(receiver.getGender())) {
+            throw new ForbiddenBehaviorException("다른 성별에게만 매칭 요청할 수 있습니다.");
+        }
+
+        if (!sender.isLedBy(leaderIdOfSender)) {
+            throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
+        }
+
+        if (receiver.isNotReady()) {
+            throw new ForbiddenBehaviorException("준비된 팀에게만 매칭 요청할 수 있습니다.");
+        }
+
         this.sender = sender;
         this.receiver = receiver;
     }

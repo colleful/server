@@ -37,19 +37,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
-        if (!sender.isDifferentGenderFrom(receiver.getGender())) {
-            throw new ForbiddenBehaviorException("다른 성별에게만 매칭 요청할 수 있습니다.");
-        }
-
-        if (!sender.isLedBy(userId)) {
-            throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
-        }
-
-        if (receiver.isNotReady()) {
-            throw new ForbiddenBehaviorException("준비된 팀에게만 매칭 요청할 수 있습니다.");
-        }
-
-        MatchingRequest match = new MatchingRequest(sender, receiver);
+        MatchingRequest match = new MatchingRequest(sender, receiver, userId);
         matchingRequestRepository.save(match);
         return match.getId();
     }
