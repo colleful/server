@@ -1,5 +1,6 @@
 package com.colleful.server.invitation.domain;
 
+import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.user.domain.User;
 import java.time.LocalDateTime;
@@ -38,6 +39,14 @@ public class Invitation {
     private User user;
 
     public Invitation(Team team, User user) {
+        if (user.hasTeam()) {
+            throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
+        }
+
+        if (team.isDifferentGenderFrom(user.getGender())) {
+            throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
+        }
+
         this.team = team;
         this.user = user;
     }

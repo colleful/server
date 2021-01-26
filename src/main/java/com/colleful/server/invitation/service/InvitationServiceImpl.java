@@ -38,16 +38,8 @@ public class InvitationServiceImpl implements InvitationService {
 
         User targetUser = userService.getUser(targetId);
 
-        if (targetUser.hasTeam()) {
-            throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
-        }
-
         if (invitationRepository.existsByTeamAndUser(team, targetUser)) {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
-        }
-
-        if (team.isDifferentGenderFrom(targetUser.getGender())) {
-            throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 
         Invitation invitation = new Invitation(team, targetUser);
