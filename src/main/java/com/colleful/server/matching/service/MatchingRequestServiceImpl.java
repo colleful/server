@@ -4,8 +4,6 @@ import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.service.TeamService;
-import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
@@ -20,17 +18,10 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
 
     private final MatchingRequestRepository matchingRequestRepository;
     private final TeamService teamService;
-    private final UserService userService;
 
     @Override
     public Long request(Long receiverId, Long userId) {
-        User user = userService.getUser(userId);
-
-        if (!user.hasTeam()) {
-            throw new ForbiddenBehaviorException("팀을 먼저 생성해 주세요.");
-        }
-
-        Team sender = teamService.getTeam(user.getTeamId());
+        Team sender = teamService.getUserTeam(userId);
         Team receiver = teamService.getTeam(receiverId);
 
         if (matchingRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
@@ -44,27 +35,13 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
 
     @Override
     public List<MatchingRequest> getAllMatchingRequestsToMyTeam(Long userId) {
-        User user = userService.getUser(userId);
-
-        if (!user.hasTeam()) {
-            throw new ForbiddenBehaviorException("먼저 팀에 가입해주세요.");
-        }
-
-        Team team = teamService.getTeam(user.getTeamId());
-
+        Team team = teamService.getUserTeam(userId);
         return matchingRequestRepository.findAllByReceiver(team);
     }
 
     @Override
     public List<MatchingRequest> getAllMatchingRequestsFromMyTeam(Long userId) {
-        User user = userService.getUser(userId);
-
-        if (!user.hasTeam()) {
-            throw new ForbiddenBehaviorException("먼저 팀에 가입해주세요.");
-        }
-
-        Team team = teamService.getTeam(user.getTeamId());
-
+        Team team = teamService.getUserTeam(userId);
         return matchingRequestRepository.findAllBySender(team);
     }
 

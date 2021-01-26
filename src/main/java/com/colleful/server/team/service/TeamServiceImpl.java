@@ -64,6 +64,17 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public Team getUserTeam(Long userId) {
+        User user = userService.getUser(userId);
+
+        if (!user.hasTeam()) {
+            throw new ForbiddenBehaviorException("팀을 먼저 생성해 주세요.");
+        }
+
+        return getTeam(user.getTeamId());
+    }
+
+    @Override
     public Page<Team> getAllReadyTeams(Pageable pageable) {
         return teamRepository.findAllByStatusOrderByUpdatedAtDesc(pageable, TeamStatus.READY);
     }
