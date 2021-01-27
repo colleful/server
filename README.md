@@ -13,17 +13,20 @@ $ git clone https://github.com/colleful/server.git
 ```
 
 ### 2. 설정 정보
-`src/main/resources/application-local.properties`에 다음과 같이 적어준다.
+`src/main/resources/application-local.yml`에 다음과 같이 적어준다.
 
-```
-spring.datasource.url=jdbc:mysql://{mysql 서버 주소}:{mysql 포트}/{데이터베이스 이름}?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
-spring.datasource.username={mysql username}
-spring.datasource.password={mysql password}
+```yml
+spring:
+  datasource:
+    url: mysql://{mysql 서버 주소}:{mysql 포트}/{데이터베이스 이름}?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: {mysql username}
+    password: {mysql password}
+  mail:
+    username: {인증번호 발송 이메일}
+    password: {smtp 서버 로그인용 비밀번호}
 
-spring.mail.username={인증번호 발송 이메일}
-spring.mail.password={smtp 서버 로그인용 비밀번호}
-
-jwt.secret={jwt 비밀 키}
+jwt:
+  secret: {jwt 비밀 키}
 ```
 
 ### 3. 빌드 및 실행
