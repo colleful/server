@@ -11,6 +11,7 @@
 ## 인증 및 인가
 /api로 시작되는 URI는 모두 인증 정보가 필요하다.  
 로그인 시 응답의 Authorization 헤더에 전송되는 JWT를 요청 시 Authorization 헤더에 추가해야 한다. 
+
 ## 응답 형식
 
 **페이징 응답 형식**
@@ -48,12 +49,14 @@
 |name|type|description|
 |----|----|-----------|
 |id|Long|id|
+|updatedAt|String|초대한 시간|
 |team|Team|초대받은 팀 정보|
 
 **매칭 정보**
 |name|type|description|
 |----|----|-----------|
 |id|Long|id|
+|updatedAt|String|매칭 요청한 시간|
 |sender|Team|요청을 보낸 팀 정보|
 
 **학과 정보**
