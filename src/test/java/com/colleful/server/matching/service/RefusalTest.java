@@ -40,7 +40,7 @@ public class RefusalTest {
             .status(TeamStatus.READY)
             .build();
         when(matchingRequestRepository.findById(1L))
-            .thenReturn(Optional.of(new MatchingRequest(team1, team2, 1L)));
+            .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
     }
 
     @Test

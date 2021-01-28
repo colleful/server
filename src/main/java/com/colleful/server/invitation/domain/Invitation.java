@@ -51,8 +51,12 @@ public class Invitation {
         this.user = user;
     }
 
-    public boolean isNotForMe(Long userId) {
+    public boolean isNotReceivedBy(Long userId) {
         return !this.user.getId().equals(userId);
+    }
+
+    public boolean isNotSentBy(Long userId) {
+        return !this.team.isLedBy(userId);
     }
 
     public void accept() {

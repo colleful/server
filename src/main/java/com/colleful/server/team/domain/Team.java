@@ -76,6 +76,7 @@ public class Team {
         if (user.isNotMemberOf(this.id)) {
             throw new ForbiddenBehaviorException("이 팀의 멤버가 아닙니다.");
         }
+
         user.leaveTeam();
         this.headcount--;
     }
@@ -88,12 +89,19 @@ public class Team {
         if (this.isMatched()) {
             throw new ForbiddenBehaviorException("이미 다른 팀과 매칭되어 있습니다.");
         }
+
         this.matchedTeamId = teamId;
-        this.changeStatus(TeamStatus.MATCHED);
+        this.status = TeamStatus.MATCHED;
     }
 
-    public void finishMatch() {
+    public void finishMatch(Team matchedTeam) {
+        if (!this.matchedTeamId.equals(matchedTeam.getId())) {
+            throw new ForbiddenBehaviorException("매칭된 팀이 아닙니다.");
+        }
+
         this.matchedTeamId = null;
-        this.changeStatus(TeamStatus.PENDING);
+        this.status = TeamStatus.PENDING;
+        matchedTeam.matchedTeamId = null;
+        matchedTeam.status = TeamStatus.PENDING;
     }
 }

@@ -39,7 +39,7 @@ public class LeavingTest {
                 .headcount(2)
                 .build()));
 
-        teamServiceImpl.leaveTeam(1L);
+        teamServiceImpl.removeMember(1L);
 
         User user = userService.getUser(1L);
         Team team = teamServiceImpl.getTeam(1L);
@@ -58,7 +58,7 @@ public class LeavingTest {
                 .leaderId(1L)
                 .build()));
 
-        assertThatThrownBy(() -> teamServiceImpl.leaveTeam(1L))
+        assertThatThrownBy(() -> teamServiceImpl.removeMember(1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -71,7 +71,7 @@ public class TeamController {
 
     @PostMapping("/leave")
     public ResponseEntity<?> leaveTeam(@RequestHeader("Authorization") String token) {
-        teamService.leaveTeam(provider.getId(token));
+        teamService.removeMember(provider.getId(token));
         return ResponseEntity.ok().build();
     }
 

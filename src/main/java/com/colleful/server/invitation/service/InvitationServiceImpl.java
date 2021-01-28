@@ -57,7 +57,7 @@ public class InvitationServiceImpl implements InvitationService {
     public void accept(Long invitationId, Long userId) {
         Invitation invitation = getInvitation(invitationId);
 
-        if (invitation.isNotForMe(userId)) {
+        if (invitation.isNotReceivedBy(userId)) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
@@ -70,7 +70,7 @@ public class InvitationServiceImpl implements InvitationService {
     public void refuse(Long invitationId, Long userId) {
         Invitation invitation = getInvitation(invitationId);
 
-        if (invitation.isNotForMe(userId)) {
+        if (invitation.isNotReceivedBy(userId)) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
@@ -81,7 +81,7 @@ public class InvitationServiceImpl implements InvitationService {
     public void cancel(Long invitationId, Long userId) {
         Invitation invitation = getInvitation(invitationId);
 
-        if (!invitation.getTeam().isLedBy(userId)) {
+        if (invitation.isNotSentBy(userId)) {
             throw new ForbiddenBehaviorException("취소 권한이 없습니다.");
         }
 

@@ -26,7 +26,7 @@ public interface TeamService {
 
     void updateStatus(Long teamId, Long userId, TeamStatus status);
 
-    void leaveTeam(Long userId);
+    void removeMember(Long userId);
 
     void deleteTeam(Long userId);
 

@@ -26,11 +26,6 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Long createTeam(Long leaderId, TeamDto.Request dto) {
         User leader = userService.getUser(leaderId);
-
-        if (leader.hasTeam()) {
-            throw new ForbiddenBehaviorException("이미 팀에 가입되어 있습니다.");
-        }
-
         Team team = Team.builder()
             .teamName(dto.getTeamName())
             .gender(leader.getGender())
@@ -38,11 +33,9 @@ public class TeamServiceImpl implements TeamService {
             .headcount(0)
             .leaderId(leaderId)
             .build();
-        teamRepository.save(team);
 
         team.addMember(leader);
-
-        return team.getId();
+        return teamRepository.save(team).getId();
     }
 
     @Override
@@ -103,7 +96,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void leaveTeam(Long userId) {
+    public void removeMember(Long userId) {
         User user = userService.getUser(userId);
         Team team = getTeam(user.getTeamId());
 
@@ -116,44 +109,36 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void deleteTeam(Long userId) {
-        User user = userService.getUser(userId);
-
-        if (!user.hasTeam()) {
-            throw new ForbiddenBehaviorException("가입된 팀이 없습니다.");
-        }
-
-        Team team = getTeam(user.getTeamId());
+        Team team = getUserTeam(userId);
 
         if (!team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 
-        finishMatchTransaction(team);
-        List<User> users = userService.getMembers(user.getTeamId());
+        if (team.isMatched()) {
+            Team matchedTeam = getTeam(team.getMatchedTeamId());
+            team.finishMatch(matchedTeam);
+        }
+
+        List<User> users = userService.getMembers(team.getId());
         users.forEach(team::removeMember);
+
         teamRepository.deleteById(team.getId());
     }
 
     @Override
     public void finishMatch(Long userId) {
-        User user = userService.getUser(userId);
+        Team team = getUserTeam(userId);
 
-        if (!user.hasTeam()) {
-            throw new ForbiddenBehaviorException("가입된 팀이 없습니다.");
-        }
-
-        Team team = getTeam(user.getTeamId());
-
-        if (!team.isLedBy(userId)) {
+        if (team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭을 끝낼 수 있습니다.");
         }
 
-        finishMatchTransaction(team);
-    }
+        if (!team.isMatched()) {
+            throw new ForbiddenBehaviorException("매칭된 팀이 없습니다.");
+        }
 
-    private void finishMatchTransaction(Team team) {
         Team matchedTeam = getTeam(team.getMatchedTeamId());
-        team.finishMatch();
-        matchedTeam.finishMatch();
+        team.finishMatch(matchedTeam);
     }
 }

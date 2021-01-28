@@ -78,9 +78,10 @@ public class User implements UserDetails {
     }
 
     public void joinTeam(Long teamId) {
-        if (this.teamId != null) {
+        if (this.hasTeam()) {
             throw new ForbiddenBehaviorException("이미 다른 팀에 속해있습니다.");
         }
+
         this.teamId = teamId;
     }
 
@@ -94,10 +95,6 @@ public class User implements UserDetails {
 
     public boolean isNotMemberOf(Long teamId) {
         return !this.teamId.equals(teamId);
-    }
-
-    public boolean hasDifferentNicknameFrom(String nickname) {
-        return !this.nickname.equals(nickname);
     }
 
     @Override

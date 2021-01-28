@@ -3,7 +3,6 @@ package com.colleful.server.user.service;
 import com.colleful.server.user.repository.UserRepository;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
-import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
@@ -43,9 +42,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void changeUserInfo(Long userId, UserDto.Request info) {
         User user = getUser(userId);
 
-        if (userRepository.existsByNickname(info.getNickname())
-            && user.hasDifferentNicknameFrom(info.getNickname())) {
-            throw new AlreadyExistResourceException("중복된 닉네임입니다.");
+        if (userRepository.existsByNickname(info.getNickname())) {
+            throw new ForbiddenBehaviorException("중복된 닉네임입니다.");
         }
 
         user.changeInfo(info);

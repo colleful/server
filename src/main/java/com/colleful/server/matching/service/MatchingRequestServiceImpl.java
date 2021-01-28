@@ -28,7 +28,11 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
-        MatchingRequest match = new MatchingRequest(sender, receiver, userId);
+        if (!sender.isLedBy(userId)) {
+            throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
+        }
+
+        MatchingRequest match = new MatchingRequest(sender, receiver);
         matchingRequestRepository.save(match);
         return match.getId();
     }
@@ -49,7 +53,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     public void accept(Long matchingId, Long userId) {
         MatchingRequest match = getMatchingRequest(matchingId);
 
-        if (!match.getReceiver().isLedBy(userId)) {
+        if (match.isNotReceivedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 수락할 수 있습니다.");
         }
 
@@ -62,7 +66,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     public void refuse(Long matchingId, Long userId) {
         MatchingRequest match = getMatchingRequest(matchingId);
 
-        if (!match.getReceiver().isLedBy(userId)) {
+        if (match.isNotReceivedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 거절할 수 있습니다.");
         }
 
@@ -73,7 +77,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     public void cancel(Long matchingId, Long userId) {
         MatchingRequest match = getMatchingRequest(matchingId);
 
-        if (!match.getSender().isLedBy(userId)) {
+        if (match.isNotSentBy(userId)) {
             throw new ForbiddenBehaviorException("취소 권한이 없습니다.");
         }
 

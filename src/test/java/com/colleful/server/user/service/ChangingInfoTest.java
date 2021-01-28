@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.user.repository.UserRepository;
@@ -67,7 +68,7 @@ public class ChangingInfoTest {
         when(userRepository.existsByNickname("박성팔")).thenReturn(true);
 
         assertThatThrownBy(() -> userServiceImpl.changeUserInfo(2L, dto))
-            .isInstanceOf(AlreadyExistResourceException.class);
+            .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
     @Test
