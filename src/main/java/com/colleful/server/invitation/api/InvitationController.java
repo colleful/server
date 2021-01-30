@@ -1,5 +1,6 @@
 package com.colleful.server.invitation.api;
 
+import com.colleful.server.global.security.JwtProperties;
 import com.colleful.server.invitation.dto.InvitationDto;
 import com.colleful.server.invitation.service.InvitationService;
 import com.colleful.server.invitation.domain.Invitation;
@@ -29,7 +30,7 @@ public class InvitationController {
 
     @GetMapping("/sent")
     public List<InvitationDto.Response> getAllInvitationsFromMyTeam(
-        @RequestHeader("Authorization") String token) {
+        @RequestHeader(JwtProperties.HEADER) String token) {
         List<Invitation> invitations = invitationService
             .getAllInvitationsFromMyTeam(provider.getId(token));
         return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
@@ -37,35 +38,35 @@ public class InvitationController {
 
     @GetMapping("/received")
     public List<InvitationDto.Response> getAllInvitationsToMe(
-        @RequestHeader("Authorization") String token) {
+        @RequestHeader(JwtProperties.HEADER) String token) {
         List<Invitation> invitations = invitationService
             .getAllInvitationsToMe(provider.getId(token));
         return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
     }
 
     @PostMapping("/{user-id}")
-    public ResponseEntity<?> invite(@RequestHeader(value = "Authorization") String token,
+    public ResponseEntity<?> invite(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable("user-id") Long userId) {
         Long invitationId = invitationService.invite(userId, provider.getId(token));
         return ResponseEntity.created(URI.create("/api/invitation" + invitationId)).build();
     }
 
     @PostMapping("/{id}/accept")
-    public ResponseEntity<?> accept(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> accept(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         invitationService.accept(id, provider.getId(token));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/refuse")
-    public ResponseEntity<?> refuse(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> refuse(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         invitationService.refuse(id, provider.getId(token));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> cancel(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> cancel(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         invitationService.cancel(id, provider.getId(token));
         return ResponseEntity.ok().build();

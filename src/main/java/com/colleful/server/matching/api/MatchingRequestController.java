@@ -1,5 +1,6 @@
 package com.colleful.server.matching.api;
 
+import com.colleful.server.global.security.JwtProperties;
 import com.colleful.server.matching.dto.MatchingRequestDto;
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.service.MatchingRequestService;
@@ -29,7 +30,7 @@ public class MatchingRequestController {
 
     @GetMapping("/sent")
     public List<MatchingRequestDto.Response> getAllMatchingRequestFromMyTeam(
-        @RequestHeader("Authorization") String token) {
+        @RequestHeader(JwtProperties.HEADER) String token) {
         List<MatchingRequest> matches = matchingRequestService
             .getAllMatchingRequestsFromMyTeam(provider.getId(token));
         return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
@@ -37,14 +38,14 @@ public class MatchingRequestController {
 
     @GetMapping("/received")
     public List<MatchingRequestDto.Response> getAllMatchingRequestsToMyTeam(
-        @RequestHeader("Authorization") String token) {
+        @RequestHeader(JwtProperties.HEADER) String token) {
         List<MatchingRequest> matches = matchingRequestService
             .getAllMatchingRequestsToMyTeam(provider.getId(token));
         return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
     }
 
     @PostMapping("/{team-id}")
-    public ResponseEntity<?> request(@RequestHeader(value = "Authorization") String token,
+    public ResponseEntity<?> request(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable("team-id") Long teamId) {
         Long requestId = matchingRequestService
             .request(teamId, provider.getId(token));
@@ -54,21 +55,21 @@ public class MatchingRequestController {
     }
 
     @PostMapping("/{id}/accept")
-    public ResponseEntity<?> accept(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> accept(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         matchingRequestService.accept(id, provider.getId(token));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/refuse")
-    public ResponseEntity<?> refuse(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> refuse(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         matchingRequestService.refuse(id, provider.getId(token));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> cancel(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> cancel(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         matchingRequestService.cancel(id, provider.getId(token));
         return ResponseEntity.ok().build();

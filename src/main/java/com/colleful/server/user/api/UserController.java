@@ -1,5 +1,6 @@
 package com.colleful.server.user.api;
 
+import com.colleful.server.global.security.JwtProperties;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.user.service.UserService;
@@ -32,7 +33,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public UserDto.Response getMyInfo(@RequestHeader("Authorization") String token) {
+    public UserDto.Response getMyInfo(@RequestHeader(JwtProperties.HEADER) String token) {
         User user = userService.getUser(provider.getId(token));
         return new UserDto.Response(user);
     }
@@ -51,14 +52,14 @@ public class UserController {
     }
 
     @PatchMapping
-    public ResponseEntity<?> changeUserInfo(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> changeUserInfo(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody UserDto.Request request) {
         userService.changeUserInfo(provider.getId(token), request);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> changePassword(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody UserDto.Request request) {
         userService.changePassword(provider.getId(token),
             passwordEncoder.encode(request.getPassword()));
@@ -66,7 +67,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> deleteUser(@RequestHeader(JwtProperties.HEADER) String token) {
         userService.withdrawal(provider.getId(token));
         return ResponseEntity.ok().build();
     }

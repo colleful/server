@@ -1,5 +1,6 @@
 package com.colleful.server.team.api;
 
+import com.colleful.server.global.security.JwtProperties;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.dto.TeamDto;
@@ -43,7 +44,7 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public TeamDto.Response getTeamInfo(@RequestHeader(value = "Authorization") String token,
+    public TeamDto.Response getTeamInfo(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         Team team = teamService.getTeam(id, provider.getId(token));
         return new TeamDto.Response(team);
@@ -63,26 +64,26 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTeam(@RequestHeader(value = "Authorization") String token,
+    public ResponseEntity<?> createTeam(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody TeamDto.Request request) {
         Long teamId = teamService.createTeam(provider.getId(token), request);
         return ResponseEntity.created(URI.create("/api/teams/" + teamId)).build();
     }
 
     @PostMapping("/leave")
-    public ResponseEntity<?> leaveTeam(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> leaveTeam(@RequestHeader(JwtProperties.HEADER) String token) {
         teamService.removeMember(provider.getId(token));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/finish-match")
-    public ResponseEntity<?> finishMatch(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> finishMatch(@RequestHeader(JwtProperties.HEADER) String token) {
         teamService.finishMatch(provider.getId(token));
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateTeamStatus(@RequestHeader(value = "Authorization") String token,
+    public ResponseEntity<?> updateTeamStatus(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id, @RequestBody TeamDto.Request request) {
         teamService.updateStatus(id, provider.getId(token),
             TeamStatus.valueOf(request.getStatus()));
@@ -90,7 +91,7 @@ public class TeamController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteTeam(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> deleteTeam(@RequestHeader(JwtProperties.HEADER) String token) {
         teamService.deleteTeam(provider.getId(token));
         return ResponseEntity.ok().build();
     }
