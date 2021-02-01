@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
-import com.colleful.server.team.service.TeamService;
+import com.colleful.server.team.service.TeamServiceForService;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.service.UserService;
@@ -27,7 +27,7 @@ public class InvitationTest {
     @Mock
     private InvitationRepository invitationRepository;
     @Mock
-    private TeamService teamService;
+    private TeamServiceForService teamService;
     @Mock
     private UserService userService;
 

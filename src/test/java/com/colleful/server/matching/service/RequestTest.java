@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
-import com.colleful.server.team.service.TeamService;
+import com.colleful.server.team.service.TeamServiceForService;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public class RequestTest {
     @Mock
     private MatchingRequestRepository matchingRequestRepository;
     @Mock
-    private TeamService teamService;
+    private TeamServiceForService teamService;
 
     @Test
     public void 매치_요청() {

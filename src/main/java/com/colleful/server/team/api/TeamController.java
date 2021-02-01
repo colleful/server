@@ -4,7 +4,7 @@ import com.colleful.server.global.security.JwtProperties;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.dto.TeamDto;
-import com.colleful.server.team.service.TeamService;
+import com.colleful.server.team.service.TeamServiceForController;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.global.dto.PageDto;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TeamController {
 
-    private final TeamService teamService;
+    private final TeamServiceForController teamService;
     private final JwtProvider provider;
 
     @GetMapping

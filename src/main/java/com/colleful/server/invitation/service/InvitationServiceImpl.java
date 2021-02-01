@@ -3,7 +3,7 @@ package com.colleful.server.invitation.service;
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
-import com.colleful.server.team.service.TeamService;
+import com.colleful.server.team.service.TeamServiceForService;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class InvitationServiceImpl implements InvitationService {
 
     private final InvitationRepository invitationRepository;
-    private final TeamService teamService;
+    private final TeamServiceForService teamService;
     private final UserService userService;
 
     @Override

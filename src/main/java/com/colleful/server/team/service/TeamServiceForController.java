@@ -8,15 +8,11 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface TeamService {
+public interface TeamServiceForController {
 
     Long createTeam(Long leaderId, TeamDto.Request dto);
 
-    Team getTeam(Long teamId);
-
     Team getTeam(Long teamId, Long userId);
-
-    Team getUserTeam(Long userId);
 
     Page<Team> getAllReadyTeams(Pageable pageable);
 

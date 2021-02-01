@@ -3,9 +3,9 @@ package com.colleful.server.matching.service;
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
 import com.colleful.server.team.domain.Team;
-import com.colleful.server.team.service.TeamService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
+import com.colleful.server.team.service.TeamServiceForService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MatchingRequestServiceImpl implements MatchingRequestService {
 
     private final MatchingRequestRepository matchingRequestRepository;
-    private final TeamService teamService;
+    private final TeamServiceForService teamService;
 
     @Override
     public Long request(Long receiverId, Long userId) {

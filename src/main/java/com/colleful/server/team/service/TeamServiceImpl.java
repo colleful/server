@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class TeamServiceImpl implements TeamService {
+public class TeamServiceImpl implements TeamServiceForController, TeamServiceForService {
 
     private final TeamRepository teamRepository;
     private final UserService userService;
