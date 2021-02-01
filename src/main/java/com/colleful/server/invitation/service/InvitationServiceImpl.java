@@ -5,7 +5,7 @@ import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.service.TeamServiceForService;
 import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserService;
+import com.colleful.server.user.service.UserServiceForService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
@@ -20,7 +20,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     private final InvitationRepository invitationRepository;
     private final TeamServiceForService teamService;
-    private final UserService userService;
+    private final UserServiceForService userService;
 
     @Override
     public Long invite(Long targetId, Long userId) {

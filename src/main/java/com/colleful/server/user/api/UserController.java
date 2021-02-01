@@ -3,7 +3,7 @@ package com.colleful.server.user.api;
 import com.colleful.server.global.security.JwtProperties;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
-import com.colleful.server.user.service.UserService;
+import com.colleful.server.user.service.UserServiceForController;
 import com.colleful.server.global.security.JwtProvider;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceForController userService;
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 

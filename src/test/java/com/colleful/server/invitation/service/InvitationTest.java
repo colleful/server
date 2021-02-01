@@ -11,7 +11,7 @@ import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.service.TeamServiceForService;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserService;
+import com.colleful.server.user.service.UserServiceForService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ public class InvitationTest {
     @Mock
     private TeamServiceForService teamService;
     @Mock
-    private UserService userService;
+    private UserServiceForService userService;
 
     @Test
     public void 초대() {

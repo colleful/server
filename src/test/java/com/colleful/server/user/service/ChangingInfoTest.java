@@ -8,7 +8,6 @@ import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.user.repository.UserRepository;
-import com.colleful.server.global.exception.AlreadyExistResourceException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

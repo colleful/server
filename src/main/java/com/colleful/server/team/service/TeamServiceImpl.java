@@ -5,9 +5,9 @@ import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.dto.TeamDto;
 import com.colleful.server.team.repository.TeamRepository;
 import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.global.exception.NotFoundResourceException;
+import com.colleful.server.user.service.UserServiceForService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamServiceImpl implements TeamServiceForController, TeamServiceForService {
 
     private final TeamRepository teamRepository;
-    private final UserService userService;
+    private final UserServiceForService userService;
 
     @Override
     public Long createTeam(Long leaderId, TeamDto.Request dto) {
