@@ -117,7 +117,8 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
 
         if (team.isMatched()) {
             Team matchedTeam = getTeam(team.getMatchedTeamId());
-            team.finishMatch(matchedTeam);
+            team.finishMatch();
+            matchedTeam.finishMatch();
         }
 
         List<User> users = userService.getMembers(team.getId());
@@ -139,6 +140,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         }
 
         Team matchedTeam = getTeam(team.getMatchedTeamId());
-        team.finishMatch(matchedTeam);
+        team.finishMatch();
+        matchedTeam.finishMatch();
     }
 }

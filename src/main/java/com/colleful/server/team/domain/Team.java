@@ -94,14 +94,8 @@ public class Team {
         this.status = TeamStatus.MATCHED;
     }
 
-    public void finishMatch(Team matchedTeam) {
-        if (!this.matchedTeamId.equals(matchedTeam.getId())) {
-            throw new ForbiddenBehaviorException("매칭된 팀이 아닙니다.");
-        }
-
+    public void finishMatch() {
         this.matchedTeamId = null;
         this.status = TeamStatus.PENDING;
-        matchedTeam.matchedTeamId = null;
-        matchedTeam.status = TeamStatus.PENDING;
     }
 }
