@@ -24,12 +24,12 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         Team sender = teamService.getUserTeam(userId);
         Team receiver = teamService.getTeam(receiverId);
 
-        if (matchingRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
-            throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
-        }
-
         if (!sender.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
+        }
+
+        if (matchingRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
+            throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
         MatchingRequest match = new MatchingRequest(sender, receiver);
@@ -38,15 +38,15 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     }
 
     @Override
-    public List<MatchingRequest> getAllMatchingRequestsToMyTeam(Long userId) {
+    public List<MatchingRequest> getAllSentMatchingRequests(Long userId) {
         Team team = teamService.getUserTeam(userId);
-        return matchingRequestRepository.findAllByReceiver(team);
+        return matchingRequestRepository.findAllBySender(team);
     }
 
     @Override
-    public List<MatchingRequest> getAllMatchingRequestsFromMyTeam(Long userId) {
+    public List<MatchingRequest> getAllReceivedMatchingRequests(Long userId) {
         Team team = teamService.getUserTeam(userId);
-        return matchingRequestRepository.findAllBySender(team);
+        return matchingRequestRepository.findAllByReceiver(team);
     }
 
     @Override

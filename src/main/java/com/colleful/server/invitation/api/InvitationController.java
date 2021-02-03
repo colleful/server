@@ -29,18 +29,18 @@ public class InvitationController {
     private final JwtProvider provider;
 
     @GetMapping("/sent")
-    public List<InvitationDto.Response> getAllInvitationsFromMyTeam(
+    public List<InvitationDto.Response> getAllSentInvitations(
         @RequestHeader(JwtProperties.HEADER) String token) {
         List<Invitation> invitations = invitationService
-            .getAllInvitationsFromMyTeam(provider.getId(token));
+            .getAllSentInvitations(provider.getId(token));
         return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
     }
 
     @GetMapping("/received")
-    public List<InvitationDto.Response> getAllInvitationsToMe(
+    public List<InvitationDto.Response> getAllReceivedInvitations(
         @RequestHeader(JwtProperties.HEADER) String token) {
         List<Invitation> invitations = invitationService
-            .getAllInvitationsToMe(provider.getId(token));
+            .getAllReceivedInvitations(provider.getId(token));
         return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
     }
 

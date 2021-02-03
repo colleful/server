@@ -88,7 +88,6 @@ public class RequestTest {
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.READY)
                 .build());
-        when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
 
         assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);

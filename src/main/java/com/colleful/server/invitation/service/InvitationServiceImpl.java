@@ -25,12 +25,11 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public Long invite(Long targetId, Long userId) {
         Team team = teamService.getUserTeam(userId);
+        User targetUser = userService.getUser(targetId);
 
         if (!team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
-
-        User targetUser = userService.getUser(targetId);
 
         if (invitationRepository.existsByTeamAndUser(team, targetUser)) {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
@@ -42,15 +41,15 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public List<Invitation> getAllInvitationsToMe(Long userId) {
-        User user = userService.getUser(userId);
-        return invitationRepository.findAllByUser(user);
+    public List<Invitation> getAllSentInvitations(Long userId) {
+        Team team = teamService.getUserTeam(userId);
+        return invitationRepository.findAllByTeam(team);
     }
 
     @Override
-    public List<Invitation> getAllInvitationsFromMyTeam(Long userId) {
-        Team team = teamService.getUserTeam(userId);
-        return invitationRepository.findAllByTeam(team);
+    public List<Invitation> getAllReceivedInvitations(Long userId) {
+        User user = userService.getUser(userId);
+        return invitationRepository.findAllByUser(user);
     }
 
     @Override
