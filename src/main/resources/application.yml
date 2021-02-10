@@ -3,7 +3,7 @@ spring:
     active: local
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     generate-ddl: true
     show-sql: true
   datasource:

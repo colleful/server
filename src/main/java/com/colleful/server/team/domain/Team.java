@@ -68,8 +68,8 @@ public class Team {
     }
 
     public void addMember(User user) {
-        user.joinTeam(this.id);
         this.headcount++;
+        user.joinTeam(this.id);
     }
 
     public void removeMember(User user) {

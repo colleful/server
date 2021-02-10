@@ -24,6 +24,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     private final UserServiceForService userService;
 
     @Override
+    @Transactional
     public Long createTeam(Long leaderId, TeamDto.Request dto) {
         User leader = userService.getUser(leaderId);
         Team team = Team.builder()
@@ -34,8 +35,9 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
             .leaderId(leaderId)
             .build();
 
+        teamRepository.save(team);
         team.addMember(leader);
-        return teamRepository.save(team).getId();
+        return team.getId();
     }
 
     @Override
