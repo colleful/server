@@ -5,6 +5,7 @@ import com.colleful.server.department.repository.DepartmentRepository;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +14,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
+    @Cacheable(value = "department")
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll();
     }
