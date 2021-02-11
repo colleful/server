@@ -198,7 +198,7 @@
 |----|----|--------|-----------|
 |status|String|Yes|팀 상태("PENDING", "READY", "WATCHING", "MATCHED")|
 
-### DELETE /api/teams/{id}
+### DELETE /api/teams
 > id에 해당하는 팀 삭제
 
 ## 4. 초대 관련
