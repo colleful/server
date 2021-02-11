@@ -212,8 +212,13 @@
 ### GET /api/invitations/received
 > 자신에게 온 초대 정보 모두 조회
 
-### POST /api/invitations/{user-id}
-> user-id에 해당하는 유저를 자신의 팀에 초대(리더만 초대 가능)
+### POST /api/invitations
+> 유저를 자신의 팀에 초대(리더만 초대 가능)
+
+**Request Body**
+|name|type|required|description|
+|----|----|--------|-----------|
+|userId|Long|Yes|초대할 유저 아이디|
 
 ### POST /api/invitations/{id}/accept
 > id에 해당하는 초대 수락
@@ -221,7 +226,7 @@
 ### POST /api/invitations/{id}/refuse
 > id에 해당하는 초대 거절
 
-### POST /api/invitations/{id}
+### DELETE /api/invitations/{id}
 > id에 해당하는 초대 취소
 
 ## 5. 매칭 관련
@@ -231,8 +236,13 @@
 ### GET /api/matching/received
 > 자신의 팀에게 온 매칭 요청 조회(리더만 조회 가능)
 
-### POST /api/matching/{team-id}
+### POST /api/matching
 > team-id에 해당하는 팀에게 매칭 요청(리더만 요청 가능)
+
+**Request Body**
+|name|type|required|description|
+|----|----|--------|-----------|
+|teamId|Long|Yes|요청 보낼 팀 아이디|
 
 ### POST /api/matching/{id}/accept
 > id에 해당하는 매칭 요청 수락
