@@ -30,6 +30,7 @@ public class UserDto {
         private final String gender;
         private final String department;
         private final String selfIntroduction;
+        private final Long teamId;
 
         public Response(User user) {
             this.id = user.getId();
@@ -39,6 +40,7 @@ public class UserDto {
             this.gender = user.getGender().name();
             this.department = user.getDepartment().getDepartmentName();
             this.selfIntroduction = user.getSelfIntroduction();
+            this.teamId = user.getTeamId();
         }
     }
 
