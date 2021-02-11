@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,10 +45,10 @@ public class InvitationController {
         return invitations.stream().map(InvitationDto.Response::new).collect(Collectors.toList());
     }
 
-    @PostMapping("/{user-id}")
+    @PostMapping
     public ResponseEntity<?> invite(@RequestHeader(JwtProperties.HEADER) String token,
-        @PathVariable("user-id") Long userId) {
-        Long invitationId = invitationService.invite(userId, provider.getId(token));
+        @RequestBody InvitationDto.Request dto) {
+        Long invitationId = invitationService.invite(dto.getUserId(), provider.getId(token));
         return ResponseEntity.created(URI.create("/api/invitation" + invitationId)).build();
     }
 

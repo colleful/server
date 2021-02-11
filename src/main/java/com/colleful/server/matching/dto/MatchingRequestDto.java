@@ -8,6 +8,12 @@ import lombok.Getter;
 public class MatchingRequestDto {
 
     @Getter
+    public static class Request {
+
+        private Long teamId;
+    }
+
+    @Getter
     public static class Response {
 
         private final Long id;

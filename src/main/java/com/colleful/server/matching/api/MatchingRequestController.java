@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,11 +45,11 @@ public class MatchingRequestController {
         return matches.stream().map(MatchingRequestDto.Response::new).collect(Collectors.toList());
     }
 
-    @PostMapping("/{team-id}")
+    @PostMapping
     public ResponseEntity<?> request(@RequestHeader(JwtProperties.HEADER) String token,
-        @PathVariable("team-id") Long teamId) {
+        @RequestBody MatchingRequestDto.Request dto) {
         Long requestId = matchingRequestService
-            .request(teamId, provider.getId(token));
+            .request(dto.getTeamId(), provider.getId(token));
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.LOCATION, "/api/matching/" + requestId);
         return ResponseEntity.ok().headers(headers).build();

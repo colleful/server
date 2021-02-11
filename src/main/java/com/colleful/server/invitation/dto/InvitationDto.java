@@ -8,6 +8,12 @@ import lombok.Getter;
 public class InvitationDto {
 
     @Getter
+    public static class Request {
+
+        private Long userId;
+    }
+
+    @Getter
     public static class Response {
 
         private final Long id;
