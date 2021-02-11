@@ -190,6 +190,9 @@
 |----|----|--------|-----------|
 |teamName|String|Yes|팀 이름|
 
+### POST /api/teams/finish-match
+> 매칭 끝내기
+
 ### PATCH /api/teams/{id}
 > id에 해당하는 팀 상태 변경 (리더만 변경 가능)
 
