@@ -25,6 +25,7 @@ public class TeamDto {
         private final String status;
         private final Integer headcount;
         private final Long leaderId;
+        private final Long matchedTeamId;
 
         public Response(Team team) {
             this.id = team.getId();
@@ -34,6 +35,7 @@ public class TeamDto {
             this.status = team.getStatus().name();
             this.headcount = team.getHeadcount();
             this.leaderId = team.getLeaderId();
+            this.matchedTeamId = team.getMatchedTeamId();
         }
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TeamServiceForController {
 
-    Long createTeam(Long leaderId, TeamDto.Request dto);
+    Team createTeam(Long leaderId, TeamDto.Request dto);
 
     Team getTeam(Long teamId, Long userId);
 
