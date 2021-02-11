@@ -32,6 +32,7 @@
 |gender|String |성별("MALE", "FEMALE")|
 |department|String |학과|
 |selfIntroduction|String |자기소개|
+|teamId|Long|소속 팀 id|
 
 **팀 정보**
 |name|type|description|
