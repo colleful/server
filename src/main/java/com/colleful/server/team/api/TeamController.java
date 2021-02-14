@@ -66,8 +66,8 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<?> createTeam(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody TeamDto.Request request) {
-        Long teamId = teamService.createTeam(provider.getId(token), request);
-        return ResponseEntity.created(URI.create("/api/teams/" + teamId)).build();
+        Team team = teamService.createTeam(provider.getId(token), request);
+        return ResponseEntity.created(URI.create("/api/teams/" + team.getId())).body(team);
     }
 
     @PostMapping("/leave")
