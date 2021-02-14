@@ -191,7 +191,7 @@
 > id에 해당하는 팀에서 나가기
 
 ### POST /api/teams/finish-match
-> 매칭 끝내기
+> 매칭 끝내기 (리더만 매칭을 끝낼 수 있음)
 
 ### PATCH /api/teams/{id}
 > id에 해당하는 팀 상태 변경 (리더만 변경 가능)
@@ -202,18 +202,18 @@
 |status|String|Yes|팀 상태("PENDING", "READY", "WATCHING", "MATCHED")|
 
 ### DELETE /api/teams
-> id에 해당하는 팀 삭제
+> id에 해당하는 팀 삭제 (리더만 삭제 가능)
 
 ## 4. 초대 관련
 
 ### GET /api/invitations/sent
-> 자신이 보낸 초대 정보 모두 조회
+> 자신의 팀이 보낸 초대 정보 모두 조회
 
 ### GET /api/invitations/received
 > 자신에게 온 초대 정보 모두 조회
 
 ### POST /api/invitations
-> 유저를 자신의 팀에 초대(리더만 초대 가능)
+> 유저를 자신의 팀에 초대 (리더만 초대 가능)
 
 **Request Body**
 |name|type|required|description|
@@ -227,17 +227,18 @@
 > id에 해당하는 초대 거절
 
 ### DELETE /api/invitations/{id}
-> id에 해당하는 초대 취소
+> id에 해당하는 초대 취소 (초대 보낸 팀 리더만 취소 가능)
 
 ## 5. 매칭 관련
 
 ### GET /api/matching/sent
-> 자신이 보낸 매칭 요청 조회(리더만 조회 간)
+> 자신의 팀이 보낸 매칭 요청 조회
+
 ### GET /api/matching/received
-> 자신의 팀에게 온 매칭 요청 조회(리더만 조회 가능)
+> 자신의 팀에게 온 매칭 요청 조회
 
 ### POST /api/matching
-> team-id에 해당하는 팀에게 매칭 요청(리더만 요청 가능)
+> team-id에 해당하는 팀에게 매칭 요청 (리더만 요청 가능)
 
 **Request Body**
 |name|type|required|description|
@@ -245,13 +246,13 @@
 |teamId|Long|Yes|요청 보낼 팀 아이디|
 
 ### POST /api/matching/{id}/accept
-> id에 해당하는 매칭 요청 수락
+> id에 해당하는 매칭 요청 수락 (요청 받은 팀 리더만 수락 가능)
 
 ### POST /api/matching/{id}/refuse
-> id에 해당하는 매칭 요청 거절
+> id에 해당하는 매칭 요청 거절 (요청 받은 팀 리더만 거절 가능)
 
 ### DELETE /api/matching/{id}
-> id에 해당하는 매칭 요청 취소
+> id에 해당하는 매칭 요청 취소 (요청 보낸 팀 리더만 취소 가능)
 
 ## 6. 학과 정보
 
