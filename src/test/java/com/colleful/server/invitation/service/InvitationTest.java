@@ -8,10 +8,10 @@ import static org.mockito.Mockito.when;
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
-import com.colleful.server.team.service.TeamServiceForService;
+import com.colleful.server.team.service.TeamServiceForOtherService;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserServiceForService;
+import com.colleful.server.user.service.UserServiceForOtherService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +27,9 @@ public class InvitationTest {
     @Mock
     private InvitationRepository invitationRepository;
     @Mock
-    private TeamServiceForService teamService;
+    private TeamServiceForOtherService teamService;
     @Mock
-    private UserServiceForService userService;
+    private UserServiceForOtherService userService;
 
     @Test
     public void 초대() {

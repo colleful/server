@@ -2,7 +2,7 @@ package com.colleful.server.team.service;
 
 import com.colleful.server.team.domain.Team;
 
-public interface TeamServiceForService {
+public interface TeamServiceForOtherService {
 
     Team getTeam(Long teamId);
 

@@ -9,7 +9,7 @@ import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.repository.TeamRepository;
 import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserServiceForService;
+import com.colleful.server.user.service.UserServiceForOtherService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class DeletingTest {
     @InjectMocks
     private TeamServiceImpl teamServiceImpl;
     @Mock
-    private UserServiceForService userService;
+    private UserServiceForOtherService userService;
     @Mock
     private TeamRepository teamRepository;
 

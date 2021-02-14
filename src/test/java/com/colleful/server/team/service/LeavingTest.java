@@ -8,7 +8,7 @@ import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.repository.TeamRepository;
 import com.colleful.server.user.domain.User;
-import com.colleful.server.user.service.UserServiceForService;
+import com.colleful.server.user.service.UserServiceForOtherService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class LeavingTest {
     @InjectMocks
     private TeamServiceImpl teamServiceImpl;
     @Mock
-    private UserServiceForService userService;
+    private UserServiceForOtherService userService;
     @Mock
     private TeamRepository teamRepository;
 
