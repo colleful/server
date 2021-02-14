@@ -49,7 +49,7 @@ public class InvitationController {
     public ResponseEntity<?> invite(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody InvitationDto.Request dto) {
         Long invitationId = invitationService.invite(dto.getUserId(), provider.getId(token));
-        return ResponseEntity.created(URI.create("/api/invitation" + invitationId)).build();
+        return ResponseEntity.created(URI.create("/api/invitations/" + invitationId)).build();
     }
 
     @PostMapping("/{id}/accept")
