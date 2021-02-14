@@ -182,13 +182,13 @@
 ### POST /api/teams
 > 팀 생성, Location 헤더에 자원 URL 제공
 
-### POST /api/teams/leave
-> id에 해당하는 팀에서 나가기
-
 **Request Body**
 |name|type|required|description|
 |----|----|--------|-----------|
 |teamName|String|Yes|팀 이름|
+
+### POST /api/teams/leave
+> id에 해당하는 팀에서 나가기
 
 ### POST /api/teams/finish-match
 > 매칭 끝내기
