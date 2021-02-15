@@ -51,6 +51,14 @@ public class Team {
     @Column
     private Long matchedTeamId;
 
+    public static Team getEmptyInstance() {
+        return new Team();
+    }
+
+    public boolean isNotEmpty() {
+        return this.id != null;
+    }
+
     public boolean isLedBy(Long userId) {
         return this.leaderId.equals(userId);
     }

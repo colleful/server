@@ -47,12 +47,9 @@ public class TeamController {
     public ResponseEntity<?> getTeamInfo(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         Team team = teamService.getTeam(id, provider.getId(token));
-
-        if (team == null) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(new TeamDto.Response(team));
+        return team.isNotEmpty()
+            ? ResponseEntity.ok(new TeamDto.Response(team))
+            : ResponseEntity.noContent().build();
     }
 
     @GetMapping("/team-name/{team-name}")
