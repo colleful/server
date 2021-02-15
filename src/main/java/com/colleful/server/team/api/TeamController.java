@@ -44,10 +44,15 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public TeamDto.Response getTeamInfo(@RequestHeader(JwtProperties.HEADER) String token,
+    public ResponseEntity<?> getTeamInfo(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
         Team team = teamService.getTeam(id, provider.getId(token));
-        return new TeamDto.Response(team);
+
+        if (team == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(new TeamDto.Response(team));
     }
 
     @GetMapping("/team-name/{team-name}")

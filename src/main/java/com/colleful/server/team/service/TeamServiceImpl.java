@@ -48,7 +48,11 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     @Override
     public Team getTeam(Long teamId, Long userId) {
         User user = userService.getUser(userId);
-        Team team = getTeam(teamId);
+        Team team = teamRepository.findById(teamId).orElse(null);
+
+        if (team == null) {
+            return null;
+        }
 
         if (team.isNotReady() && user.isNotMemberOf(teamId)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
