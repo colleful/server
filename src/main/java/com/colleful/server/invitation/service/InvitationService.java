@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface InvitationService {
 
-    Long invite(Long targetId, Long userId);
+    Invitation invite(Long targetId, Long userId);
 
     List<Invitation> getAllSentInvitations(Long userId);
 

@@ -23,7 +23,7 @@ public class InvitationServiceImpl implements InvitationService {
     private final UserServiceForOtherService userService;
 
     @Override
-    public Long invite(Long targetId, Long userId) {
+    public Invitation invite(Long targetId, Long userId) {
         Team team = teamService.getUserTeam(userId);
         User targetUser = userService.getUser(targetId);
 
@@ -35,9 +35,7 @@ public class InvitationServiceImpl implements InvitationService {
             throw new ForbiddenBehaviorException("이미 초대했습니다.");
         }
 
-        Invitation invitation = new Invitation(team, targetUser);
-        invitationRepository.save(invitation);
-        return invitation.getId();
+        return invitationRepository.save(new Invitation(team, targetUser));
     }
 
     @Override
