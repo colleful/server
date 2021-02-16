@@ -20,7 +20,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     private final TeamServiceForOtherService teamService;
 
     @Override
-    public Long request(Long receiverId, Long userId) {
+    public MatchingRequest request(Long receiverId, Long userId) {
         Team sender = teamService.getUserTeam(userId);
         Team receiver = teamService.getTeam(receiverId);
 
@@ -32,9 +32,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
             throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
         }
 
-        MatchingRequest match = new MatchingRequest(sender, receiver);
-        matchingRequestRepository.save(match);
-        return match.getId();
+        return matchingRequestRepository.save(new MatchingRequest(sender, receiver));
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface MatchingRequestService {
 
-    Long request(Long receiverId, Long userId);
+    MatchingRequest request(Long receiverId, Long userId);
 
     List<MatchingRequest> getAllSentMatchingRequests(Long userId);
 

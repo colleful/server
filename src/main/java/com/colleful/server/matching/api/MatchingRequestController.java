@@ -5,10 +5,10 @@ import com.colleful.server.matching.dto.MatchingRequestDto;
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.service.MatchingRequestService;
 import com.colleful.server.global.security.JwtProvider;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,11 +48,10 @@ public class MatchingRequestController {
     @PostMapping
     public ResponseEntity<?> request(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody MatchingRequestDto.Request dto) {
-        Long requestId = matchingRequestService
+        MatchingRequest match = matchingRequestService
             .request(dto.getTeamId(), provider.getId(token));
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, "/api/matching/" + requestId);
-        return ResponseEntity.ok().headers(headers).build();
+        return ResponseEntity.created(URI.create("/api/matching/" + match.getId()))
+            .body(new MatchingRequestDto.Response(match));
     }
 
     @PostMapping("/{id}/accept")
