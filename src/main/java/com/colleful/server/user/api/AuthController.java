@@ -1,5 +1,7 @@
 package com.colleful.server.user.api;
 
+import com.colleful.server.user.domain.User;
+import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.user.dto.UserDto.EmailRequest;
 import com.colleful.server.user.dto.UserDto.LoginRequest;
 import com.colleful.server.user.dto.UserDto.Request;
@@ -25,8 +27,9 @@ public class AuthController {
 
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody Request request) {
-        Long userId = authService.join(request);
-        return ResponseEntity.created(URI.create("/api/users/" + userId)).build();
+        User user = authService.join(request);
+        return ResponseEntity.created(URI.create("/api/users/" + user.getId()))
+            .body(new UserDto.Response(user));
     }
 
     @PostMapping("/login")

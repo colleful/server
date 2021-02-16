@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
     private String fromAddress;
 
     @Override
-    public Long join(UserDto.Request dto) {
+    public User join(UserDto.Request dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new AlreadyExistResourceException("중복된 이메일입니다.");
         }
@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
             .build();
         userRepository.save(user);
 
-        return user.getId();
+        return user;
     }
 
     @Override
