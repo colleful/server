@@ -29,6 +29,11 @@ public class UserServiceImpl implements UserServiceForController, UserServiceFor
     }
 
     @Override
+    public User getUser(Long clientId, Long userId) {
+        return userRepository.findById(userId).orElseGet(User::getEmptyInstance);
+    }
+
+    @Override
     public List<User> getUserByNickname(String nickname) {
         return userRepository.findByNicknameContaining(nickname);
     }

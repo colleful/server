@@ -65,6 +65,14 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
+    public static User getEmptyInstance() {
+        return new User();
+    }
+
+    public boolean isNotEmpty() {
+        return this.id != null;
+    }
+
     public void changeInfo(UserDto.Request info) {
         this.nickname = info.getNickname() != null ? info.getNickname() : this.nickname;
         this.selfIntroduction =

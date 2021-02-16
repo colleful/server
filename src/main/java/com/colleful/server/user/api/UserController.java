@@ -39,9 +39,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto.Response getUserInfo(@PathVariable Long id) {
-        User user = userService.getUser(id);
-        return new UserDto.Response(user);
+    public ResponseEntity<?> getUserInfo(@RequestHeader(JwtProperties.HEADER) String token,
+        @PathVariable Long id) {
+        User user = userService.getUser(provider.getId(token), id);
+        return user.isNotEmpty()
+            ? ResponseEntity.ok(new UserDto.Response(user))
+            : ResponseEntity.noContent().build();
     }
 
     @GetMapping("/nickname/{nickname}")
