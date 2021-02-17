@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ChangingInfoTest {
 
     @InjectMocks
-    private UserServiceImpl userServiceImpl;
+    private UserServiceForControllerImpl userServiceForControllerImpl;
     @Mock
     private UserRepository userRepository;
 
@@ -33,9 +33,9 @@ public class ChangingInfoTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(User.builder()
             .nickname("박성필").selfIntroduction("안녕").build()));
 
-        userServiceImpl.changeUserInfo(1L, dto1);
+        userServiceForControllerImpl.changeUserInfo(1L, dto1);
 
-        User result1 = userServiceImpl.getUser(1L);
+        User result1 = userServiceForControllerImpl.getUser(1L);
         assertThat(result1.getNickname()).isEqualTo("박성팔");
         assertThat(result1.getSelfIntroduction()).isEqualTo("안녕하세요.");
     }
@@ -49,7 +49,7 @@ public class ChangingInfoTest {
         when(userRepository.findById(2L)).thenReturn(Optional.of(User.builder()
             .nickname("박성필").selfIntroduction("안녕").build()));
 
-        userServiceImpl.changeUserInfo(2L, dto);
+        userServiceForControllerImpl.changeUserInfo(2L, dto);
 
         User result = userRepository.findById(2L).orElse(User.builder().build());
         assertThat(result.getNickname()).isEqualTo("박성팔");
@@ -66,7 +66,7 @@ public class ChangingInfoTest {
             .nickname("박성필").selfIntroduction("안녕").build()));
         when(userRepository.existsByNickname("박성팔")).thenReturn(true);
 
-        assertThatThrownBy(() -> userServiceImpl.changeUserInfo(2L, dto))
+        assertThatThrownBy(() -> userServiceForControllerImpl.changeUserInfo(2L, dto))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -79,7 +79,7 @@ public class ChangingInfoTest {
         when(userRepository.findById(3L)).thenReturn(Optional.of(User.builder()
             .nickname("박성필").selfIntroduction("안녕").build()));
 
-        userServiceImpl.changeUserInfo(3L, dto);
+        userServiceForControllerImpl.changeUserInfo(3L, dto);
 
         User result = userRepository.findById(3L).orElse(User.builder().build());
         assertThat(result.getNickname()).isEqualTo("박성필");

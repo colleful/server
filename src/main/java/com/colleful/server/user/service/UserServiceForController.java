@@ -8,8 +8,6 @@ public interface UserServiceForController {
 
     User getUser(Long userId);
 
-    User getUser(Long clientId, Long userId);
-
     List<User> getUserByNickname(String nickname);
 
     void changeUserInfo(Long userId, UserDto.Request info);

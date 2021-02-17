@@ -39,9 +39,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserInfo(@RequestHeader(JwtProperties.HEADER) String token,
-        @PathVariable Long id) {
-        User user = userService.getUser(provider.getId(token), id);
+    public ResponseEntity<?> getUserInfo(@PathVariable Long id) {
+        User user = userService.getUser(id);
         return user.isNotEmpty()
             ? ResponseEntity.ok(new UserDto.Response(user))
             : ResponseEntity.noContent().build();
