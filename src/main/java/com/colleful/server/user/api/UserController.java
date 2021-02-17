@@ -33,9 +33,11 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public UserDto.Response getMyInfo(@RequestHeader(JwtProperties.HEADER) String token) {
+    public ResponseEntity<?> getMyInfo(@RequestHeader(JwtProperties.HEADER) String token) {
         User user = userService.getUser(provider.getId(token));
-        return new UserDto.Response(user);
+        return user.isNotEmpty()
+            ? ResponseEntity.ok(new UserDto.Response(user))
+            : ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
