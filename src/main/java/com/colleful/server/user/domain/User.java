@@ -4,14 +4,11 @@ import com.colleful.server.department.domain.Department;
 import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -62,15 +59,23 @@ public class User implements UserDetails {
     @Column
     private Long teamId;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles;
+    private String role;
 
     public static User getEmptyInstance() {
         return new User();
     }
 
     public boolean isNotEmpty() {
-        return this.id != null;
+        return this.id != null
+            || this.email != null
+            || this.password != null
+            || this.nickname != null
+            || this.birthYear != null
+            || this.gender != null
+            || this.department != null
+            || this.selfIntroduction != null
+            || this.teamId != null
+            || this.role != null;
     }
 
     public void changeInfo(UserDto.Request info) {
@@ -107,7 +112,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role));
     }
 
     @Override

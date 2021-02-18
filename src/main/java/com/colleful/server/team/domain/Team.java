@@ -48,7 +48,6 @@ public class Team {
     @Column(nullable = false)
     private Long leaderId;
 
-    @Column
     private Long matchedTeamId;
 
     public static Team getEmptyInstance() {
@@ -56,7 +55,14 @@ public class Team {
     }
 
     public boolean isNotEmpty() {
-        return this.id != null;
+        return this.id != null
+            || this.updatedAt != null
+            || this.teamName != null
+            || this.gender != null
+            || this.status != null
+            || this.headcount != null
+            || this.leaderId != null
+            || this.matchedTeamId != null;
     }
 
     public boolean isLedBy(Long userId) {

@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
             .gender(Gender.valueOf(dto.getGender()))
             .department(departmentService.getDepartment(dto.getDepartmentId()))
             .selfIntroduction(dto.getSelfIntroduction())
-            .roles(Collections.singletonList("ROLE_USER"))
+            .role("ROLE_USER")
             .build();
         userRepository.save(user);
 
@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
             throw new NotMatchedPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
-        return provider.createToken(user.getEmail(), user.getId(), user.getRoles());
+        return provider.createToken(user.getEmail(), user.getId(), user.getRole());
     }
 
     @Override
