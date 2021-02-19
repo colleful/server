@@ -23,8 +23,8 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     private final UserServiceForOtherService userService;
 
     @Override
-    public Team createTeam(Long leaderId, String teamName) {
-        User leader = userService.getUserIfExist(leaderId);
+    public Team createTeam(Long clientId, String teamName) {
+        User leader = userService.getUserIfExist(clientId);
         Team team = Team.of(teamName, leader);
         teamRepository.save(team);
         team.addMember(leader);
@@ -38,11 +38,11 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     }
 
     @Override
-    public Team getTeam(Long teamId, Long userId) {
-        User user = userService.getUserIfExist(userId);
+    public Team getTeam(Long clientId, Long teamId) {
+        User client = userService.getUserIfExist(clientId);
         Team team = teamRepository.findById(teamId).orElseGet(Team::getEmptyInstance);
 
-        if (team.isNotAccessibleTo(user)) {
+        if (team.isNotAccessibleTo(client)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
         }
 
@@ -67,6 +67,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
 
     @Override
     public List<User> getMembers(Long teamId) {
+        // TODO: 접근 가능한 팀이 아닐 경우 예외 처리
         return userService.getMembers(teamId);
     }
 
@@ -78,10 +79,10 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     }
 
     @Override
-    public void changeStatus(Long teamId, Long userId, TeamStatus status) {
-        Team team = getTeamIfExist(teamId);
+    public void changeStatus(Long clientId, TeamStatus status) {
+        Team team = getUserTeam(clientId);
 
-        if (team.isNotLedBy(userId)) {
+        if (team.isNotLedBy(clientId)) {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
@@ -89,22 +90,22 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     }
 
     @Override
-    public void removeMember(Long userId) {
-        User user = userService.getUserIfExist(userId);
-        Team team = getTeamIfExist(user.getTeamId());
+    public void leaveTeam(Long clientId) {
+        User client = userService.getUserIfExist(clientId);
+        Team team = getTeamIfExist(client.getTeamId());
 
-        if (team.isLedBy(userId)) {
+        if (team.isLedBy(clientId)) {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
         }
 
-        team.removeMember(user);
+        team.removeMember(client);
     }
 
     @Override
-    public void deleteTeam(Long userId) {
-        Team team = getUserTeam(userId);
+    public void deleteTeam(Long clientId) {
+        Team team = getUserTeam(clientId);
 
-        if (team.isNotLedBy(userId)) {
+        if (team.isNotLedBy(clientId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 
@@ -114,10 +115,10 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     }
 
     @Override
-    public void finishMatch(Long userId) {
-        Team team = getUserTeam(userId);
+    public void finishMatch(Long clientId) {
+        Team team = getUserTeam(clientId);
 
-        if (team.isLedBy(userId)) {
+        if (team.isLedBy(clientId)) {
             throw new ForbiddenBehaviorException("리더만 매칭을 끝낼 수 있습니다.");
         }
 

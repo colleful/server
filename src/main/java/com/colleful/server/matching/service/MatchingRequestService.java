@@ -5,15 +5,15 @@ import java.util.List;
 
 public interface MatchingRequestService {
 
-    MatchingRequest request(Long receiverId, Long userId);
+    MatchingRequest request(Long senderId, Long receivedTeamId);
 
-    List<MatchingRequest> getAllSentMatchingRequests(Long userId);
+    List<MatchingRequest> getAllSentMatchingRequests(Long clientId);
 
-    List<MatchingRequest> getAllReceivedMatchingRequests(Long userId);
+    List<MatchingRequest> getAllReceivedMatchingRequests(Long clientId);
 
-    void accept(Long matchingId, Long userId);
+    void accept(Long clientId, Long matchingId);
 
-    void refuse(Long matchingId, Long userId);
+    void refuse(Long clientId, Long matchingId);
 
-    void cancel(Long matchingId, Long userId);
+    void cancel(Long clientId, Long matchingId);
 }

@@ -5,15 +5,15 @@ import java.util.List;
 
 public interface InvitationService {
 
-    Invitation invite(Long targetId, Long userId);
+    Invitation invite(Long clientId, Long targetId);
 
-    List<Invitation> getAllSentInvitations(Long userId);
+    List<Invitation> getAllSentInvitations(Long clientId);
 
-    List<Invitation> getAllReceivedInvitations(Long userId);
+    List<Invitation> getAllReceivedInvitations(Long clientId);
 
-    void accept(Long invitationId, Long userId);
+    void accept(Long clientId, Long invitationId);
 
-    void refuse(Long invitationId, Long userId);
+    void refuse(Long clientId, Long invitationId);
 
-    void cancel(Long invitationId, Long userId);
+    void cancel(Long clientId, Long invitationId);
 }

@@ -43,7 +43,7 @@ public class CancelTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationServiceImpl.cancel(1L, 3L))
+        assertThatThrownBy(() -> invitationServiceImpl.cancel(3L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

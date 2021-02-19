@@ -43,9 +43,9 @@ public class RequestTest {
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.READY)
                 .build());
-        when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
+        when(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any())).thenReturn(false);
 
-        matchingRequestServiceImpl.request(2L, 1L);
+        matchingRequestServiceImpl.request(1L, 2L);
 
         verify(matchingRequestRepository).save(any());
     }
@@ -66,9 +66,9 @@ public class RequestTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.READY)
                 .build());
-        when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
+        when(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(1L, 2L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -89,7 +89,7 @@ public class RequestTest {
                 .status(TeamStatus.READY)
                 .build());
 
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(1L, 2L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -109,9 +109,9 @@ public class RequestTest {
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(matchingRequestRepository.existsBySenderAndReceiver(any(), any())).thenReturn(false);
+        when(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any())).thenReturn(false);
 
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(2L, 1L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.request(1L, 2L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

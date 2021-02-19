@@ -8,6 +8,8 @@ import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.repository.TeamRepository;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
+import com.colleful.server.user.domain.User;
+import com.colleful.server.user.service.UserServiceForOtherService;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,9 +25,21 @@ public class ChangingStatusTest {
     private TeamServiceImpl teamServiceImpl;
     @Mock
     private TeamRepository teamRepository;
+    @Mock
+    private UserServiceForOtherService userService;
+    private User user1;
+    private User user2;
 
     @BeforeEach
     public void init() {
+        this.user1 = User.builder()
+            .id(1L)
+            .teamId(1L)
+            .build();
+        this.user2 = User.builder()
+            .id(2L)
+            .teamId(1L)
+            .build();
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()
                 .id(1L)
@@ -36,7 +50,9 @@ public class ChangingStatusTest {
 
     @Test
     public void 팀_상태_변경() {
-        teamServiceImpl.changeStatus(1L, 1L, TeamStatus.READY);
+        when(userService.getUserIfExist(1L)).thenReturn(this.user1);
+
+        teamServiceImpl.changeStatus(1L, TeamStatus.READY);
 
         Team team = teamRepository.findById(1L).orElse(Team.builder().build());
         assertThat(team.getStatus()).isEqualTo(TeamStatus.READY);
@@ -44,7 +60,9 @@ public class ChangingStatusTest {
 
     @Test
     public void 리더가_아닌_팀_상태_변경() {
-        assertThatThrownBy(() -> teamServiceImpl.changeStatus(1L, 2L, TeamStatus.READY))
+        when(userService.getUserIfExist(2L)).thenReturn(this.user2);
+
+        assertThatThrownBy(() -> teamServiceImpl.changeStatus(2L, TeamStatus.READY))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

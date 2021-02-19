@@ -54,7 +54,7 @@ public class CancelTest {
 
     @Test
     public void 권한이_없는_사용자가_매칭_취소() {
-        assertThatThrownBy(() -> matchingRequestServiceImpl.cancel(1L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.cancel(3L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

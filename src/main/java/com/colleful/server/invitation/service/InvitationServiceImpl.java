@@ -23,11 +23,11 @@ public class InvitationServiceImpl implements InvitationService {
     private final UserServiceForOtherService userService;
 
     @Override
-    public Invitation invite(Long targetId, Long userId) {
-        Team team = teamService.getUserTeam(userId);
+    public Invitation invite(Long clientId, Long targetId) {
+        Team team = teamService.getUserTeam(clientId);
         User targetUser = userService.getUserIfExist(targetId);
 
-        if (team.isNotLedBy(userId)) {
+        if (team.isNotLedBy(clientId)) {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
 
@@ -39,22 +39,22 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public List<Invitation> getAllSentInvitations(Long userId) {
-        Team team = teamService.getUserTeam(userId);
+    public List<Invitation> getAllSentInvitations(Long clientId) {
+        Team team = teamService.getUserTeam(clientId);
         return invitationRepository.findAllByTeam(team);
     }
 
     @Override
-    public List<Invitation> getAllReceivedInvitations(Long userId) {
-        User user = userService.getUserIfExist(userId);
+    public List<Invitation> getAllReceivedInvitations(Long clientId) {
+        User user = userService.getUserIfExist(clientId);
         return invitationRepository.findAllByUser(user);
     }
 
     @Override
-    public void accept(Long invitationId, Long userId) {
-        Invitation invitation = getInvitation(invitationId);
+    public void accept(Long clientId, Long invitationId) {
+        Invitation invitation = getInvitationIfExist(invitationId);
 
-        if (invitation.isNotReceivedBy(userId)) {
+        if (invitation.isNotReceivedBy(clientId)) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
@@ -64,10 +64,10 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public void refuse(Long invitationId, Long userId) {
-        Invitation invitation = getInvitation(invitationId);
+    public void refuse(Long clientId, Long invitationId) {
+        Invitation invitation = getInvitationIfExist(invitationId);
 
-        if (invitation.isNotReceivedBy(userId)) {
+        if (invitation.isNotReceivedBy(clientId)) {
             throw new ForbiddenBehaviorException("잘못된 유저입니다.");
         }
 
@@ -75,17 +75,17 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public void cancel(Long invitationId, Long userId) {
-        Invitation invitation = getInvitation(invitationId);
+    public void cancel(Long clientId, Long invitationId) {
+        Invitation invitation = getInvitationIfExist(invitationId);
 
-        if (invitation.isNotSentBy(userId)) {
+        if (invitation.isNotSentBy(clientId)) {
             throw new ForbiddenBehaviorException("취소 권한이 없습니다.");
         }
 
         invitationRepository.deleteById(invitationId);
     }
 
-    private Invitation getInvitation(Long id) {
+    private Invitation getInvitationIfExist(Long id) {
         return invitationRepository.findById(id)
             .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
     }

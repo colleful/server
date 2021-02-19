@@ -43,7 +43,7 @@ public class InvitationTest {
         when(userService.getUserIfExist(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
-        invitationServiceImpl.invite(2L, 1L);
+        invitationServiceImpl.invite(1L, 2L);
 
         verify(invitationRepository).save(any());
     }
@@ -60,7 +60,7 @@ public class InvitationTest {
         when(userService.getUserIfExist(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).teamId(2L).build());
 
-        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
+        assertThatThrownBy(() -> invitationServiceImpl.invite(1L, 2L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -76,7 +76,7 @@ public class InvitationTest {
         when(userService.getUserIfExist(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
-        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
+        assertThatThrownBy(() -> invitationServiceImpl.invite(1L, 2L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 
@@ -90,7 +90,7 @@ public class InvitationTest {
                 .status(TeamStatus.PENDING)
                 .build());
 
-        assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
+        assertThatThrownBy(() -> invitationServiceImpl.invite(1L, 2L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

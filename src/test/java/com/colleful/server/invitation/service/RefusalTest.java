@@ -41,7 +41,7 @@ public class RefusalTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        invitationServiceImpl.refuse(1L, 2L);
+        invitationServiceImpl.refuse(2L, 1L);
 
         verify(invitationRepository).deleteById(1L);
     }
@@ -61,7 +61,7 @@ public class RefusalTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationServiceImpl.refuse(1L, 3L))
+        assertThatThrownBy(() -> invitationServiceImpl.refuse(3L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

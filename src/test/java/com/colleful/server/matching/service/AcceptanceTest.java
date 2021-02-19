@@ -49,7 +49,7 @@ public class AcceptanceTest {
 
     @Test
     public void 매치_수락() {
-        matchingRequestServiceImpl.accept(1L, 2L);
+        matchingRequestServiceImpl.accept(2L, 1L);
 
         assertThat(team1.getMatchedTeamId()).isEqualTo(2L);
         assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
@@ -59,7 +59,7 @@ public class AcceptanceTest {
 
     @Test
     public void 리더가_아닌_사용자가_매치_수락() {
-        assertThatThrownBy(() -> matchingRequestServiceImpl.accept(1L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.accept(3L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

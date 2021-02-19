@@ -32,36 +32,36 @@ public class MatchingRequest {
     @ManyToOne
     @JoinColumn(nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Team sender;
+    private Team sentTeam;
 
     @ManyToOne
     @JoinColumn(nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Team receiver;
+    private Team receivedTeam;
 
-    public MatchingRequest(Team sender, Team receiver) {
-        if (sender.hasSameGenderWith(receiver.getGender())) {
+    public MatchingRequest(Team sentTeam, Team receivedTeam) {
+        if (sentTeam.hasSameGenderWith(receivedTeam.getGender())) {
             throw new ForbiddenBehaviorException("다른 성별에게만 매칭 요청할 수 있습니다.");
         }
 
-        if (receiver.isNotReady()) {
+        if (receivedTeam.isNotReady()) {
             throw new ForbiddenBehaviorException("준비된 팀에게만 매칭 요청할 수 있습니다.");
         }
 
-        this.sender = sender;
-        this.receiver = receiver;
+        this.sentTeam = sentTeam;
+        this.receivedTeam = receivedTeam;
     }
 
     public boolean isNotSentBy(Long userId) {
-        return !this.sender.isLedBy(userId);
+        return !this.sentTeam.isLedBy(userId);
     }
 
     public boolean isNotReceivedBy(Long userId) {
-        return !this.receiver.isLedBy(userId);
+        return !this.receivedTeam.isLedBy(userId);
     }
 
     public void accept() {
-        this.sender.match(this.receiver.getId());
-        this.receiver.match(this.sender.getId());
+        this.sentTeam.match(this.receivedTeam.getId());
+        this.receivedTeam.match(this.sentTeam.getId());
     }
 }

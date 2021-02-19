@@ -44,9 +44,9 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTeamInfo(@RequestHeader(JwtProperties.HEADER) String token,
+    public ResponseEntity<?> getTeam(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
-        Team team = teamService.getTeam(id, provider.getId(token));
+        Team team = teamService.getTeam(provider.getId(token), id);
         return team.isNotEmpty()
             ? ResponseEntity.ok(new TeamDto.Response(team))
             : ResponseEntity.noContent().build();
@@ -75,7 +75,7 @@ public class TeamController {
 
     @PostMapping("/leave")
     public ResponseEntity<?> leaveTeam(@RequestHeader(JwtProperties.HEADER) String token) {
-        teamService.removeMember(provider.getId(token));
+        teamService.leaveTeam(provider.getId(token));
         return ResponseEntity.ok().build();
     }
 
@@ -85,11 +85,10 @@ public class TeamController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     public ResponseEntity<?> updateTeamStatus(@RequestHeader(JwtProperties.HEADER) String token,
-        @PathVariable Long id, @RequestBody TeamDto.Request request) {
-        teamService.changeStatus(id, provider.getId(token),
-            TeamStatus.valueOf(request.getStatus()));
+        @RequestBody TeamDto.Request request) {
+        teamService.changeStatus(provider.getId(token), TeamStatus.valueOf(request.getStatus()));
         return ResponseEntity.ok().build();
     }
 

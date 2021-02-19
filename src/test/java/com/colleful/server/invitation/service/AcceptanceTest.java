@@ -43,7 +43,7 @@ public class AcceptanceTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        invitationServiceImpl.accept(1L, 2L);
+        invitationServiceImpl.accept(2L, 1L);
 
         assertThat(user.getTeamId()).isEqualTo(1L);
         assertThat(team.getHeadcount()).isEqualTo(2);
@@ -64,7 +64,7 @@ public class AcceptanceTest {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationServiceImpl.accept(1L, 3L))
+        assertThatThrownBy(() -> invitationServiceImpl.accept(3L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

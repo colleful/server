@@ -45,14 +45,14 @@ public class RefusalTest {
 
     @Test
     public void 매치_거절() {
-        matchingRequestServiceImpl.refuse(1L, 2L);
+        matchingRequestServiceImpl.refuse(2L, 1L);
 
         verify(matchingRequestRepository).deleteById(1L);
     }
 
     @Test
     public void 리더가_아닌_사용자가_매치_거절() {
-        assertThatThrownBy(() -> matchingRequestServiceImpl.refuse(1L, 3L))
+        assertThatThrownBy(() -> matchingRequestServiceImpl.refuse(3L, 1L))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -49,7 +49,7 @@ public class MatchingRequestController {
     public ResponseEntity<?> request(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody MatchingRequestDto.Request dto) {
         MatchingRequest match = matchingRequestService
-            .request(dto.getTeamId(), provider.getId(token));
+            .request(provider.getId(token), dto.getTeamId());
         return ResponseEntity.created(URI.create("/api/matching/" + match.getId()))
             .body(new MatchingRequestDto.Response(match));
     }
@@ -57,21 +57,21 @@ public class MatchingRequestController {
     @PostMapping("/{id}/accept")
     public ResponseEntity<?> accept(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
-        matchingRequestService.accept(id, provider.getId(token));
+        matchingRequestService.accept(provider.getId(token), id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/refuse")
     public ResponseEntity<?> refuse(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
-        matchingRequestService.refuse(id, provider.getId(token));
+        matchingRequestService.refuse(provider.getId(token), id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> cancel(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
-        matchingRequestService.cancel(id, provider.getId(token));
+        matchingRequestService.cancel(provider.getId(token), id);
         return ResponseEntity.ok().build();
     }
 }

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MatchingRequestRepository extends JpaRepository<MatchingRequest, Long> {
 
-    List<MatchingRequest> findAllByReceiver(Team receiver);
+    List<MatchingRequest> findAllByReceivedTeam(Team receivedTeam);
 
-    List<MatchingRequest> findAllBySender(Team sender);
+    List<MatchingRequest> findAllBySentTeam(Team sentTeam);
 
-    boolean existsBySenderAndReceiver(Team sender, Team receiver);
+    boolean existsBySentTeamAndReceivedTeam(Team sentTeam, Team receivedTeam);
 
-    void deleteAllByReceiver(Team receiver);
+    void deleteAllByReceivedTeam(Team receivedTeam);
 }

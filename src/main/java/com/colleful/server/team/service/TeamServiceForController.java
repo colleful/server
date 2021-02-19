@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface TeamServiceForController {
 
-    Team createTeam(Long leaderId, String teamName);
+    Team createTeam(Long clientId, String teamName);
 
-    Team getTeam(Long teamId, Long userId);
+    Team getTeam(Long clientId, Long teamId);
 
     Page<Team> getAllReadyTeams(Pageable pageable);
 
@@ -19,11 +19,11 @@ public interface TeamServiceForController {
 
     List<User> getMembers(Long teamId);
 
-    void changeStatus(Long teamId, Long userId, TeamStatus status);
+    void changeStatus(Long clientId, TeamStatus status);
 
-    void removeMember(Long userId);
+    void leaveTeam(Long clientId);
 
-    void deleteTeam(Long userId);
+    void deleteTeam(Long clientId);
 
-    void finishMatch(Long userId);
+    void finishMatch(Long clientId);
 }
