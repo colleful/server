@@ -17,7 +17,7 @@ public interface TeamServiceForController {
 
     Page<Team> searchTeams(Pageable pageable, String teamName);
 
-    List<User> getMembers(Long teamId);
+    List<User> getMembers(Long clientId, Long teamId);
 
     void changeStatus(Long clientId, TeamStatus status);
 

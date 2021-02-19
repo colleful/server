@@ -60,8 +60,9 @@ public class TeamController {
     }
 
     @GetMapping("/{id}/members")
-    public List<UserDto.Response> getMembers(@PathVariable Long id) {
-        List<User> users = teamService.getMembers(id);
+    public List<UserDto.Response> getMembers(@RequestHeader(JwtProperties.HEADER) String token,
+        @PathVariable Long id) {
+        List<User> users = teamService.getMembers(provider.getId(token), id);
         return users.stream().map(UserDto.Response::new).collect(Collectors.toList());
     }
 

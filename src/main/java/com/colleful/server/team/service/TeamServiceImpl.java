@@ -66,8 +66,13 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     }
 
     @Override
-    public List<User> getMembers(Long teamId) {
-        // TODO: 접근 가능한 팀이 아닐 경우 예외 처리
+    public List<User> getMembers(Long clientId, Long teamId) {
+        User client = userService.getUserIfExist(clientId);
+        Team team = getTeamIfExist(teamId);
+
+        if (team.isNotAccessibleTo(client)) {
+            throw new ForbiddenBehaviorException("권한이 없습니다.");
+        }
         return userService.getMembers(teamId);
     }
 
