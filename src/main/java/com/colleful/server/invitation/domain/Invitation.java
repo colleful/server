@@ -43,7 +43,7 @@ public class Invitation {
             throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
         }
 
-        if (team.isDifferentGenderFrom(user.getGender())) {
+        if (team.hasDifferentGenderFrom(user.getGender())) {
             throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 

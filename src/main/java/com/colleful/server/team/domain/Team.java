@@ -83,8 +83,12 @@ public class Team {
         return !this.isLedBy(userId);
     }
 
-    public boolean isDifferentGenderFrom(Gender gender) {
-        return this.gender != gender;
+    public boolean hasSameGenderWith(Gender gender) {
+        return this.gender == gender;
+    }
+
+    public boolean hasDifferentGenderFrom(Gender gender) {
+        return !this.hasSameGenderWith(gender);
     }
 
     public boolean isNotReady() {
@@ -97,6 +101,10 @@ public class Team {
 
     public boolean isNotMatched() {
         return !this.isMatched();
+    }
+
+    public boolean isNotAccessibleTo(User user) {
+        return this.isNotEmpty() && this.isNotReady() && user.isNotMemberOf(this.id);
     }
 
     public void addMember(User user) {

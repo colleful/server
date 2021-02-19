@@ -42,7 +42,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         User user = userService.getUserIfExist(userId);
         Team team = teamRepository.findById(teamId).orElseGet(Team::getEmptyInstance);
 
-        if (team.isNotEmpty() && team.isNotReady() && user.isNotMemberOf(teamId)) {
+        if (team.isNotAccessibleTo(user)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
         }
 

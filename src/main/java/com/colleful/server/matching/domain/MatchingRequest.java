@@ -40,7 +40,7 @@ public class MatchingRequest {
     private Team receiver;
 
     public MatchingRequest(Team sender, Team receiver) {
-        if (!sender.isDifferentGenderFrom(receiver.getGender())) {
+        if (sender.hasSameGenderWith(receiver.getGender())) {
             throw new ForbiddenBehaviorException("다른 성별에게만 매칭 요청할 수 있습니다.");
         }
 
