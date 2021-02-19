@@ -19,7 +19,7 @@ public interface TeamServiceForController {
 
     List<User> getMembers(Long teamId);
 
-    void updateStatus(Long teamId, Long userId, TeamStatus status);
+    void changeStatus(Long teamId, Long userId, TeamStatus status);
 
     void removeMember(Long userId);
 

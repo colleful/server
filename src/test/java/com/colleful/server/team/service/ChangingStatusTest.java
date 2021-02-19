@@ -36,7 +36,7 @@ public class ChangingStatusTest {
 
     @Test
     public void 팀_상태_변경() {
-        teamServiceImpl.updateStatus(1L, 1L, TeamStatus.READY);
+        teamServiceImpl.changeStatus(1L, 1L, TeamStatus.READY);
 
         Team team = teamRepository.findById(1L).orElse(Team.builder().build());
         assertThat(team.getStatus()).isEqualTo(TeamStatus.READY);
@@ -44,7 +44,7 @@ public class ChangingStatusTest {
 
     @Test
     public void 리더가_아닌_팀_상태_변경() {
-        assertThatThrownBy(() -> teamServiceImpl.updateStatus(1L, 2L, TeamStatus.READY))
+        assertThatThrownBy(() -> teamServiceImpl.changeStatus(1L, 2L, TeamStatus.READY))
             .isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

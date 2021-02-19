@@ -78,7 +78,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     }
 
     @Override
-    public void updateStatus(Long teamId, Long userId, TeamStatus status) {
+    public void changeStatus(Long teamId, Long userId, TeamStatus status) {
         Team team = getTeamIfExist(teamId);
 
         if (team.isNotLedBy(userId)) {

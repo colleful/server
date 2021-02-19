@@ -88,7 +88,7 @@ public class TeamController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateTeamStatus(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id, @RequestBody TeamDto.Request request) {
-        teamService.updateStatus(id, provider.getId(token),
+        teamService.changeStatus(id, provider.getId(token),
             TeamStatus.valueOf(request.getStatus()));
         return ResponseEntity.ok().build();
     }
