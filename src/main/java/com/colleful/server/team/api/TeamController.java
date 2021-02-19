@@ -68,7 +68,7 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<?> createTeam(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody TeamDto.Request request) {
-        Team team = teamService.createTeam(provider.getId(token), request);
+        Team team = teamService.createTeam(provider.getId(token), request.getTeamName());
         return ResponseEntity.created(URI.create("/api/teams/" + team.getId()))
             .body(new TeamDto.Response(team));
     }

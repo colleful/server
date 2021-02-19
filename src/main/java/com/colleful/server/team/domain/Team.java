@@ -50,6 +50,16 @@ public class Team {
 
     private Long matchedTeamId;
 
+    public static Team of(String teamName, User leader) {
+        return Team.builder()
+            .teamName(teamName)
+            .gender(leader.getGender())
+            .status(TeamStatus.PENDING)
+            .headcount(0)
+            .leaderId(leader.getId())
+            .build();
+    }
+
     public static Team getEmptyInstance() {
         return new Team();
     }

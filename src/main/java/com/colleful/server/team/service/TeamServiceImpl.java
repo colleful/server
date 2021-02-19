@@ -2,7 +2,6 @@ package com.colleful.server.team.service;
 
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.domain.Team;
-import com.colleful.server.team.dto.TeamDto;
 import com.colleful.server.team.repository.TeamRepository;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
@@ -24,16 +23,9 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     private final UserServiceForOtherService userService;
 
     @Override
-    public Team createTeam(Long leaderId, TeamDto.Request dto) {
+    public Team createTeam(Long leaderId, String teamName) {
         User leader = userService.getUserIfExist(leaderId);
-        Team team = Team.builder()
-            .teamName(dto.getTeamName())
-            .gender(leader.getGender())
-            .status(TeamStatus.PENDING)
-            .headcount(0)
-            .leaderId(leaderId)
-            .build();
-
+        Team team = Team.of(teamName, leader);
         teamRepository.save(team);
         team.addMember(leader);
         return team;

@@ -2,7 +2,6 @@ package com.colleful.server.team.service;
 
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
-import com.colleful.server.team.dto.TeamDto;
 import com.colleful.server.user.domain.User;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -10,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TeamServiceForController {
 
-    Team createTeam(Long leaderId, TeamDto.Request dto);
+    Team createTeam(Long leaderId, String teamName);
 
     Team getTeam(Long teamId, Long userId);
 
