@@ -40,7 +40,7 @@ public class InvitationTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(2L))
+        when(userService.getUserIfExist(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
         invitationServiceImpl.invite(2L, 1L);
@@ -57,7 +57,7 @@ public class InvitationTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(2L))
+        when(userService.getUserIfExist(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).teamId(2L).build());
 
         assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))
@@ -73,7 +73,7 @@ public class InvitationTest {
                 .gender(Gender.FEMALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(userService.getUser(2L))
+        when(userService.getUserIfExist(2L))
             .thenReturn(User.builder().id(2L).gender(Gender.MALE).build());
 
         assertThatThrownBy(() -> invitationServiceImpl.invite(2L, 1L))

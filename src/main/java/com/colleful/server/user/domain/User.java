@@ -106,6 +106,10 @@ public class User implements UserDetails {
         return this.teamId != null;
     }
 
+    public boolean hasNotTeam() {
+        return !this.hasTeam();
+    }
+
     public boolean isNotMemberOf(Long teamId) {
         return !this.teamId.equals(teamId);
     }

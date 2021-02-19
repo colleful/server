@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface UserServiceForOtherService {
 
-    User getUser(Long userId);
+    User getUserIfExist(Long userId);
 
     List<User> getMembers(Long teamId);
 }

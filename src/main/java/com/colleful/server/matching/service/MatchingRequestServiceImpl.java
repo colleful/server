@@ -22,9 +22,9 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
     @Override
     public MatchingRequest request(Long receiverId, Long userId) {
         Team sender = teamService.getUserTeam(userId);
-        Team receiver = teamService.getTeam(receiverId);
+        Team receiver = teamService.getTeamIfExist(receiverId);
 
-        if (!sender.isLedBy(userId)) {
+        if (sender.isNotLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
         }
 

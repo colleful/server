@@ -25,9 +25,9 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public Invitation invite(Long targetId, Long userId) {
         Team team = teamService.getUserTeam(userId);
-        User targetUser = userService.getUser(targetId);
+        User targetUser = userService.getUserIfExist(targetId);
 
-        if (!team.isLedBy(userId)) {
+        if (team.isNotLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
         }
 
@@ -46,7 +46,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     public List<Invitation> getAllReceivedInvitations(Long userId) {
-        User user = userService.getUser(userId);
+        User user = userService.getUserIfExist(userId);
         return invitationRepository.findAllByUser(user);
     }
 

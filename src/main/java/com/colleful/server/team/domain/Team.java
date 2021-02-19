@@ -69,6 +69,10 @@ public class Team {
         return this.leaderId.equals(userId);
     }
 
+    public boolean isNotLedBy(Long userId) {
+        return !this.isLedBy(userId);
+    }
+
     public boolean isDifferentGenderFrom(Gender gender) {
         return this.gender != gender;
     }
@@ -79,6 +83,10 @@ public class Team {
 
     public boolean isMatched() {
         return this.matchedTeamId != null;
+    }
+
+    public boolean isNotMatched() {
+        return !this.isMatched();
     }
 
     public void addMember(User user) {

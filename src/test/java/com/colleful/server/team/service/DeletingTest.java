@@ -38,9 +38,9 @@ public class DeletingTest {
         members.add(user1);
         members.add(user2);
 
-        when(userService.getUser(1L))
+        when(userService.getUserIfExist(1L))
             .thenReturn(user1);
-        when(userService.getUser(2L))
+        when(userService.getUserIfExist(2L))
             .thenReturn(user2);
         when(userService.getMembers(1L))
             .thenReturn(members);
@@ -62,8 +62,8 @@ public class DeletingTest {
 
         teamServiceImpl.deleteTeam(1L);
 
-        Team team = teamServiceImpl.getTeam(2L);
-        User user = userService.getUser(2L);
+        Team team = teamServiceImpl.getTeamIfExist(2L);
+        User user = userService.getUserIfExist(2L);
         assertThat(team.getMatchedTeamId()).isNull();
         assertThat(team.getStatus()).isEqualTo(TeamStatus.PENDING);
         assertThat(user.getTeamId()).isNull();
@@ -72,7 +72,7 @@ public class DeletingTest {
 
     @Test
     public void 팀이_없는_사용자가_팀_삭제() {
-        when(userService.getUser(1L))
+        when(userService.getUserIfExist(1L))
             .thenReturn(User.builder().id(1L).build());
 
         assertThatThrownBy(() -> teamServiceImpl.deleteTeam(1L))
@@ -81,7 +81,7 @@ public class DeletingTest {
 
     @Test
     public void 리더가_아닌_사용자가_팀_삭제() {
-        when(userService.getUser(1L))
+        when(userService.getUserIfExist(1L))
             .thenReturn(User.builder().id(1L).teamId(1L).build());
         when(teamRepository.findById(1L))
             .thenReturn(Optional.of(Team.builder()

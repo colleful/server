@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserServiceForControllerImpl implements UserServiceForController {
+public class UserServiceImpl implements UserServiceForController, UserServiceForOtherService {
 
     private final UserRepository userRepository;
 
@@ -23,8 +23,19 @@ public class UserServiceForControllerImpl implements UserServiceForController {
     }
 
     @Override
+    public User getUserIfExist(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+    }
+
+    @Override
     public List<User> getUserByNickname(String nickname) {
         return userRepository.findByNicknameContaining(nickname);
+    }
+
+    @Override
+    public List<User> getMembers(Long teamId) {
+        return userRepository.findAllByTeamId(teamId);
     }
 
     @Override
@@ -53,10 +64,5 @@ public class UserServiceForControllerImpl implements UserServiceForController {
         }
 
         userRepository.deleteById(userId);
-    }
-
-    private User getUserIfExist(Long userId) {
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
     }
 }

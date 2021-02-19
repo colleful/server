@@ -36,7 +36,7 @@ public class RequestTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(teamService.getTeam(2L))
+        when(teamService.getTeamIfExist(2L))
             .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)
@@ -59,7 +59,7 @@ public class RequestTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(teamService.getTeam(2L))
+        when(teamService.getTeamIfExist(2L))
             .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)
@@ -81,7 +81,7 @@ public class RequestTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(teamService.getTeam(2L))
+        when(teamService.getTeamIfExist(2L))
             .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)
@@ -102,7 +102,7 @@ public class RequestTest {
                 .gender(Gender.MALE)
                 .status(TeamStatus.PENDING)
                 .build());
-        when(teamService.getTeam(2L))
+        when(teamService.getTeamIfExist(2L))
             .thenReturn(Team.builder()
                 .id(2L)
                 .leaderId(2L)

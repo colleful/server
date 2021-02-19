@@ -25,7 +25,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
 
     @Override
     public Team createTeam(Long leaderId, TeamDto.Request dto) {
-        User leader = userService.getUser(leaderId);
+        User leader = userService.getUserIfExist(leaderId);
         Team team = Team.builder()
             .teamName(dto.getTeamName())
             .gender(leader.getGender())
@@ -40,14 +40,14 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     }
 
     @Override
-    public Team getTeam(Long teamId) {
+    public Team getTeamIfExist(Long teamId) {
         return teamRepository.findById(teamId)
             .orElseThrow(() -> new NotFoundResourceException("존재하지 않는 팀입니다."));
     }
 
     @Override
     public Team getTeam(Long teamId, Long userId) {
-        User user = userService.getUser(userId);
+        User user = userService.getUserIfExist(userId);
         Team team = teamRepository.findById(teamId).orElseGet(Team::getEmptyInstance);
 
         if (team.isNotEmpty() && team.isNotReady() && user.isNotMemberOf(teamId)) {
@@ -59,13 +59,13 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
 
     @Override
     public Team getUserTeam(Long userId) {
-        User user = userService.getUser(userId);
+        User user = userService.getUserIfExist(userId);
 
-        if (!user.hasTeam()) {
+        if (user.hasNotTeam()) {
             throw new ForbiddenBehaviorException("팀을 먼저 생성해 주세요.");
         }
 
-        return getTeam(user.getTeamId());
+        return getTeamIfExist(user.getTeamId());
     }
 
     @Override
@@ -87,9 +87,9 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
 
     @Override
     public void updateStatus(Long teamId, Long userId, TeamStatus status) {
-        Team team = getTeam(teamId);
+        Team team = getTeamIfExist(teamId);
 
-        if (!team.isLedBy(userId)) {
+        if (team.isNotLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
@@ -98,8 +98,8 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
 
     @Override
     public void removeMember(Long userId) {
-        User user = userService.getUser(userId);
-        Team team = getTeam(user.getTeamId());
+        User user = userService.getUserIfExist(userId);
+        Team team = getTeamIfExist(user.getTeamId());
 
         if (team.isLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
@@ -112,19 +112,12 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     public void deleteTeam(Long userId) {
         Team team = getUserTeam(userId);
 
-        if (!team.isLedBy(userId)) {
+        if (team.isNotLedBy(userId)) {
             throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
         }
 
-        if (team.isMatched()) {
-            Team matchedTeam = getTeam(team.getMatchedTeamId());
-            team.finishMatch();
-            matchedTeam.finishMatch();
-        }
-
-        List<User> users = userService.getMembers(team.getId());
-        users.forEach(team::removeMember);
-
+        finishMatch(team);
+        removeAllMembers(team);
         teamRepository.deleteById(team.getId());
     }
 
@@ -136,12 +129,23 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
             throw new ForbiddenBehaviorException("리더만 매칭을 끝낼 수 있습니다.");
         }
 
-        if (!team.isMatched()) {
+        if (team.isNotMatched()) {
             throw new ForbiddenBehaviorException("매칭된 팀이 없습니다.");
         }
 
-        Team matchedTeam = getTeam(team.getMatchedTeamId());
-        team.finishMatch();
-        matchedTeam.finishMatch();
+        finishMatch(team);
+    }
+
+    private void finishMatch(Team team) {
+        if (team.isMatched()) {
+            Team matchedTeam = getTeamIfExist(team.getMatchedTeamId());
+            team.finishMatch();
+            matchedTeam.finishMatch();
+        }
+    }
+
+    private void removeAllMembers(Team team) {
+        List<User> users = userService.getMembers(team.getId());
+        users.forEach(team::removeMember);
     }
 }
