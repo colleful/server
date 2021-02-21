@@ -19,11 +19,13 @@ public class MatchingRequestDto {
         private final Long id;
         private final LocalDateTime createdAt;
         private final TeamDto.Response sentTeam;
+        private final TeamDto.Response receivedTeam;
 
         public Response(MatchingRequest match) {
             this.id = match.getId();
             this.createdAt = match.getCreatedAt();
             this.sentTeam = new TeamDto.Response(match.getSentTeam());
+            this.receivedTeam = new TeamDto.Response(match.getReceivedTeam());
         }
     }
 }
