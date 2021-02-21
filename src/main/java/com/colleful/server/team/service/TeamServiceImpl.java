@@ -73,6 +73,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         if (team.isNotAccessibleTo(client)) {
             throw new ForbiddenBehaviorException("권한이 없습니다.");
         }
+
         return userService.getMembers(teamId);
     }
 

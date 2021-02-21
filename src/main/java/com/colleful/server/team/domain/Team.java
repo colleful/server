@@ -95,6 +95,10 @@ public class Team {
         return this.status != TeamStatus.READY;
     }
 
+    public boolean isNotInvitable() {
+        return this.status != TeamStatus.PENDING;
+    }
+
     public boolean isMatched() {
         return this.matchedTeamId != null;
     }

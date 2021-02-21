@@ -59,7 +59,6 @@ public class InvitationServiceImpl implements InvitationService {
         }
 
         invitation.accept();
-
         invitationRepository.deleteAllByUser(invitation.getUser());
     }
 

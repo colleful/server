@@ -47,6 +47,10 @@ public class Invitation {
             throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
         }
 
+        if (team.isNotInvitable()) {
+            throw new ForbiddenBehaviorException("초대할 수 없습니다.");
+        }
+
         this.team = team;
         this.user = user;
     }
