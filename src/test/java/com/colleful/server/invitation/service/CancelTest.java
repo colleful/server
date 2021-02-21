@@ -7,9 +7,11 @@ import static org.mockito.Mockito.when;
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
+import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,10 +26,17 @@ public class CancelTest {
     @Mock
     private InvitationRepository invitationRepository;
 
+    private Team team;
+    private User user;
+
+    @BeforeEach
+    public void init() {
+        team = Team.of("test", User.builder().id(1L).gender(Gender.MALE).build());
+        user = User.builder().id(2L).gender(Gender.MALE).build();
+    }
+
     @Test
     public void 초대_취소() {
-        Team team = Team.builder().id(1L).leaderId(1L).build();
-        User user = User.builder().id(2L).build();
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
@@ -38,8 +47,6 @@ public class CancelTest {
 
     @Test
     public void 권한이_없는_사용자가_초대_취소() {
-        Team team = Team.builder().id(1L).leaderId(1L).build();
-        User user = User.builder().id(2L).build();
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 

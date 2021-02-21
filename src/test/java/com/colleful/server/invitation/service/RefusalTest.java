@@ -7,11 +7,11 @@ import static org.mockito.Mockito.when;
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
-import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,18 +26,17 @@ public class RefusalTest {
     @Mock
     private InvitationRepository invitationRepository;
 
+    private User user;
+    private Team team;
+
+    @BeforeEach
+    public void init() {
+        user = User.builder().id(2L).gender(Gender.MALE).build();
+        team = Team.of("test", User.builder().id(1L).gender(Gender.MALE).build());
+    }
+
     @Test
     public void 초대_거절() {
-        Team team = Team.builder()
-            .id(1L)
-            .leaderId(1L)
-            .gender(Gender.MALE)
-            .status(TeamStatus.PENDING)
-            .build();
-        User user = User.builder()
-            .id(2L)
-            .gender(Gender.MALE)
-            .build();
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
@@ -48,16 +47,6 @@ public class RefusalTest {
 
     @Test
     public void 다른_사용자의_초대_거절() {
-        Team team = Team.builder()
-            .id(1L)
-            .leaderId(1L)
-            .gender(Gender.MALE)
-            .status(TeamStatus.PENDING)
-            .build();
-        User user = User.builder()
-            .id(2L)
-            .gender(Gender.MALE)
-            .build();
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
