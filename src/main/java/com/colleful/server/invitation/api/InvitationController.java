@@ -48,7 +48,7 @@ public class InvitationController {
     @PostMapping
     public ResponseEntity<?> invite(@RequestHeader(JwtProperties.HEADER) String token,
         @RequestBody InvitationDto.Request dto) {
-        Invitation invitation = invitationService.invite(dto.getUserId(), provider.getId(token));
+        Invitation invitation = invitationService.invite(provider.getId(token), dto.getUserId());
         return ResponseEntity.created(URI.create("/api/invitations/" + invitation.getId()))
             .body(new InvitationDto.Response(invitation));
     }
@@ -56,21 +56,21 @@ public class InvitationController {
     @PostMapping("/{id}/accept")
     public ResponseEntity<?> accept(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
-        invitationService.accept(id, provider.getId(token));
+        invitationService.accept(provider.getId(token), id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/refuse")
     public ResponseEntity<?> refuse(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
-        invitationService.refuse(id, provider.getId(token));
+        invitationService.refuse(provider.getId(token), id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> cancel(@RequestHeader(JwtProperties.HEADER) String token,
         @PathVariable Long id) {
-        invitationService.cancel(id, provider.getId(token));
+        invitationService.cancel(provider.getId(token), id);
         return ResponseEntity.ok().build();
     }
 }

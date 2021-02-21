@@ -1,5 +1,6 @@
 package com.colleful.server.user.service;
 
+import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -17,6 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(RuntimeException::new);
+        return userRepository.findByEmail(username)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
     }
 }
