@@ -1,52 +1,43 @@
 package com.colleful.server.user.domain;
 
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
 
-@Entity
 @Getter
 @NoArgsConstructor
 public class EmailVerification {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
     private String email;
+    private int code;
+    private boolean isChecked;
 
-    @Column(nullable = false)
-    private Integer code;
-
-    @Column(nullable = false)
-    private Boolean isChecked;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-
-    public EmailVerification(String email, Integer code) {
+    public EmailVerification(String email, int code) {
         this.email = email;
         this.code = code;
         this.isChecked = false;
     }
 
-    public void changeCode(Integer code) {
-        this.code = code;
-        this.isChecked = false;
+    public EmailVerification(String serialized) {
+        String[] fields = serialized.split(":");
+        this.email = fields[0];
+        this.code = Integer.parseInt(fields[1]);
+        this.isChecked = Boolean.parseBoolean(fields[2]);
     }
 
-    public boolean verify(Integer code) {
-        return this.code.equals(code);
+    public boolean verify(int code) {
+        return this.code == code;
+    }
+
+    public boolean isNotChecked() {
+        return !this.isChecked;
     }
 
     public void check() {
         this.isChecked = true;
+    }
+
+    @Override
+    public String toString() {
+        return email + ":" + code + ":" + isChecked;
     }
 }

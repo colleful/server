@@ -102,32 +102,29 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void checkEmail(UserDto.EmailRequest dto) {
-        EmailVerification emailVerification = getEmailVerification(dto.getEmail());
+        EmailVerification emailVerification = emailVerificationRepository
+            .findByEmail(dto.getEmail());
 
         if (!emailVerification.verify(dto.getCode())) {
             throw new InvalidCodeException("인증번호가 다릅니다.");
         }
 
         emailVerification.check();
+        emailVerificationRepository.save(emailVerification);
     }
 
     private void checkVerification(String email) {
-        EmailVerification emailVerification = getEmailVerification(email);
+        EmailVerification emailVerification = emailVerificationRepository.findByEmail(email);
 
-        if (!emailVerification.getIsChecked()) {
+        if (emailVerification.isNotChecked()) {
             throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
         }
 
-        emailVerificationRepository.deleteById(emailVerification.getId());
-    }
-
-    private EmailVerification getEmailVerification(String email) {
-        return emailVerificationRepository.findByEmail(email)
-            .orElseThrow(() -> new NotVerifiedEmailException("인증되지 않은 이메일입니다."));
+        emailVerificationRepository.deleteByEmail(email);
     }
 
     private void sendEmail(String email) {
-        Integer code = (int) (Math.random() * 900000 + 100000);
+        int code = (int) (Math.random() * 900000 + 100000);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
         simpleMailMessage.setTo(email);
@@ -135,13 +132,7 @@ public class AuthServiceImpl implements AuthService {
         simpleMailMessage.setSubject("Colleful 이메일 인증번호입니다.");
         simpleMailMessage.setText("인증번호는 " + code + " 입니다.");
 
-        EmailVerification emailVerification =
-            emailVerificationRepository.findByEmail(email)
-                .orElse(new EmailVerification(email, code));
-
-        emailVerification.changeCode(code);
-        emailVerificationRepository.save(emailVerification);
-
+        emailVerificationRepository.save(new EmailVerification(email, code));
         javaMailSender.send(simpleMailMessage);
     }
 }

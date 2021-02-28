@@ -13,6 +13,7 @@ import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,19 +28,22 @@ public class AcceptanceTest {
     @Mock
     private InvitationRepository invitationRepository;
 
-    @Test
-    public void 초대_수락() {
-        Team team = Team.builder()
+    private Team team;
+    private User user;
+
+    @BeforeEach
+    public void init() {
+        team = Team.builder()
             .id(1L)
             .leaderId(1L)
             .gender(Gender.MALE)
             .status(TeamStatus.PENDING)
-            .headcount(1)
-            .build();
-        User user = User.builder()
-            .id(2L)
-            .gender(Gender.MALE)
-            .build();
+            .headcount(1).build();
+        user = User.builder().id(2L).gender(Gender.MALE).build();
+    }
+
+    @Test
+    public void 초대_수락() {
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
@@ -51,16 +55,6 @@ public class AcceptanceTest {
 
     @Test
     public void 다른_사용자의_초대_수락() {
-        Team team = Team.builder()
-            .id(1L)
-            .leaderId(1L)
-            .gender(Gender.MALE)
-            .status(TeamStatus.PENDING)
-            .build();
-        User user = User.builder()
-            .id(2L)
-            .gender(Gender.MALE)
-            .build();
         when(invitationRepository.findById(1L))
             .thenReturn(Optional.of(new Invitation(team, user)));
 
