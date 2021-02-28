@@ -1,14 +1,9 @@
 package com.colleful.server.user.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
 public class EmailVerification {
 
-    private String email;
-    private int code;
+    private final String email;
+    private final int code;
     private boolean isChecked;
 
     public EmailVerification(String email, int code) {
@@ -22,6 +17,10 @@ public class EmailVerification {
         this.email = fields[0];
         this.code = Integer.parseInt(fields[1]);
         this.isChecked = Boolean.parseBoolean(fields[2]);
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public boolean verify(int code) {
