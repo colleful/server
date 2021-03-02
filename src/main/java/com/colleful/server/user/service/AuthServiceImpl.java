@@ -102,8 +102,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void checkEmail(UserDto.EmailRequest dto) {
-        EmailVerification emailVerification = emailVerificationRepository
-            .findByEmail(dto.getEmail());
+        EmailVerification emailVerification = getEmailVerificationIfPresent(dto.getEmail());
 
         if (!emailVerification.verify(dto.getCode())) {
             throw new InvalidCodeException("인증번호가 다릅니다.");
@@ -113,8 +112,13 @@ public class AuthServiceImpl implements AuthService {
         emailVerificationRepository.save(emailVerification);
     }
 
+    private EmailVerification getEmailVerificationIfPresent(String email) {
+        return emailVerificationRepository.findByEmail(email)
+            .orElseThrow(() -> new NotVerifiedEmailException("인증되지 않은 이메일입니다."));
+    }
+
     private void checkVerification(String email) {
-        EmailVerification emailVerification = emailVerificationRepository.findByEmail(email);
+        EmailVerification emailVerification = getEmailVerificationIfPresent(email);
 
         if (emailVerification.isNotChecked()) {
             throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
