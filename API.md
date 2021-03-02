@@ -2,8 +2,8 @@
 
 ## 목차
 1. [로그인 관련](#1-로그인-관련)
-2. [User 관련](#2-user-관련)
-3. [Team 관련](#3-team-관련)
+2. [유저 관련](#2-유저-관련)
+3. [팀 관련](#3-팀-관련)
 4. [초대 관련](#4-초대-관련)
 5. [매칭 관련](#5-매칭-관련)
 6. [학과 정보](#6-학과-정보)
@@ -67,6 +67,8 @@
 |collegeName|String|단과대학 이름|
 |departmentName|String|학과 이름|
 
+***
+
 ## 1. 로그인 관련
 
 ### POST /auth/join
@@ -126,7 +128,9 @@
 |email|String|Yes|이메일|
 |code|Integer|Yes|인증번호|
 
-## 2. User 관련
+***
+
+## 2. 유저 관련
 
 ### GET /api/users
 > 자신의 정보 조회
@@ -158,8 +162,9 @@
 ### DELETE /api/users
 > 회원 탈퇴
 
+***
 
-## 3. Team 관련
+## 3. 팀 관련
 
 ### GET /api/teams
 > 준비된 팀 조회(페이징 응답)
@@ -204,6 +209,8 @@
 ### DELETE /api/teams
 > id에 해당하는 팀 삭제 (리더만 삭제 가능)
 
+***
+
 ## 4. 초대 관련
 
 ### GET /api/invitations/sent
@@ -229,6 +236,8 @@
 ### DELETE /api/invitations/{id}
 > id에 해당하는 초대 취소 (초대 보낸 팀 리더만 취소 가능)
 
+***
+
 ## 5. 매칭 관련
 
 ### GET /api/matching/sent
@@ -253,6 +262,8 @@
 
 ### DELETE /api/matching/{id}
 > id에 해당하는 매칭 요청 취소 (요청 보낸 팀 리더만 취소 가능)
+
+***
 
 ## 6. 학과 정보
 
