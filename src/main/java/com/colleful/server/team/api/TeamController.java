@@ -86,10 +86,15 @@ public class TeamController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping
-    public ResponseEntity<?> updateTeamStatus(@RequestHeader(JwtProperties.HEADER) String token,
-        @RequestBody TeamDto.Request request) {
-        teamService.changeStatus(provider.getId(token), TeamStatus.valueOf(request.getStatus()));
+    @PatchMapping("/ready")
+    public ResponseEntity<?> ready(@RequestHeader(JwtProperties.HEADER) String token) {
+        teamService.changeStatus(provider.getId(token), TeamStatus.READY);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/watching")
+    public ResponseEntity<?> watching(@RequestHeader(JwtProperties.HEADER) String token) {
+        teamService.changeStatus(provider.getId(token), TeamStatus.WATCHING);
         return ResponseEntity.ok().build();
     }
 

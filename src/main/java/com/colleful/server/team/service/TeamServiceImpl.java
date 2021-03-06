@@ -92,6 +92,10 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
             throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
         }
 
+        if (team.isNotPending()) {
+            throw new ForbiddenBehaviorException("현재 상태에선 상태를 변경할 수 없습니다.");
+        }
+
         team.changeStatus(status);
     }
 

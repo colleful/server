@@ -95,7 +95,7 @@ public class Team {
         return this.status != TeamStatus.READY;
     }
 
-    public boolean isNotInvitable() {
+    public boolean isNotPending() {
         return this.status != TeamStatus.PENDING;
     }
 
