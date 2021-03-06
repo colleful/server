@@ -198,8 +198,11 @@
 ### POST /api/teams/finish-match
 > 매칭 끝내기 (리더만 매칭을 끝낼 수 있음)
 
-### PATCH /api/teams
-> 자신의 팀 상태 변경 (리더만 변경 가능)
+### PATCH /api/teams/ready
+> 자신의 팀을 준비 상태로 변경 (리더만 변경 가능)
+
+### PATCH /api/teams/watching
+> 자신의 팀을 탐색 상태로 변경 (리더만 변경 가능)
 
 **Request Body**
 |name|type|required|description|
