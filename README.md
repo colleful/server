@@ -18,7 +18,7 @@ $ git clone https://github.com/colleful/server.git
 ```yml
 spring:
   datasource:
-    url: mysql://{mysql 서버 주소}:{mysql 포트}/{데이터베이스 이름}?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://{mysql 서버 주소}:{mysql 포트}/{데이터베이스 이름}?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     username: {mysql username}
     password: {mysql password}
   mail:
