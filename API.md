@@ -1,4 +1,4 @@
-# Colleful RESTful API
+# Colleful HTTP API
 
 ## 목차
 1. [로그인 관련](#1-로그인-관련)
