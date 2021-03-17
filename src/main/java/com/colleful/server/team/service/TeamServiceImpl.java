@@ -26,9 +26,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     public Team createTeam(Long clientId, String teamName) {
         User leader = userService.getUserIfExist(clientId);
         Team team = Team.of(teamName, leader);
-        teamRepository.save(team);
-        team.addMember(leader);
-        return team;
+        return teamRepository.save(team);
     }
 
     @Override
