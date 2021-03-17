@@ -1,12 +1,13 @@
 package com.colleful.server.team.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.repository.TeamRepository;
+import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.service.UserServiceForOtherService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
@@ -22,74 +23,76 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class SearchingTest {
 
     @InjectMocks
-    private TeamServiceImpl teamServiceImpl;
+    TeamServiceImpl teamServiceImpl;
     @Mock
-    private UserServiceForOtherService userService;
+    UserServiceForOtherService userService;
     @Mock
-    private TeamRepository teamRepository;
-    private Team team;
+    TeamRepository teamRepository;
+
+    User user;
+    Team team;
 
     @BeforeEach
-    public void init() {
-        this.team = Team.builder()
+    void init() {
+        user = User.builder().id(1L).gender(Gender.MALE).build();
+        team = Team.builder()
             .id(1L)
             .status(TeamStatus.PENDING)
             .leaderId(2L)
+            .gender(Gender.MALE)
+            .headcount(1)
             .build();
     }
 
     @Test
-    public void 준비된_팀_정보_조회() {
-        when(userService.getUserIfExist(1L))
-            .thenReturn(User.builder().id(1L).build());
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(this.team));
+    void 준비된_팀_정보_조회() {
+        team.changeStatus(TeamStatus.READY);
+        given(userService.getUserIfExist(1L)).willReturn(user);
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team));
 
-        this.team.changeStatus(TeamStatus.READY);
         Team team = teamServiceImpl.getTeam(1L, 1L);
 
         assertThat(team.getId()).isEqualTo(1L);
     }
 
     @Test
-    public void 자기_팀_정보_조회() {
-        when(userService.getUserIfExist(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(this.team));
+    void 자기_팀_정보_조회() {
+        team.addMember(user);
+        given(userService.getUserIfExist(1L)).willReturn(user);
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team));
 
         Team team = teamServiceImpl.getTeam(1L, 1L);
+
         assertThat(team.getId()).isEqualTo(1L);
     }
 
     @Test
-    public void 속하지_않고_준비되지_않은_팀_정보_조회() {
-        when(userService.getUserIfExist(1L))
-            .thenReturn(User.builder().id(1L).teamId(2L).build());
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(this.team));
+    void 속하지_않고_준비되지_않은_팀_정보_조회_불가() {
+        given(userService.getUserIfExist(1L)).willReturn(user);
+        given(teamRepository.findById(1L)).willReturn(Optional.of(this.team));
 
-        assertThatThrownBy(() -> teamServiceImpl.getTeam(1L, 1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> teamServiceImpl.getTeam(1L, 1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 
     @Test
-    public void 유저의_팀_조회() {
-        when(userService.getUserIfExist(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(this.team));
+    void 유저의_팀_조회() {
+        team.addMember(user);
+        given(userService.getUserIfExist(1L)).willReturn(user);
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team));
 
         Team team = teamServiceImpl.getUserTeam(1L);
+
         assertThat(team.getId()).isEqualTo(1L);
     }
 
     @Test
-    public void 팀이_없는_유저의_팀_조회() {
-        when(userService.getUserIfExist(1L))
-            .thenReturn(User.builder().id(1L).build());
+    void 팀이_없는_유저의_팀_조회_불가() {
+        given(userService.getUserIfExist(1L)).willReturn(user);
 
-        assertThatThrownBy(() -> teamServiceImpl.getUserTeam(1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> teamServiceImpl.getUserTeam(1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

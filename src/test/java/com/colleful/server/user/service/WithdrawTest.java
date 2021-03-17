@@ -1,8 +1,8 @@
 package com.colleful.server.user.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.repository.UserRepository;
@@ -18,26 +18,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class WithdrawTest {
 
     @InjectMocks
-    private UserServiceImpl userServiceImpl;
+    UserServiceImpl userServiceImpl;
     @Mock
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Test
-    public void 회원탈퇴() {
-        when(userRepository.findById(1L))
-            .thenReturn(Optional.of(User.builder().build()));
+    public void 팀에_속해있는_유저는_회원_탈퇴_불가() {
+        given(userRepository.findById(1L))
+            .willReturn(Optional.of(User.builder().teamId(1L).build()));
 
-        userServiceImpl.withdrawal(1L);
+        Throwable thrown = catchThrowable(() -> userServiceImpl.withdrawal(1L));
 
-        verify(userRepository).deleteById(1L);
-    }
-
-    @Test
-    public void 회원탈퇴_불가() {
-        when(userRepository.findById(1L))
-            .thenReturn(Optional.of(User.builder().teamId(1L).build()));
-
-        assertThatThrownBy(() -> userServiceImpl.withdrawal(1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

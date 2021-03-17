@@ -1,8 +1,8 @@
 package com.colleful.server.team.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
@@ -22,47 +22,61 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ChangingStatusTest {
 
     @InjectMocks
-    private TeamServiceImpl teamServiceImpl;
+    TeamServiceImpl teamServiceImpl;
     @Mock
-    private TeamRepository teamRepository;
+    TeamRepository teamRepository;
     @Mock
-    private UserServiceForOtherService userService;
-    private User user1;
-    private User user2;
+    UserServiceForOtherService userService;
+
+    User user1;
+    User user2;
+    Team team1;
 
     @BeforeEach
-    public void init() {
-        this.user1 = User.builder()
+    void init() {
+        user1 = User.builder()
             .id(1L)
             .teamId(1L)
             .build();
-        this.user2 = User.builder()
+        user2 = User.builder()
             .id(2L)
             .teamId(1L)
             .build();
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(Team.builder()
-                .id(1L)
-                .status(TeamStatus.PENDING)
-                .leaderId(1L)
-                .build()));
+        team1 = Team.builder()
+            .id(1L)
+            .status(TeamStatus.PENDING)
+            .leaderId(1L)
+            .build();
     }
 
     @Test
-    public void 팀_상태_변경() {
-        when(userService.getUserIfExist(1L)).thenReturn(this.user1);
+    void 팀_상태_변경() {
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team1));
+        given(userService.getUserIfExist(1L)).willReturn(user1);
 
         teamServiceImpl.changeStatus(1L, TeamStatus.READY);
 
-        Team team = teamRepository.findById(1L).orElse(Team.builder().build());
-        assertThat(team.getStatus()).isEqualTo(TeamStatus.READY);
+        assertThat(team1.getStatus()).isEqualTo(TeamStatus.READY);
     }
 
     @Test
-    public void 리더가_아닌_팀_상태_변경() {
-        when(userService.getUserIfExist(2L)).thenReturn(this.user2);
+    void 리더가_아닌_팀_상태_변경_불가() {
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team1));
+        given(userService.getUserIfExist(2L)).willReturn(user2);
 
-        assertThatThrownBy(() -> teamServiceImpl.changeStatus(2L, TeamStatus.READY))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> teamServiceImpl.changeStatus(2L, TeamStatus.READY));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
+    }
+
+    @Test
+    void 준비_상태가_아닌_팀_상태_변경_불가() {
+        team1.changeStatus(TeamStatus.READY);
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team1));
+        given(userService.getUserIfExist(1L)).willReturn(user1);
+
+        Throwable thrown = catchThrowable(() -> teamServiceImpl.changeStatus(1L, TeamStatus.WATCHING));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -1,9 +1,10 @@
 package com.colleful.server.matching.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
@@ -23,15 +24,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class AcceptanceTest {
 
     @InjectMocks
-    private MatchingRequestServiceImpl matchingRequestServiceImpl;
+    MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
-    private MatchingRequestRepository matchingRequestRepository;
+    MatchingRequestRepository matchingRequestRepository;
 
-    private Team team1;
-    private Team team2;
+    Team team1;
+    Team team2;
 
     @BeforeEach
-    public void init() {
+    void init() {
         team1 = Team.builder()
             .id(1L)
             .leaderId(1L)
@@ -43,23 +44,29 @@ public class AcceptanceTest {
             .gender(Gender.FEMALE)
             .status(TeamStatus.READY)
             .build();
-        when(matchingRequestRepository.findById(1L))
-            .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
     }
 
     @Test
-    public void 매치_수락() {
+    void 매치_수락() {
+        given(matchingRequestRepository.findById(1L))
+            .willReturn(Optional.of(new MatchingRequest(team1, team2)));
+
         matchingRequestServiceImpl.accept(2L, 1L);
 
         assertThat(team1.getMatchedTeamId()).isEqualTo(2L);
         assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
         assertThat(team1.getStatus()).isEqualTo(TeamStatus.MATCHED);
         assertThat(team2.getStatus()).isEqualTo(TeamStatus.MATCHED);
+        verify(matchingRequestRepository).deleteAllByReceivedTeam(any());
     }
 
     @Test
-    public void 리더가_아닌_사용자가_매치_수락() {
-        assertThatThrownBy(() -> matchingRequestServiceImpl.accept(3L, 1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+    void 리더가_아닌_사용자가_매치_수락_불가() {
+        given(matchingRequestRepository.findById(1L))
+            .willReturn(Optional.of(new MatchingRequest(team1, team2)));
+
+        Throwable thrown = catchThrowable(() -> matchingRequestServiceImpl.accept(3L, 1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -1,11 +1,12 @@
 package com.colleful.server.team.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.repository.TeamRepository;
+import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.service.UserServiceForOtherService;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
@@ -21,44 +22,48 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class LeavingTest {
 
     @InjectMocks
-    private TeamServiceImpl teamServiceImpl;
+    TeamServiceImpl teamServiceImpl;
     @Mock
-    private UserServiceForOtherService userService;
+    UserServiceForOtherService userService;
     @Mock
-    private TeamRepository teamRepository;
+    TeamRepository teamRepository;
+
+    User user1;
+    User user2;
+
+    Team team1;
 
     @BeforeEach
-    public void init() {
-        when(userService.getUserIfExist(1L))
-            .thenReturn(User.builder().id(1L).teamId(1L).build());
+    void init() {
+        user1 = User.builder().id(1L).teamId(1L).gender(Gender.MALE).build();
+        user2 = User.builder().id(2L).teamId(1L).gender(Gender.MALE).build();
+
+        team1 = Team.builder()
+            .id(1L)
+            .leaderId(1L)
+            .gender(Gender.MALE)
+            .headcount(2)
+            .build();
     }
 
     @Test
-    public void 팀_탈퇴() {
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(Team.builder()
-                .id(1L)
-                .leaderId(2L)
-                .headcount(2)
-                .build()));
+    void 팀_탈퇴() {
+        given(userService.getUserIfExist(2L)).willReturn(user2);
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team1));
 
-        teamServiceImpl.leaveTeam(1L);
+        teamServiceImpl.leaveTeam(2L);
 
-        User user = userService.getUserIfExist(1L);
-        Team team = teamServiceImpl.getTeamIfExist(1L);
-        assertThat(user.getTeamId()).isNull();
-        assertThat(team.getHeadcount()).isEqualTo(1);
+        assertThat(user2.getTeamId()).isNull();
+        assertThat(team1.getHeadcount()).isEqualTo(1);
     }
 
     @Test
-    public void 리더가_팀_탈퇴() {
-        when(teamRepository.findById(1L))
-            .thenReturn(Optional.of(Team.builder()
-                .id(1L)
-                .leaderId(1L)
-                .build()));
+    void 리더는_팀_탈퇴_불가() {
+        given(userService.getUserIfExist(1L)).willReturn(user1);
+        given(teamRepository.findById(1L)).willReturn(Optional.of(team1));
 
-        assertThatThrownBy(() -> teamServiceImpl.leaveTeam(1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> teamServiceImpl.leaveTeam(1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -1,8 +1,9 @@
 package com.colleful.server.matching.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
@@ -22,39 +23,47 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class CancelTest {
 
     @InjectMocks
-    private MatchingRequestServiceImpl matchingRequestServiceImpl;
+    MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
-    private MatchingRequestRepository matchingRequestRepository;
+    MatchingRequestRepository matchingRequestRepository;
+
+    Team team1;
+    Team team2;
 
     @BeforeEach
-    public void init() {
-        Team team1 = Team.builder()
+    void init() {
+        team1 = Team.builder()
             .id(1L)
             .matchedTeamId(2L)
             .leaderId(1L)
             .gender(Gender.MALE)
             .build();
-        Team team2 = Team.builder()
+        team2 = Team.builder()
             .id(2L)
             .matchedTeamId(1L)
             .leaderId(2L)
             .gender(Gender.FEMALE)
             .status(TeamStatus.READY)
             .build();
-        when(matchingRequestRepository.findById(1L))
-            .thenReturn(Optional.of(new MatchingRequest(team1, team2)));
     }
 
     @Test
-    public void 매칭_취소() {
+    void 매칭_취소() {
+        given(matchingRequestRepository.findById(1L))
+            .willReturn(Optional.of(new MatchingRequest(team1, team2)));
+
         matchingRequestServiceImpl.cancel(1L, 1L);
 
         verify(matchingRequestRepository).deleteById(1L);
     }
 
     @Test
-    public void 권한이_없는_사용자가_매칭_취소() {
-        assertThatThrownBy(() -> matchingRequestServiceImpl.cancel(3L, 1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+    void 권한이_없는_사용자가_매칭_취소_불가() {
+        given(matchingRequestRepository.findById(1L))
+            .willReturn(Optional.of(new MatchingRequest(team1, team2)));
+
+        Throwable thrown = catchThrowable(() -> matchingRequestServiceImpl.cancel(3L, 1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

@@ -1,9 +1,8 @@
 package com.colleful.server.invitation.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
@@ -24,15 +23,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class AcceptanceTest {
 
     @InjectMocks
-    private InvitationServiceImpl invitationServiceImpl;
+    InvitationServiceImpl invitationServiceImpl;
     @Mock
-    private InvitationRepository invitationRepository;
+    InvitationRepository invitationRepository;
 
-    private Team team;
-    private User user;
+    Team team;
+    User user;
 
     @BeforeEach
-    public void init() {
+    void init() {
         team = Team.builder()
             .id(1L)
             .leaderId(1L)
@@ -43,9 +42,9 @@ public class AcceptanceTest {
     }
 
     @Test
-    public void 초대_수락() {
-        when(invitationRepository.findById(1L))
-            .thenReturn(Optional.of(new Invitation(team, user)));
+    void 초대_수락() {
+        given(invitationRepository.findById(1L))
+            .willReturn(Optional.of(new Invitation(team, user)));
 
         invitationServiceImpl.accept(2L, 1L);
 
@@ -54,11 +53,12 @@ public class AcceptanceTest {
     }
 
     @Test
-    public void 다른_사용자의_초대_수락() {
-        when(invitationRepository.findById(1L))
-            .thenReturn(Optional.of(new Invitation(team, user)));
+    void 다른_사용자의_초대_수락_불가() {
+        given(invitationRepository.findById(1L))
+            .willReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationServiceImpl.accept(3L, 1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> invitationServiceImpl.accept(3L, 1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

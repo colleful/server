@@ -1,8 +1,9 @@
 package com.colleful.server.invitation.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
@@ -22,23 +23,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class RefusalTest {
 
     @InjectMocks
-    private InvitationServiceImpl invitationServiceImpl;
+    InvitationServiceImpl invitationServiceImpl;
     @Mock
-    private InvitationRepository invitationRepository;
+    InvitationRepository invitationRepository;
 
-    private User user;
-    private Team team;
+    User user;
+    Team team;
 
     @BeforeEach
-    public void init() {
+    void init() {
         user = User.builder().id(2L).gender(Gender.MALE).build();
         team = Team.of("test", User.builder().id(1L).gender(Gender.MALE).build());
     }
 
     @Test
-    public void 초대_거절() {
-        when(invitationRepository.findById(1L))
-            .thenReturn(Optional.of(new Invitation(team, user)));
+    void 초대_거절() {
+        given(invitationRepository.findById(1L))
+            .willReturn(Optional.of(new Invitation(team, user)));
 
         invitationServiceImpl.refuse(2L, 1L);
 
@@ -46,11 +47,12 @@ public class RefusalTest {
     }
 
     @Test
-    public void 다른_사용자의_초대_거절() {
-        when(invitationRepository.findById(1L))
-            .thenReturn(Optional.of(new Invitation(team, user)));
+    void 다른_사용자의_초대_거절_불가() {
+        given(invitationRepository.findById(1L))
+            .willReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationServiceImpl.refuse(3L, 1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> invitationServiceImpl.refuse(3L, 1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

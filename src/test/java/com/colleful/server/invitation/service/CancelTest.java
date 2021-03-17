@@ -1,8 +1,9 @@
 package com.colleful.server.invitation.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
@@ -22,23 +23,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class CancelTest {
 
     @InjectMocks
-    private InvitationServiceImpl invitationServiceImpl;
+    InvitationServiceImpl invitationServiceImpl;
     @Mock
-    private InvitationRepository invitationRepository;
+    InvitationRepository invitationRepository;
 
-    private Team team;
-    private User user;
+    Team team;
+    User user;
 
     @BeforeEach
-    public void init() {
+    void init() {
         team = Team.of("test", User.builder().id(1L).gender(Gender.MALE).build());
         user = User.builder().id(2L).gender(Gender.MALE).build();
     }
 
     @Test
-    public void 초대_취소() {
-        when(invitationRepository.findById(1L))
-            .thenReturn(Optional.of(new Invitation(team, user)));
+    void 초대_취소() {
+        given(invitationRepository.findById(1L))
+            .willReturn(Optional.of(new Invitation(team, user)));
 
         invitationServiceImpl.cancel(1L, 1L);
 
@@ -46,11 +47,12 @@ public class CancelTest {
     }
 
     @Test
-    public void 권한이_없는_사용자가_초대_취소() {
-        when(invitationRepository.findById(1L))
-            .thenReturn(Optional.of(new Invitation(team, user)));
+    void 권한이_없는_사용자가_초대_취소_불가() {
+        given(invitationRepository.findById(1L))
+            .willReturn(Optional.of(new Invitation(team, user)));
 
-        assertThatThrownBy(() -> invitationServiceImpl.cancel(3L, 1L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> invitationServiceImpl.cancel(3L, 1L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

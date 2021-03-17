@@ -1,13 +1,13 @@
 package com.colleful.server.invitation.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
-import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.service.TeamServiceForOtherService;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
@@ -24,29 +24,28 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class InvitationTest {
 
     @InjectMocks
-    private InvitationServiceImpl invitationServiceImpl;
+    InvitationServiceImpl invitationServiceImpl;
     @Mock
-    private InvitationRepository invitationRepository;
+    InvitationRepository invitationRepository;
     @Mock
-    private TeamServiceForOtherService teamService;
+    TeamServiceForOtherService teamService;
     @Mock
-    private UserServiceForOtherService userService;
+    UserServiceForOtherService userService;
 
-    private User user1;
-    private User user2;
-    private User user3;
+    User user1;
+    User user2;
 
     @BeforeEach
-    public void init() {
-        this.user1 = User.builder().id(1L).gender(Gender.MALE).build();
-        this.user2 = User.builder().id(2L).gender(Gender.MALE).build();
-        this.user3 = User.builder().id(3L).gender(Gender.MALE).build();
+    void init() {
+        user1 = User.builder().id(1L).gender(Gender.MALE).build();
+        user2 = User.builder().id(2L).gender(Gender.MALE).build();
     }
 
     @Test
-    public void 초대() {
-        when(teamService.getUserTeam(1L)).thenReturn(Team.of("test", user1));
-        when(userService.getUserIfExist(2L)).thenReturn(user2);
+    void 초대() {
+        given(teamService.getUserTeam(1L)).willReturn(Team.of("test", user1));
+        given(userService.getUserIfExist(2L)).willReturn(user2);
+        given(invitationRepository.existsByTeamAndUser(any(), any())).willReturn(false);
 
         invitationServiceImpl.invite(1L, 2L);
 
@@ -54,10 +53,23 @@ public class InvitationTest {
     }
 
     @Test
-    public void 리더가_아닌_사용자가_초대() {
-        when(teamService.getUserTeam(1L)).thenReturn(Team.of("test", user3));
+    void 리더가_아닌_사용자가_초대_불가() {
+        given(teamService.getUserTeam(3L)).willReturn(Team.of("test", user1));
+        given(userService.getUserIfExist(2L)).willReturn(user2);
 
-        assertThatThrownBy(() -> invitationServiceImpl.invite(1L, 2L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> invitationServiceImpl.invite(3L, 2L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
+    }
+
+    @Test
+    void 이미_초대한_유저_다시_초대_불가() {
+        given(teamService.getUserTeam(1L)).willReturn(Team.of("test", user1));
+        given(userService.getUserIfExist(2L)).willReturn(user2);
+        given(invitationRepository.existsByTeamAndUser(any(), any())).willReturn(true);
+
+        Throwable thrown = catchThrowable(() -> invitationServiceImpl.invite(1L, 2L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }

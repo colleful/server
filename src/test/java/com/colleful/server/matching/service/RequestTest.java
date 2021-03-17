@@ -1,9 +1,10 @@
 package com.colleful.server.matching.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.colleful.server.matching.repository.MatchingRequestRepository;
 import com.colleful.server.team.domain.Team;
@@ -11,6 +12,7 @@ import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.service.TeamServiceForOtherService;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,29 +23,37 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class RequestTest {
 
     @InjectMocks
-    private MatchingRequestServiceImpl matchingRequestServiceImpl;
+    MatchingRequestServiceImpl matchingRequestServiceImpl;
     @Mock
-    private MatchingRequestRepository matchingRequestRepository;
+    MatchingRequestRepository matchingRequestRepository;
     @Mock
-    private TeamServiceForOtherService teamService;
+    TeamServiceForOtherService teamService;
+
+    Team team1;
+    Team team2;
+
+    @BeforeEach
+    void init() {
+        team1 = Team.builder()
+            .id(1L)
+            .leaderId(1L)
+            .gender(Gender.MALE)
+            .status(TeamStatus.PENDING)
+            .build();
+        team2 = Team.builder()
+            .id(2L)
+            .leaderId(2L)
+            .gender(Gender.FEMALE)
+            .status(TeamStatus.READY)
+            .build();
+    }
 
     @Test
-    public void 매치_요청() {
-        when(teamService.getUserTeam(1L))
-            .thenReturn(Team.builder()
-                .id(1L)
-                .leaderId(1L)
-                .gender(Gender.MALE)
-                .status(TeamStatus.PENDING)
-                .build());
-        when(teamService.getTeamIfExist(2L))
-            .thenReturn(Team.builder()
-                .id(2L)
-                .leaderId(2L)
-                .gender(Gender.FEMALE)
-                .status(TeamStatus.READY)
-                .build());
-        when(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any())).thenReturn(false);
+    void 매치_요청() {
+        given(teamService.getUserTeam(1L)).willReturn(team1);
+        given(teamService.getTeamIfExist(2L)).willReturn(team2);
+        given(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any()))
+            .willReturn(false);
 
         matchingRequestServiceImpl.request(1L, 2L);
 
@@ -51,67 +61,24 @@ public class RequestTest {
     }
 
     @Test
-    public void 같은_성별_팀에게_매치_요청() {
-        when(teamService.getUserTeam(1L))
-            .thenReturn(Team.builder()
-                .id(1L)
-                .leaderId(1L)
-                .gender(Gender.MALE)
-                .status(TeamStatus.PENDING)
-                .build());
-        when(teamService.getTeamIfExist(2L))
-            .thenReturn(Team.builder()
-                .id(2L)
-                .leaderId(2L)
-                .gender(Gender.MALE)
-                .status(TeamStatus.READY)
-                .build());
-        when(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any())).thenReturn(false);
+    void 리더가_아닌_사용자가_매치_요청_불가() {
+        given(teamService.getUserTeam(3L)).willReturn(team1);
+        given(teamService.getTeamIfExist(2L)).willReturn(team2);
 
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(1L, 2L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        Throwable thrown = catchThrowable(() -> matchingRequestServiceImpl.request(3L, 2L));
+
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 
     @Test
-    public void 리더가_아닌_사용자가_매치_요청() {
-        when(teamService.getUserTeam(1L))
-            .thenReturn(Team.builder()
-                .id(1L)
-                .leaderId(3L)
-                .gender(Gender.MALE)
-                .status(TeamStatus.PENDING)
-                .build());
-        when(teamService.getTeamIfExist(2L))
-            .thenReturn(Team.builder()
-                .id(2L)
-                .leaderId(2L)
-                .gender(Gender.FEMALE)
-                .status(TeamStatus.READY)
-                .build());
+    void 이미_요청한_팀에게_다시_요청_불가() {
+        given(teamService.getUserTeam(1L)).willReturn(team1);
+        given(teamService.getTeamIfExist(2L)).willReturn(team2);
+        given(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any()))
+            .willReturn(true);
 
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(1L, 2L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
-    }
+        Throwable thrown = catchThrowable(() -> matchingRequestServiceImpl.request(1L, 2L));
 
-    @Test
-    public void 준비가_안_된_팀에게_매치_요청() {
-        when(teamService.getUserTeam(1L))
-            .thenReturn(Team.builder()
-                .id(1L)
-                .leaderId(1L)
-                .gender(Gender.MALE)
-                .status(TeamStatus.PENDING)
-                .build());
-        when(teamService.getTeamIfExist(2L))
-            .thenReturn(Team.builder()
-                .id(2L)
-                .leaderId(2L)
-                .gender(Gender.FEMALE)
-                .status(TeamStatus.PENDING)
-                .build());
-        when(matchingRequestRepository.existsBySentTeamAndReceivedTeam(any(), any())).thenReturn(false);
-
-        assertThatThrownBy(() -> matchingRequestServiceImpl.request(1L, 2L))
-            .isInstanceOf(ForbiddenBehaviorException.class);
+        assertThat(thrown).isInstanceOf(ForbiddenBehaviorException.class);
     }
 }
