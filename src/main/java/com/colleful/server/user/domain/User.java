@@ -111,7 +111,7 @@ public class User implements UserDetails {
     }
 
     public boolean isNotMemberOf(Long teamId) {
-        return !this.teamId.equals(teamId);
+        return this.teamId == null || !this.teamId.equals(teamId);
     }
 
     @Override
