@@ -6,6 +6,7 @@ import com.colleful.server.user.dto.UserDto.EmailRequest;
 import com.colleful.server.user.dto.UserDto.LoginRequest;
 import com.colleful.server.user.dto.UserDto.Request;
 import com.colleful.server.user.service.AuthService;
+import com.colleful.server.user.service.EmailServiceForController;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final EmailServiceForController emailService;
 
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody Request request) {
@@ -42,13 +44,13 @@ public class AuthController {
 
     @PostMapping("/join/email")
     public ResponseEntity<?> sendEmailForRegistration(@RequestBody EmailRequest request) {
-        authService.sendEmailForRegistration(request.getEmail());
+        emailService.sendEmailForRegistration(request.getEmail());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password/email")
     public ResponseEntity<?> sendEmailForPassword(@RequestBody EmailRequest request) {
-        authService.sendEmailForPassword(request.getEmail());
+        emailService.sendEmailForPassword(request.getEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -60,7 +62,7 @@ public class AuthController {
 
     @PatchMapping("/check")
     public ResponseEntity<?> check(@RequestBody EmailRequest request) {
-        authService.checkEmail(request);
+        emailService.checkEmail(request);
         return ResponseEntity.ok().build();
     }
 }
