@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
 
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
@@ -57,7 +57,7 @@ public class AcceptanceTest {
         assertThat(team2.getMatchedTeamId()).isEqualTo(1L);
         assertThat(team1.getStatus()).isEqualTo(TeamStatus.MATCHED);
         assertThat(team2.getStatus()).isEqualTo(TeamStatus.MATCHED);
-        verify(matchingRequestRepository).deleteAllByReceivedTeam(any());
+        then(matchingRequestRepository).should().deleteAllByReceivedTeam(any());
     }
 
     @Test

@@ -3,7 +3,7 @@ package com.colleful.server.matching.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
 
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
@@ -52,7 +52,7 @@ public class RefusalTest {
 
         matchingRequestServiceImpl.refuse(2L, 1L);
 
-        verify(matchingRequestRepository).deleteById(1L);
+        then(matchingRequestRepository).should().deleteById(1L);
     }
 
     @Test

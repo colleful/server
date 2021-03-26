@@ -3,7 +3,7 @@ package com.colleful.server.team.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
 
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.domain.TeamStatus;
@@ -74,7 +74,7 @@ public class DeletingTest {
         assertThat(team2.getMatchedTeamId()).isNull();
         assertThat(team2.getStatus()).isEqualTo(TeamStatus.PENDING);
         assertThat(user2.getTeamId()).isNull();
-        verify(teamRepository).deleteById(1L);
+        then(teamRepository).should().deleteById(1L);
     }
 
     @Test

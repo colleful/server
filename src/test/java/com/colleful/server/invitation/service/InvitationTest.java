@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
 
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
@@ -49,7 +49,7 @@ public class InvitationTest {
 
         invitationServiceImpl.invite(1L, 2L);
 
-        verify(invitationRepository).save(any());
+        then(invitationRepository).should().save(any());
     }
 
     @Test

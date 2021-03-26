@@ -3,7 +3,7 @@ package com.colleful.server.invitation.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
 
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
@@ -43,7 +43,7 @@ public class RefusalTest {
 
         invitationServiceImpl.refuse(2L, 1L);
 
-        verify(invitationRepository).deleteById(1L);
+        then(invitationRepository).should().deleteById(1L);
     }
 
     @Test

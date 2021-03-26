@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
 
 import com.colleful.server.matching.repository.MatchingRequestRepository;
 import com.colleful.server.team.domain.Team;
@@ -57,7 +57,7 @@ public class RequestTest {
 
         matchingRequestServiceImpl.request(1L, 2L);
 
-        verify(matchingRequestRepository).save(any());
+        then(matchingRequestRepository).should().save(any());
     }
 
     @Test
