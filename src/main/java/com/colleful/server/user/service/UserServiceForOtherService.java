@@ -7,5 +7,7 @@ public interface UserServiceForOtherService {
 
     User getUserIfExist(Long userId);
 
+    User getUserIfExist(String email);
+
     List<User> getMembers(Long teamId);
 }

@@ -6,7 +6,6 @@ import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.user.repository.UserRepository;
 import com.colleful.server.global.exception.AlreadyExistResourceException;
-import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.exception.NotMatchedPasswordException;
 import com.colleful.server.global.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final DepartmentService departmentService;
+    private final UserServiceForOtherService userService;
     private final EmailServiceForOtherService emailService;
+    private final DepartmentService departmentService;
     private final JwtProvider provider;
     private final PasswordEncoder passwordEncoder;
 
@@ -50,8 +50,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(UserDto.LoginRequest dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = userService.getUserIfExist(dto.getEmail());
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new NotMatchedPasswordException("비밀번호가 일치하지 않습니다.");
@@ -62,8 +61,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void changePassword(UserDto.LoginRequest dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+        User user = userService.getUserIfExist(dto.getEmail());
 
         emailService.checkVerification(dto.getEmail());
 

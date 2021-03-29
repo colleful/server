@@ -29,6 +29,12 @@ public class UserServiceImpl implements UserServiceForController, UserServiceFor
     }
 
     @Override
+    public User getUserIfExist(String email) {
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+    }
+
+    @Override
     public List<User> getUserByNickname(String nickname) {
         return userRepository.findByNicknameContaining(nickname);
     }
