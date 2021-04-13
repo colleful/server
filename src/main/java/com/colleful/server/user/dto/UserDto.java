@@ -2,6 +2,7 @@ package com.colleful.server.user.dto;
 
 import com.colleful.server.user.domain.User;
 import java.util.Calendar;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -52,9 +53,10 @@ public class UserDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class EmailRequest {
 
-        private String email;
-        private Integer code;
+        private final String email;
+        private final Integer code;
     }
 }
