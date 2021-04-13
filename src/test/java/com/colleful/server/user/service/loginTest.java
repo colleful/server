@@ -35,7 +35,7 @@ public class loginTest {
 
     @BeforeEach
     void init() {
-        dto = new UserDto.LoginRequest();
+        dto = new UserDto.LoginRequest("username", "password");
     }
 
     @Test

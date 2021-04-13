@@ -46,10 +46,11 @@ public class UserDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class LoginRequest {
 
-        private String email;
-        private String password;
+        private final String email;
+        private final String password;
     }
 
     @Getter
