@@ -5,10 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 @Component
+@Setter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 public class JwtProvider {
 
@@ -24,22 +25,18 @@ public class JwtProvider {
     private String secretKey;
     private final UserDetailsService userDetailsService;
 
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
-
     public String createToken(String email, Long id, String role) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("id", id);
         claims.put("role", role);
         Date now = new Date();
+        String base64SecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(now)
             .setExpiration(new Date(now.getTime() + JwtProperties.EXPIRATION_TIME))
-            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .signWith(SignatureAlgorithm.HS256, base64SecretKey)
             .compact();
     }
 
@@ -74,8 +71,9 @@ public class JwtProvider {
             throw new IllegalArgumentException();
         }
 
+        String base64SecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
         return Jwts.parser()
-            .setSigningKey(secretKey)
+            .setSigningKey(base64SecretKey)
             .parseClaimsJws(token.split(" ")[1])
             .getBody();
     }
