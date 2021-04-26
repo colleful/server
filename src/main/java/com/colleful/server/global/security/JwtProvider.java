@@ -26,9 +26,7 @@ public class JwtProvider {
     private final UserDetailsService userDetailsService;
 
     public String createToken(String email, Long id, String role) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("id", id);
-        claims.put("role", role);
+        Claims claims = createClaims(email, id, role);
         Date now = new Date();
         String base64SecretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 
@@ -38,6 +36,13 @@ public class JwtProvider {
             .setExpiration(new Date(now.getTime() + JwtProperties.EXPIRATION_TIME))
             .signWith(SignatureAlgorithm.HS256, base64SecretKey)
             .compact();
+    }
+
+    private Claims createClaims(String email, Long id, String role) {
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("id", id);
+        claims.put("role", role);
+        return claims;
     }
 
     public Long getId(String token) {
