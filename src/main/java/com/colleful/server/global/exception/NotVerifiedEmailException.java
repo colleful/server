@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class NotVerifiedEmailException extends RuntimeException {
 
-    public NotVerifiedEmailException(String message) {
-        super(message);
+    public NotVerifiedEmailException() {
+        super("인증되지 않은 이메일입니다.");
     }
 }

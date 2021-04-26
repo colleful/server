@@ -1,5 +1,6 @@
 package com.colleful.server.matching.domain;
 
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.team.domain.Team;
 import java.time.LocalDateTime;
@@ -40,12 +41,8 @@ public class MatchingRequest {
     private Team receivedTeam;
 
     public MatchingRequest(Team sentTeam, Team receivedTeam) {
-        if (sentTeam.hasSameGenderWith(receivedTeam.getGender())) {
-            throw new ForbiddenBehaviorException("다른 성별에게만 매칭 요청할 수 있습니다.");
-        }
-
-        if (receivedTeam.isNotReady()) {
-            throw new ForbiddenBehaviorException("준비된 팀에게만 매칭 요청할 수 있습니다.");
+        if (sentTeam.isNotMatchableWith(receivedTeam)) {
+            throw new ForbiddenBehaviorException(ErrorType.CANNOT_MATCH);
         }
 
         this.sentTeam = sentTeam;

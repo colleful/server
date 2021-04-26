@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.FORBIDDEN)
 public class ForbiddenBehaviorException extends RuntimeException {
 
-    public ForbiddenBehaviorException(String message) {
-        super(message);
+    public ForbiddenBehaviorException(ErrorType type) {
+        super(type.getMessage());
     }
 }

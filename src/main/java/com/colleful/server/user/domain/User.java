@@ -1,6 +1,7 @@
 package com.colleful.server.user.domain;
 
 import com.colleful.server.department.domain.Department;
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.user.dto.UserDto;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import java.util.Collection;
@@ -92,7 +93,7 @@ public class User implements UserDetails {
 
     public void joinTeam(Long teamId) {
         if (this.hasTeam()) {
-            throw new ForbiddenBehaviorException("이미 다른 팀에 속해있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.ALREADY_HAS_TEAM);
         }
 
         this.teamId = teamId;

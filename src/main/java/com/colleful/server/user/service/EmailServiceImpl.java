@@ -1,6 +1,7 @@
 package com.colleful.server.user.service;
 
 import com.colleful.server.global.exception.AlreadyExistResourceException;
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.global.exception.InvalidCodeException;
 import com.colleful.server.global.exception.NotFoundResourceException;
 import com.colleful.server.global.exception.NotVerifiedEmailException;
@@ -28,7 +29,7 @@ public class EmailServiceImpl implements EmailServiceForController, EmailService
     @Override
     public void sendEmailForRegistration(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new AlreadyExistResourceException("이미 가입된 유저입니다.");
+            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_USER);
         }
 
         sendEmail(email);
@@ -37,7 +38,7 @@ public class EmailServiceImpl implements EmailServiceForController, EmailService
     @Override
     public void sendEmailForPassword(String email) {
         if (!userRepository.existsByEmail(email)) {
-            throw new NotFoundResourceException("가입되지 않은 유저입니다.");
+            throw new NotFoundResourceException(ErrorType.NOT_FOUND_USER);
         }
 
         sendEmail(email);
@@ -63,7 +64,7 @@ public class EmailServiceImpl implements EmailServiceForController, EmailService
         EmailVerification emailVerification = getEmailVerificationIfPresent(dto.getEmail());
 
         if (!emailVerification.verify(dto.getCode())) {
-            throw new InvalidCodeException("인증번호가 다릅니다.");
+            throw new InvalidCodeException();
         }
 
         emailVerification.check();
@@ -75,7 +76,7 @@ public class EmailServiceImpl implements EmailServiceForController, EmailService
         EmailVerification emailVerification = getEmailVerificationIfPresent(email);
 
         if (emailVerification.isNotChecked()) {
-            throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
+            throw new NotVerifiedEmailException();
         }
 
         emailVerificationRepository.deleteByEmail(email);
@@ -83,6 +84,6 @@ public class EmailServiceImpl implements EmailServiceForController, EmailService
 
     private EmailVerification getEmailVerificationIfPresent(String email) {
         return emailVerificationRepository.findByEmail(email)
-            .orElseThrow(() -> new NotVerifiedEmailException("인증되지 않은 이메일입니다."));
+            .orElseThrow(NotVerifiedEmailException::new);
     }
 }

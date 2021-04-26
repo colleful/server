@@ -1,5 +1,6 @@
 package com.colleful.server.matching.service;
 
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.matching.domain.MatchingRequest;
 import com.colleful.server.matching.repository.MatchingRequestRepository;
 import com.colleful.server.team.domain.Team;
@@ -25,11 +26,11 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         Team receivedTeam = teamService.getTeamIfExist(receivedTeamId);
 
         if (sentTeam.isNotLedBy(senderId)) {
-            throw new ForbiddenBehaviorException("리더만 매칭 요청 할 수 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         if (matchingRequestRepository.existsBySentTeamAndReceivedTeam(sentTeam, receivedTeam)) {
-            throw new ForbiddenBehaviorException("이미 매칭 요청한 팀입니다.");
+            throw new ForbiddenBehaviorException(ErrorType.ALREADY_REQUESTED);
         }
 
         return matchingRequestRepository.save(new MatchingRequest(sentTeam, receivedTeam));
@@ -52,7 +53,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         MatchingRequest match = getMatchingRequestIfExist(matchingId);
 
         if (match.isNotReceivedBy(clientId)) {
-            throw new ForbiddenBehaviorException("리더만 매칭 수락할 수 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         match.accept();
@@ -64,7 +65,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         MatchingRequest match = getMatchingRequestIfExist(matchingId);
 
         if (match.isNotReceivedBy(clientId)) {
-            throw new ForbiddenBehaviorException("리더만 매칭 거절할 수 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         matchingRequestRepository.deleteById(matchingId);
@@ -75,7 +76,7 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
         MatchingRequest match = getMatchingRequestIfExist(matchingId);
 
         if (match.isNotSentBy(clientId)) {
-            throw new ForbiddenBehaviorException("취소 권한이 없습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         matchingRequestRepository.deleteById(matchingId);
@@ -83,6 +84,6 @@ public class MatchingRequestServiceImpl implements MatchingRequestService {
 
     private MatchingRequest getMatchingRequestIfExist(Long id) {
         return matchingRequestRepository.findById(id)
-            .orElseThrow(() -> new NotFoundResourceException("매칭 요청이 없습니다."));
+            .orElseThrow(() -> new NotFoundResourceException(ErrorType.NOT_FOUND_MATCHING_REQUEST));
     }
 }

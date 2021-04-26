@@ -1,5 +1,6 @@
 package com.colleful.server.team.domain;
 
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
@@ -118,6 +119,16 @@ public class Team {
         return this.isNotEmpty() && this.isNotReady() && user.isNotMemberOf(this.id);
     }
 
+    public boolean isNotMatchableWith(Team team) {
+        return this.hasSameGenderWith(team.getGender())
+            || team.isNotReady();
+    }
+
+    public boolean cannotInvite(User user) {
+        return this.hasDifferentGenderFrom(user.getGender())
+            || this.isNotPending();
+    }
+
     public void addMember(User user) {
         this.headcount++;
         user.joinTeam(this.id);
@@ -125,7 +136,7 @@ public class Team {
 
     public void removeMember(User user) {
         if (user.isNotMemberOf(this.id)) {
-            throw new ForbiddenBehaviorException("이 팀의 멤버가 아닙니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_MEMBER);
         }
 
         user.leaveTeam();
@@ -138,7 +149,7 @@ public class Team {
 
     public void match(Long teamId) {
         if (this.isMatched()) {
-            throw new ForbiddenBehaviorException("이미 다른 팀과 매칭되어 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.ALREADY_MATCHED);
         }
 
         this.matchedTeamId = teamId;

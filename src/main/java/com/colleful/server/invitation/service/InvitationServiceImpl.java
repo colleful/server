@@ -1,5 +1,6 @@
 package com.colleful.server.invitation.service;
 
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.invitation.domain.Invitation;
 import com.colleful.server.invitation.repository.InvitationRepository;
 import com.colleful.server.team.domain.Team;
@@ -28,11 +29,11 @@ public class InvitationServiceImpl implements InvitationService {
         User targetUser = userService.getUserIfExist(targetId);
 
         if (team.isNotLedBy(clientId)) {
-            throw new ForbiddenBehaviorException("리더만 초대할 수 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         if (invitationRepository.existsByTeamAndUser(team, targetUser)) {
-            throw new ForbiddenBehaviorException("이미 초대했습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.ALREADY_INVITED);
         }
 
         return invitationRepository.save(new Invitation(team, targetUser));
@@ -55,7 +56,7 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = getInvitationIfExist(invitationId);
 
         if (invitation.isNotReceivedBy(clientId)) {
-            throw new ForbiddenBehaviorException("잘못된 유저입니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_MY_INVITATION);
         }
 
         invitation.accept();
@@ -67,7 +68,7 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = getInvitationIfExist(invitationId);
 
         if (invitation.isNotReceivedBy(clientId)) {
-            throw new ForbiddenBehaviorException("잘못된 유저입니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_MY_INVITATION);
         }
 
         invitationRepository.deleteById(invitationId);
@@ -78,7 +79,7 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = getInvitationIfExist(invitationId);
 
         if (invitation.isNotSentBy(clientId)) {
-            throw new ForbiddenBehaviorException("취소 권한이 없습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         invitationRepository.deleteById(invitationId);
@@ -86,6 +87,6 @@ public class InvitationServiceImpl implements InvitationService {
 
     private Invitation getInvitationIfExist(Long id) {
         return invitationRepository.findById(id)
-            .orElseThrow(() -> new NotFoundResourceException("초대 정보가 없습니다."));
+            .orElseThrow(() -> new NotFoundResourceException(ErrorType.NOT_FOUND_INVITATION));
     }
 }

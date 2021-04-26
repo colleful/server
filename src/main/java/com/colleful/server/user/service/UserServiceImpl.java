@@ -1,5 +1,6 @@
 package com.colleful.server.user.service;
 
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.user.repository.UserRepository;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
@@ -25,13 +26,13 @@ public class UserServiceImpl implements UserServiceForController, UserServiceFor
     @Override
     public User getUserIfExist(Long userId) {
         return userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+            .orElseThrow(() -> new NotFoundResourceException(ErrorType.NOT_FOUND_USER));
     }
 
     @Override
     public User getUserIfExist(String email) {
         return userRepository.findByEmail(email)
-            .orElseThrow(() -> new NotFoundResourceException("가입되지 않은 유저입니다."));
+            .orElseThrow(() -> new NotFoundResourceException(ErrorType.NOT_FOUND_USER));
     }
 
     @Override
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserServiceForController, UserServiceFor
         User user = getUserIfExist(userId);
 
         if (userRepository.existsByNickname(info.getNickname())) {
-            throw new ForbiddenBehaviorException("중복된 닉네임입니다.");
+            throw new ForbiddenBehaviorException(ErrorType.ALREADY_EXIST_NICKNAME);
         }
 
         user.changeInfo(info);
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserServiceForController, UserServiceFor
         User user = getUserIfExist(userId);
 
         if (user.hasTeam()) {
-            throw new ForbiddenBehaviorException("팀을 먼저 탈퇴해 주세요.");
+            throw new ForbiddenBehaviorException(ErrorType.ALREADY_HAS_TEAM);
         }
 
         userRepository.deleteById(userId);

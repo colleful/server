@@ -1,5 +1,6 @@
 package com.colleful.server.team.service;
 
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.team.repository.TeamRepository;
@@ -32,7 +33,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     @Override
     public Team getTeamIfExist(Long teamId) {
         return teamRepository.findById(teamId)
-            .orElseThrow(() -> new NotFoundResourceException("존재하지 않는 팀입니다."));
+            .orElseThrow(() -> new NotFoundResourceException(ErrorType.NOT_FOUND_TEAM));
     }
 
     @Override
@@ -41,7 +42,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         Team team = teamRepository.findById(teamId).orElseGet(Team::getEmptyInstance);
 
         if (team.isNotAccessibleTo(client)) {
-            throw new ForbiddenBehaviorException("권한이 없습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.CANNOT_ACCESS);
         }
 
         return team;
@@ -52,7 +53,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         User user = userService.getUserIfExist(userId);
 
         if (user.hasNotTeam()) {
-            throw new ForbiddenBehaviorException("팀을 먼저 생성해 주세요.");
+            throw new ForbiddenBehaviorException(ErrorType.NOT_FOUND_TEAM);
         }
 
         return getTeamIfExist(user.getTeamId());
@@ -69,7 +70,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         Team team = getTeamIfExist(teamId);
 
         if (team.isNotAccessibleTo(client)) {
-            throw new ForbiddenBehaviorException("권한이 없습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.CANNOT_ACCESS);
         }
 
         return userService.getMembers(teamId);
@@ -87,11 +88,11 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         Team team = getUserTeam(clientId);
 
         if (team.isNotLedBy(clientId)) {
-            throw new ForbiddenBehaviorException("리더만 팀 상태를 변경할 수 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         if (team.isNotPending()) {
-            throw new ForbiddenBehaviorException("현재 상태에선 상태를 변경할 수 없습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.CANNOT_CHANGE_STATUS);
         }
 
         team.changeStatus(status);
@@ -103,7 +104,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         Team team = getTeamIfExist(client.getTeamId());
 
         if (team.isLedBy(clientId)) {
-            throw new ForbiddenBehaviorException("리더는 팀을 탈퇴할 수 없습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_LEADER);
         }
 
         team.removeMember(client);
@@ -114,7 +115,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         Team team = getUserTeam(clientId);
 
         if (team.isNotLedBy(clientId)) {
-            throw new ForbiddenBehaviorException("리더만 팀을 삭제할 수 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         finishMatch(team);
@@ -127,11 +128,11 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
         Team team = getUserTeam(clientId);
 
         if (team.isLedBy(clientId)) {
-            throw new ForbiddenBehaviorException("리더만 매칭을 끝낼 수 있습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
         if (team.isNotMatched()) {
-            throw new ForbiddenBehaviorException("매칭된 팀이 없습니다.");
+            throw new ForbiddenBehaviorException(ErrorType.IS_NOT_MATCHED);
         }
 
         finishMatch(team);

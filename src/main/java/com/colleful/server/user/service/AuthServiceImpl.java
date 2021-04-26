@@ -1,6 +1,7 @@
 package com.colleful.server.user.service;
 
 import com.colleful.server.department.service.DepartmentService;
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.user.domain.Gender;
 import com.colleful.server.user.domain.User;
 import com.colleful.server.user.dto.UserDto;
@@ -28,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User join(UserDto.Request dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new AlreadyExistResourceException("중복된 이메일입니다.");
+            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_EMAIL);
         }
 
         emailService.checkVerification(dto.getEmail());
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userService.getUserIfExist(dto.getEmail());
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new NotMatchedPasswordException("비밀번호가 일치하지 않습니다.");
+            throw new NotMatchedPasswordException();
         }
 
         return provider.createToken(user.getEmail(), user.getId(), user.getRole());

@@ -1,5 +1,6 @@
 package com.colleful.server.invitation.domain;
 
+import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.global.exception.ForbiddenBehaviorException;
 import com.colleful.server.team.domain.Team;
 import com.colleful.server.user.domain.User;
@@ -40,15 +41,11 @@ public class Invitation {
 
     public Invitation(Team team, User user) {
         if (user.hasTeam()) {
-            throw new ForbiddenBehaviorException("이미 팀에 가입된 유저입니다.");
+            throw new ForbiddenBehaviorException(ErrorType.ALREADY_HAS_TEAM);
         }
 
-        if (team.hasDifferentGenderFrom(user.getGender())) {
-            throw new ForbiddenBehaviorException("같은 성별만 초대할 수 있습니다.");
-        }
-
-        if (team.isNotPending()) {
-            throw new ForbiddenBehaviorException("초대할 수 없습니다.");
+        if (team.cannotInvite(user)) {
+            throw new ForbiddenBehaviorException(ErrorType.CANNOT_INVITE);
         }
 
         this.team = team;
