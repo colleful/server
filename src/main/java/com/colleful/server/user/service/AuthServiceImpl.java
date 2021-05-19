@@ -32,6 +32,10 @@ public class AuthServiceImpl implements AuthService {
             throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_EMAIL);
         }
 
+        if (userRepository.existsByNickname(dto.getNickname())) {
+            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_NICKNAME);
+        }
+
         emailService.checkVerification(dto.getEmail());
 
         User user = User.builder()
