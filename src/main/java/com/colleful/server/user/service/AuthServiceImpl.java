@@ -28,13 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User join(UserDto.Request dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_EMAIL);
-        }
-
-        if (userRepository.existsByNickname(dto.getNickname())) {
-            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_NICKNAME);
-        }
+        verify(dto);
 
         emailService.checkVerification(dto.getEmail());
 
@@ -51,6 +45,16 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return user;
+    }
+
+    private void verify(UserDto.Request dto) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_EMAIL);
+        }
+
+        if (userRepository.existsByNickname(dto.getNickname())) {
+            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_NICKNAME);
+        }
     }
 
     @Override
