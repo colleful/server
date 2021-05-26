@@ -26,8 +26,16 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     @Override
     public Team createTeam(Long clientId, String teamName) {
         User leader = userService.getUserIfExist(clientId);
-        Team team = Team.of(teamName, leader);
-        return teamRepository.save(team);
+        Team team = Team.builder()
+            .teamName(teamName)
+            .gender(leader.getGender())
+            .status(TeamStatus.PENDING)
+            .headcount(0)
+            .leaderId(leader.getId())
+            .build();
+        teamRepository.save(team);
+        team.addMember(leader);
+        return team;
     }
 
     @Override
