@@ -1,5 +1,6 @@
 package com.colleful.server.team.service;
 
+import com.colleful.server.global.exception.AlreadyExistResourceException;
 import com.colleful.server.global.exception.ErrorType;
 import com.colleful.server.team.domain.TeamStatus;
 import com.colleful.server.team.domain.Team;
@@ -25,6 +26,10 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
 
     @Override
     public Team createTeam(Long clientId, String teamName) {
+        if (teamRepository.existsByTeamName(teamName)) {
+            throw new AlreadyExistResourceException(ErrorType.ALREADY_EXIST_TEAM_NAME);
+        }
+
         User leader = userService.getUserIfExist(clientId);
         Team team = Team.builder()
             .teamName(teamName)

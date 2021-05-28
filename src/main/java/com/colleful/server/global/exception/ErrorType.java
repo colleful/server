@@ -15,6 +15,7 @@ public enum ErrorType {
     ALREADY_EXIST_EMAIL("중복된 이메일입니다."),
     ALREADY_EXIST_USER("이미 가입된 유저입니다."),
     ALREADY_EXIST_NICKNAME("중복된 닉네임입니다."),
+    ALREADY_EXIST_TEAM_NAME("중복된 팀 이름입니다."),
     IS_LEADER("팀의 리더는 할 수 없습니다."),
     IS_NOT_LEADER("리더가 아닌 사용자는 할 수 없습니다."),
     IS_NOT_MEMBER("멤버가 아닙니다."),
