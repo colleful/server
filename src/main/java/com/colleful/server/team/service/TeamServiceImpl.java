@@ -140,7 +140,7 @@ public class TeamServiceImpl implements TeamServiceForController, TeamServiceFor
     public void finishMatch(Long clientId) {
         Team team = getUserTeam(clientId);
 
-        if (team.isLedBy(clientId)) {
+        if (team.isNotLedBy(clientId)) {
             throw new ForbiddenBehaviorException(ErrorType.IS_NOT_LEADER);
         }
 
